@@ -36,8 +36,9 @@ public class WebSecurityConfig {
         // 접근 권한 설정
         http.authorizeHttpRequests((authorizeRequests) ->
                 authorizeRequests
-                        .requestMatchers("/api/v1/auth/signup","/api/v1/auth/login").permitAll() // 로그인, 회원가입페이지 모두 허용
-                        .anyRequest().authenticated()
+                        //.requestMatchers("/api/v1/auth/signup","/api/v1/auth/login").permitAll() // 로그인, 회원가입페이지 모두 허용
+                        //.anyRequest().authenticated()
+                        .anyRequest().permitAll()
         );
 
         return http.build();

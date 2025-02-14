@@ -1,14 +1,20 @@
 package com.twopro.deliveryapp.user.dto;
 
 import com.twopro.deliveryapp.user.entity.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class UserSignupRequestDto {
+    @NotNull
+    @Email
     private String email;
+    @NotNull
     private String password;
+    @NotNull
     private String nickname;
     private String role;
     private String province;

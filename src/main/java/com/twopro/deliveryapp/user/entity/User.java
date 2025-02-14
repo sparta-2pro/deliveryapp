@@ -41,4 +41,5 @@ public class User {
     private String created_by;
     private String updated_by;
     private String deleted_by;
+
 }
