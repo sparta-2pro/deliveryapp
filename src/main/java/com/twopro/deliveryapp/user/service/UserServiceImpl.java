@@ -4,6 +4,7 @@ import com.twopro.deliveryapp.user.dto.LoginRequestDto;
 import com.twopro.deliveryapp.user.dto.UserResponseDto;
 import com.twopro.deliveryapp.user.dto.UserUpdateRequestDto;
 import com.twopro.deliveryapp.user.entity.User;
+import com.twopro.deliveryapp.user.jwt.JwtUtil;
 import com.twopro.deliveryapp.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,11 @@ import java.util.Date;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -26,7 +29,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public String login(LoginRequestDto loginRequestDto) {
         // 로그인 로직 구현
-        return "login_token";
+        User user = userRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(()->new IllegalArgumentException("Invalid email or password"));
+
+        if(!user.getPassword().equals(loginRequestDto.getPassword())) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+
+        return jwtUtil.createToken(user.getEmail());
     }
 
     @Override

@@ -3,10 +3,9 @@ package com.twopro.deliveryapp.user.controller;
 import com.twopro.deliveryapp.user.dto.*;
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.service.UserService;
-import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,8 +30,11 @@ public class UserController {
     // 로그인
     @PostMapping("/auth/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto) {
-        String result = userService.login(loginRequestDto);
-        return ResponseEntity.ok(result);
+        String token = userService.login(loginRequestDto);
+        System.out.println("Generated Token: " + token);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .body("로그인 성공");
     }
 
     // 이메일 중복 확인
