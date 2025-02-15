@@ -6,6 +6,7 @@ import com.twopro.deliveryapp.user.dto.UserUpdateRequestDto;
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.jwt.JwtUtil;
 import com.twopro.deliveryapp.user.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,14 +16,18 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, JwtUtil jwtUtil) {
+    public UserServiceImpl(UserRepository userRepository, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public User signUp(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
 
@@ -30,13 +35,13 @@ public class UserServiceImpl implements UserService {
     public String login(LoginRequestDto loginRequestDto) {
         // 로그인 로직 구현
         User user = userRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow(()->new IllegalArgumentException("Invalid email or password"));
+                .orElseThrow(()->new IllegalArgumentException("Invalid email"));
 
-        if(!user.getPassword().equals(loginRequestDto.getPassword())) {
+        if(passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+            return jwtUtil.createToken(user.getEmail());
+        } else {
             throw new IllegalArgumentException("Invalid password");
         }
-
-        return jwtUtil.createToken(user.getEmail());
     }
 
     @Override
@@ -65,7 +70,7 @@ public class UserServiceImpl implements UserService {
             user.setEmail(updateDto.getEmail());
         }
         if (isValid(updateDto.getPassword())) {
-            user.setPassword(updateDto.getPassword());
+            user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
         }
         if (isValid(updateDto.getNickname())) {
             user.setNickname(updateDto.getNickname());
