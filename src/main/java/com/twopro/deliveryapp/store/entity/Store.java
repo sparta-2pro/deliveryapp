@@ -1,9 +1,6 @@
 package com.twopro.deliveryapp.store.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,12 +43,15 @@ public class Store {
     private int reviewCount;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
     @Column(length = 255, nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     private String deletedAt;
 
     @Column(length = 255, nullable = true)
