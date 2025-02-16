@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.user.dto;
 
+import com.twopro.deliveryapp.user.entity.Role;
 import com.twopro.deliveryapp.user.entity.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +30,7 @@ public class UserSignupRequestDto {
         user.setEmail(this.email);
         user.setPassword(this.password);
         user.setNickname(this.nickname);
-        user.setRole(this.role);
+        user.setRole(Role.valueOf(this.role));
         user.setProvince(this.province);
         user.setDistrict(this.district);
         user.setTown(this.town);

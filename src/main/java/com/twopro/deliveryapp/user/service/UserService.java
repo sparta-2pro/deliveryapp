@@ -20,7 +20,8 @@ public interface UserService {
     boolean isNicknameDuplication(String nickname);
 
     // 내 정보 조회
-    User getUserById(Long userId);
+    User getUserByEmail(String email);
+
 
     // 정보 수정
     UserResponseDto updateUser(Long userId, UserUpdateRequestDto updateDto);

@@ -24,7 +24,10 @@ public class User {
     private String email;
     private String password;
     private String nickname;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     private String province;
     private String district;
     private String town;

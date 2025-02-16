@@ -28,7 +28,7 @@ public class UserResponseDto extends UserDto {
         this.town = user.getTown();
         this.road_address = user.getRoad_address();
         this.detail_address = user.getDetail_address();
-        this.role = user.getRole();
+        this.role = String.valueOf(user.getRole());
         this.updated_at = user.getUpdated_at();
     }
 

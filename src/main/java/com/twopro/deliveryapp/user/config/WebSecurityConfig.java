@@ -12,11 +12,9 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 // WebSecurityConfig 클래스 - 전체 보안 설정
 @Configuration
@@ -53,7 +51,13 @@ public class WebSecurityConfig {
         // 접근 권한 설정
         http.authorizeHttpRequests((authorizeRequests) ->
                 authorizeRequests
-                        .requestMatchers("/api/v1/users/signup","/api/v1/auth/login").permitAll() // 로그인, 회원가입페이지 모두 허용
+                        // 인증 없이 접근 가능 경로 (회원가입, 로그인)
+                        .requestMatchers("/api/v1/users/**").permitAll()
+                        // 권한을 가진 사용자만 접근 가능 경로
+                        .requestMatchers("/api/v1/auth/**").hasAnyRole("CUSTOMER", "OWNER")
+                        // ADMIN 권한을 가진 사용자만 접근 가능한 경로
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        // 인증 필요한 경로
                         .anyRequest().authenticated());
                         //.anyRequest().permitAll()
 
@@ -64,12 +68,14 @@ public class WebSecurityConfig {
 
         return http.build();
     }
+
     // jwt 인증 필터 빈 등록
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         return new JwtAuthenticationFilter(jwtUtil);
 
     }
+
     // jwt 인가 필터 빈 등록
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() throws Exception {

@@ -28,13 +28,18 @@ public class UserController {
     }
 
     // 로그인
-    @PostMapping("/auth/login")
+    @PostMapping("/users/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto) {
         String token = userService.login(loginRequestDto);
-        System.out.println("Generated Token: " + token);
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body("로그인 성공");
+    }
+
+    // 로그아웃
+    @PostMapping("/auth/logout")
+    public ResponseEntity<String> logout() {
+        return ResponseEntity.ok("로그아웃 성공");
     }
 
     // 이메일 중복 확인
@@ -58,9 +63,9 @@ public class UserController {
     }
 
     // 회원 정보 조회
-    @GetMapping("/users/{user_id}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long user_id) {
-        User user = userService.getUserById(user_id);
+    @GetMapping("/auth/{email}")
+    public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable String email) {
+        User user = userService.getUserByEmail(email);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -69,7 +74,7 @@ public class UserController {
     }
 
     // 회원 정보 수정
-    @PatchMapping("/users/{user_id}/update")
+    @PatchMapping("/auth/{user_id}/update")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long user_id,
             @RequestBody UserUpdateRequestDto updateDto) {
@@ -78,9 +83,11 @@ public class UserController {
     }
 
     // 회원 탈퇴 비활성화
-    @PatchMapping("/users/{user_id}/delete")
+    @PatchMapping("/auth/{user_id}/delete")
     public ResponseEntity<String> deleteUser(@PathVariable Long user_id) {
         UserResponseDto deletedUser = userService.deleteUser(user_id);
         return ResponseEntity.ok("회원 비활성화 성공!");
     }
+
+
 }

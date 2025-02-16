@@ -3,6 +3,7 @@ package com.twopro.deliveryapp.user.service;
 import com.twopro.deliveryapp.user.dto.LoginRequestDto;
 import com.twopro.deliveryapp.user.dto.UserResponseDto;
 import com.twopro.deliveryapp.user.dto.UserUpdateRequestDto;
+import com.twopro.deliveryapp.user.entity.Role;
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.jwt.JwtUtil;
 import com.twopro.deliveryapp.user.repository.UserRepository;
@@ -35,10 +36,11 @@ public class UserServiceImpl implements UserService {
     public String login(LoginRequestDto loginRequestDto) {
         // 로그인 로직 구현
         User user = userRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow(()->new IllegalArgumentException("Invalid email"));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email"));
 
-        if(passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
-            return jwtUtil.createToken(user.getEmail());
+        if (passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+            String role = "ROLE_" + user.getRole().name();
+            return jwtUtil.createToken(user.getEmail(), role);
         } else {
             throw new IllegalArgumentException("Invalid password");
         }
@@ -54,9 +56,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByNickname(nickname);
     }
 
+
     @Override
-    public User getUserById(Long userId) {
-        return userRepository.findById(userId)
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("해당 사용자가 존재하지 않습니다."));
     }
 
@@ -91,7 +94,7 @@ public class UserServiceImpl implements UserService {
             user.setDetail_address(updateDto.getDetail_address());
         }
         if (isValid(updateDto.getRole())) {
-            user.setRole(updateDto.getRole());
+            user.setRole(Role.valueOf(updateDto.getRole()));
         }
 
         user.setUpdated_at(new Date());
