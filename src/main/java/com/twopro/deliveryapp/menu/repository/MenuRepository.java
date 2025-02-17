@@ -9,5 +9,9 @@ import java.util.Optional;
 @Repository
 public interface MenuRepository {
 
+    MenuEntity addMenu(MenuEntity menuEntity);
+
     Optional<List<MenuEntity>> findAllMenuByStoreId(String storeId);
+
+    Optional<List<MenuEntity>> findAllMenuByName(String name);
 }
