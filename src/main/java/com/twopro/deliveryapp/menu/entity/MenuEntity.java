@@ -22,14 +22,18 @@ public class MenuEntity extends BaseEntity {
     @JoinColumn(name = "id")
     private Store store;
 
+    @Column(length = 50, nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private MenuStatus status;
 
     // TODO s3? test url?
     private String imageUrl;
 
+    @Column(length = 255)
     private String description;
 
+    @Column(nullable = false)
     private int price;
 }
