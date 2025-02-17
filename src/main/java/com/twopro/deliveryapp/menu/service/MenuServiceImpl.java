@@ -12,9 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -77,12 +75,16 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional
     public SingleResponse<MenuResponseDto> updateMenu(String menuId, UpdateMenuRequestDto updateMenuRequestDto) {
-        return null;
+        MenuEntity menuEntity = findMenuByIdForServer(menuId);
+        MenuEntity updatedMenu = MenuEntity.update(menuEntity, updateMenuRequestDto);
+
+        return SingleResponse.success(MenuResponseDto.from(updatedMenu));
     }
 
     @Override
     @Transactional
     public void deleteMenu(String menuId) {
-
+        MenuEntity menuEntity = findMenuByIdForServer(menuId);
+        menuEntity.delete();
     }
 }
