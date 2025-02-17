@@ -56,10 +56,10 @@ public class WebSecurityConfig {
                         // 권한을 가진 사용자만 접근 가능 경로
                         .requestMatchers("/api/v1/auth/**").hasAnyRole("CUSTOMER", "OWNER")
                         // ADMIN 권한을 가진 사용자만 접근 가능한 경로
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        // 인증 필요한 경로
-                        .anyRequest().authenticated());
-                        //.anyRequest().permitAll()
+                        //.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        // 인증 필요한 경로 -> 임시로 모두 허용으로 바꿔놓움
+                        //.anyRequest().authenticated());
+                        .anyRequest().permitAll());
 
         // JWT 인증 필터 추가
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
