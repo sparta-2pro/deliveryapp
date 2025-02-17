@@ -12,6 +12,8 @@ public interface MenuService {
 
     SingleResponse<MenuResponseDto> addMenu(AddMenuRequestDto addMenuRequestDto, Store store);
 
+    SingleResponse<MenuResponseDto> findMenuById(String menuId);
+
     SingleResponse<List<MenuResponseDto>> findAllMenuByStoreId(String storeId);
 
     SingleResponse<List<MenuResponseDto>> findAllMenuByName(String name);

@@ -19,6 +19,11 @@ public class MenuRepositoryImpl implements MenuRepository {
     }
 
     @Override
+    public Optional<MenuEntity> findMenuById(String menuId) {
+        return jpaMenuRepository.findById(menuId);
+    }
+
+    @Override
     public Optional<List<MenuEntity>> findAllMenuByStoreId(String storeId) {
         return jpaMenuRepository.findAllMenuByStoreId(storeId);
     }

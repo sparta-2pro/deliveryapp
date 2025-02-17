@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,18 @@ public class MenuServiceImpl implements MenuService {
         MenuEntity menuEntity = menuRepository.addMenu(MenuEntity.of(addMenuRequestDto, store));
 
         return SingleResponse.success(MenuResponseDto.from(menuEntity));
+    }
+
+    @Override
+    public SingleResponse<MenuResponseDto> findMenuById(String menuId) {
+        MenuResponseDto menuResponseDto = MenuResponseDto.from(findMenuByIdForServer(menuId));
+
+        return SingleResponse.success(menuResponseDto);
+    }
+
+    private MenuEntity findMenuByIdForServer(String menuId) {
+        return menuRepository.findMenuById(menuId)
+                .orElseThrow(() -> new MenuNotFoundException("해당 Id 를 가진 메뉴를 찾을 수 없어요!"));
     }
 
     @Override
@@ -51,7 +64,7 @@ public class MenuServiceImpl implements MenuService {
 
     // TODO 빈 리스트를 반환하는 게 좋아보임
     private List<MenuEntity> findAllMenuByNameForServer(String name) {
-        return menuRepository.findAllMenuByStoreId(name)
+        return menuRepository.findAllMenuByName(name)
                 .orElseThrow(() -> new MenuNotFoundException("해당 이름을 가진 메뉴가 없어요!"));
     }
 
