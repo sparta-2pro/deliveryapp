@@ -40,6 +40,17 @@ public class MenuEntity extends BaseEntity {
     @Column(nullable = false)
     private int price;
 
+    public static MenuEntity of(AddMenuRequestDto addMenuRequestDto, Store store) {
+        return MenuEntity.builder()
+                .store(store)
+                .name(addMenuRequestDto.name())
+                .status(addMenuRequestDto.status())
+                .imageUrl(addMenuRequestDto.imageUrl())
+                .description(addMenuRequestDto.description())
+                .price(addMenuRequestDto.price())
+                .build();
+    }
+
     public static MenuEntity update(MenuEntity menuEntity, UpdateMenuRequestDto updateMenuRequestDto) {
         menuEntity.name = updateMenuRequestDto.name();
         menuEntity.status = updateMenuRequestDto.status();
