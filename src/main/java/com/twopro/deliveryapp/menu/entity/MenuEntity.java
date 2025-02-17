@@ -7,12 +7,13 @@ import com.twopro.deliveryapp.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Table(name = "P_MENU")
-@Builder
+@Builder @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuEntity extends BaseEntity {
