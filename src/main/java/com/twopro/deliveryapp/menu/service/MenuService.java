@@ -15,7 +15,7 @@ public interface MenuService {
 
     SingleResponse<List<MenuResponseDto>> findAllMenuByName(String menuName);
 
-    SingleResponse<MenuResponseDto> updateMenu(UpdateMenuRequestDto updateMenuRequestDto);
+    SingleResponse<MenuResponseDto> updateMenu(String menuId, UpdateMenuRequestDto updateMenuRequestDto);
 
     void deleteMenu(String menuId);
 }
