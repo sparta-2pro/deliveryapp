@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 public class OrderCreateRequestDto {
-    private List<CreateOrderItemDto> items;
+    private List<CreateOrderMenuDto> menus;
     private AddressDto address;
     private String message;
     private OrderType orderType;
