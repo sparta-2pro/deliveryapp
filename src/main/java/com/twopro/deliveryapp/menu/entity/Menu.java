@@ -43,9 +43,9 @@ public class Menu extends BaseEntity {
     @Column(nullable = false)
     private int price;
 
-    public static Menu of(AddMenuRequestDto addMenuRequestDto, Store store) {
+    public static Menu of(AddMenuRequestDto addMenuRequestDto) {
         return Menu.builder()
-                .store(store)
+                .store(addMenuRequestDto.store())
                 .name(addMenuRequestDto.name())
                 .status(addMenuRequestDto.status())
                 .imageUrl(addMenuRequestDto.imageUrl())

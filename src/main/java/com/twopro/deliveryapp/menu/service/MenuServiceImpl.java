@@ -23,17 +23,15 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional
-    public SingleResponse<MenuResponseDto> addMenu(AddMenuRequestDto addMenuRequestDto, Store store) {
-        Menu menu = menuRepository.addMenu(Menu.of(addMenuRequestDto, store));
+    public MenuResponseDto addMenu(AddMenuRequestDto addMenuRequestDto) {
+        Menu menu = menuRepository.addMenu(Menu.of(addMenuRequestDto));
 
-        return SingleResponse.success(MenuResponseDto.from(menu));
+        return MenuResponseDto.from(menu);
     }
 
     @Override
-    public SingleResponse<MenuResponseDto> findMenuById(UUID menuId) {
-        MenuResponseDto menuResponseDto = MenuResponseDto.from(findMenuByIdForServer(menuId));
-
-        return SingleResponse.success(menuResponseDto);
+    public MenuResponseDto findMenuById(UUID menuId) {
+        return MenuResponseDto.from(findMenuByIdForServer(menuId));
     }
 
     private Menu findMenuByIdForServer(UUID menuId) {
@@ -42,17 +40,17 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public SingleResponse<List<MenuResponseDto>> findAllMenuByStoreId(UUID storeId) {
+    public List<MenuResponseDto> findAllMenuByStoreId(UUID storeId) {
         List<Menu> menus = findAllMenuByStoreIdForServer(storeId);
 
-        return SingleResponse.success(getMenuResponseDtoList(menus));
+        return getMenuResponseDtoList(menus);
     }
 
     @Override
-    public SingleResponse<List<MenuResponseDto>> findAllMenuByName(String name) {
+    public List<MenuResponseDto> findAllMenuByName(String name) {
         List<Menu> menus = findAllMenuByNameForServer(name);
 
-        return SingleResponse.success(getMenuResponseDtoList(menus));
+        return getMenuResponseDtoList(menus);
     }
 
     // TODO 빈 리스트를 반환하는 게 좋아보임
@@ -75,11 +73,11 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional
-    public SingleResponse<MenuResponseDto> updateMenu(UUID menuId, UpdateMenuRequestDto updateMenuRequestDto) {
+    public MenuResponseDto updateMenu(UUID menuId, UpdateMenuRequestDto updateMenuRequestDto) {
         Menu menu = findMenuByIdForServer(menuId);
         Menu updatedMenu = Menu.update(menu, updateMenuRequestDto);
 
-        return SingleResponse.success(MenuResponseDto.from(updatedMenu));
+        return MenuResponseDto.from(updatedMenu);
     }
 
     @Override

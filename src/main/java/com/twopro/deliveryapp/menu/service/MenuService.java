@@ -11,15 +11,15 @@ import java.util.UUID;
 
 public interface MenuService {
 
-    SingleResponse<MenuResponseDto> addMenu(AddMenuRequestDto addMenuRequestDto, Store store);
+    MenuResponseDto addMenu(AddMenuRequestDto addMenuRequestDto);
 
-    SingleResponse<MenuResponseDto> findMenuById(UUID menuId);
+    MenuResponseDto findMenuById(UUID menuId);
 
-    SingleResponse<List<MenuResponseDto>> findAllMenuByStoreId(UUID storeId);
+    List<MenuResponseDto> findAllMenuByStoreId(UUID storeId);
 
-    SingleResponse<List<MenuResponseDto>> findAllMenuByName(String name);
+    List<MenuResponseDto> findAllMenuByName(String name);
 
-    SingleResponse<MenuResponseDto> updateMenu(UUID menuId, UpdateMenuRequestDto updateMenuRequestDto);
+    MenuResponseDto updateMenu(UUID menuId, UpdateMenuRequestDto updateMenuRequestDto);
 
     void deleteMenu(UUID menuId);
 }
