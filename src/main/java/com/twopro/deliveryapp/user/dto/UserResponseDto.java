@@ -17,7 +17,6 @@ public class UserResponseDto extends UserDto {
     private String road_address;
     private String detail_address;
     private String role;
-    private Date updated_at;
 
 
     // 모든 필드 포함 생성자
@@ -29,7 +28,6 @@ public class UserResponseDto extends UserDto {
         this.road_address = user.getRoad_address();
         this.detail_address = user.getDetail_address();
         this.role = String.valueOf(user.getRole());
-        this.updated_at = user.getUpdated_at();
     }
 
 }

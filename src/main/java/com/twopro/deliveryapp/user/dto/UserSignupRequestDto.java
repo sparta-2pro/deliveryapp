@@ -23,7 +23,6 @@ public class UserSignupRequestDto {
     private String town;
     private String road_address;
     private String detail_address;
-    // created_at 등 필드 X
 
     public User toEntity() {
         User user = new User();

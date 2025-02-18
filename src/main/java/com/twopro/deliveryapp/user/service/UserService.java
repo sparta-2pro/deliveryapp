@@ -22,7 +22,6 @@ public interface UserService {
     // 내 정보 조회
     User getUserByEmail(String email);
 
-
     // 정보 수정
     UserResponseDto updateUser(Long userId, UserUpdateRequestDto updateDto);
 
