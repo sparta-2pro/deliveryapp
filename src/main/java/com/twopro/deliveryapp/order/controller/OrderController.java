@@ -23,37 +23,23 @@ public class OrderController {
 
     // 주문 요청
     @PostMapping
-    public ResponseEntity createOrder(@RequestBody OrderCreateRequestDto requestDto,
-                                            @RequestParam Long userId) {
-//        orderService.createOrder(requestDto, userId);
-
-        List<Order> orders = new ArrayList<>();
-        Order order = new Order();
-        order.setOrderType(OrderType.DELIVERY);
-        order.setId(UUID.randomUUID());
-        Order order2 = new Order();
-        order2.setOrderType(OrderType.DELIVERY);
-        order2.setId(UUID.randomUUID());
-
-        orders.add(order);
-        orders.add(order2);
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SingleResponse.error("주문 찾을 수 없습니다.", "NO_SEARCH_ORDER"));
-
-//        return ResponseEntity.ok(SingleResponse.success(orders));
+    public ResponseEntity createOrder(@RequestBody OrderCreateRequestDto requestDto, @RequestParam Long userId) {
+        orderService.createOrder(requestDto, userId);
+        return null;
     }
 
     // 사용자 주문 취소
     @PatchMapping("/{orderId}")
-    public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId,
-                                            @RequestParam Long userId) {
+    public ResponseEntity<Void> cancelOrder(@PathVariable UUID orderId, @RequestParam Long userId) {
+        orderService.deleteOrder(orderId, userId);
         return ResponseEntity.ok(null);
     }
 
     // 주문 단일 조회
     @GetMapping("/{orderId}")
-    public ResponseEntity<Void> getOrder(@PathVariable Long orderId,
-                                         @RequestParam Long userId) {
+    public ResponseEntity<Void> getOrder(@PathVariable UUID orderId, @RequestParam Long userId) {
+
+//        orderService.findOrder(orderId, userId);
         return ResponseEntity.ok(null);
     }
 
@@ -85,8 +71,7 @@ public class OrderController {
 
     // 해당 가게 주문 내역 조회
     @GetMapping("/stores/{storeId}")
-    public ResponseEntity<Void> getStoreOrders(@PathVariable String storeId,
-                                               @RequestParam Long userId) {
+    public ResponseEntity<Void> getStoreOrders(@PathVariable String storeId, @RequestParam Long userId) {
         return ResponseEntity.ok(null);
     }
 }

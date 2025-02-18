@@ -26,6 +26,7 @@ public class JwtUtil {
     private final long EXPIRATION_TIME = 3600 * 1000;
     private final UserRepository userRepository;
 
+
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
