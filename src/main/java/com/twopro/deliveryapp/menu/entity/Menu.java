@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.menu.entity;
 
+import com.twopro.deliveryapp.ai.entity.Ai;
 import com.twopro.deliveryapp.common.entity.BaseEntity;
 import com.twopro.deliveryapp.menu.dto.AddMenuRequestDto;
 import com.twopro.deliveryapp.menu.dto.UpdateMenuRequestDto;
@@ -11,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +31,9 @@ public class Menu extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "id")
     private Store store;
+
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ai> aiList;
 
     @Column(length = 50, nullable = false)
     private String name;

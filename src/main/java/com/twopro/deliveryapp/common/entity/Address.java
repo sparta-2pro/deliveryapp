@@ -3,10 +3,12 @@ package com.twopro.deliveryapp.common.entity;
 import com.twopro.deliveryapp.common.dto.AddressDto;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Address {
     private String zipCode;        // 우편번호 (5자리)
     private String roadAddress;    // 도로명 주소 (ex: "서울특별시 강남구 테헤란로 427")
