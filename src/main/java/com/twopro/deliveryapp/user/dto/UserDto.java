@@ -11,7 +11,6 @@ public class UserDto {
     private Long user_id;
     private String email;
     private String nickname;
-
     public UserDto(User user) {
         this.user_id = user.getUser_id();
         this.email = user.getEmail();

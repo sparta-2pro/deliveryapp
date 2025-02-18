@@ -38,13 +38,14 @@ public class User extends BaseEntity {
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Order> orders = new ArrayList<>();
-
+//
 //    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private Store store;
-
+//
+//
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Cart> carts = new ArrayList<>();
-
+//
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Review> reviews = new ArrayList<>();
