@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.store.dto;
 
+import com.twopro.deliveryapp.common.dto.AddressDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,11 +11,7 @@ import lombok.NoArgsConstructor;
 public class StoreRequestDto {
     private String name;
     private Long categoryId;
-    private String address1;
-    private String address2;
-    private String address3;
-    private String address4;
-    private String address5;
+    private AddressDto address;
     private String phone;
     private String operatingHours;
     private String closedDays;

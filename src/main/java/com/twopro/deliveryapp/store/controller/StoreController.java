@@ -36,9 +36,9 @@ public class StoreController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Store> updateStore(@PathVariable String id, @RequestBody StoreRequestDto storeRequestDto) {
-        Store updatedStore = storeService.updateStore(id, storeRequestDto);
-        return ResponseEntity.ok(updatedStore);
+    public ResponseEntity<Void> updateStore(@PathVariable String id, @RequestBody StoreRequestDto storeRequestDto) {
+        storeService.updateStore(id, storeRequestDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
