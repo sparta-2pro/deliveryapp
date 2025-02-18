@@ -1,6 +1,7 @@
 package com.twopro.deliveryapp.ai.entity;
 
 import com.twopro.deliveryapp.common.entity.BaseEntity;
+import com.twopro.deliveryapp.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,10 @@ public class Ai extends BaseEntity {
     @GeneratedValue
     @UuidGenerator
     private UUID aiId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
     @Column(length = 255, nullable = false)
     private String question;
