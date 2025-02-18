@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -17,8 +18,9 @@ import java.util.Date;
 public class Store extends BaseEntity {
 
     @Id
+    @GeneratedValue
     @Column(length = 255, nullable = false)
-    private String id;
+    private UUID id;
 
     @Column(length = 255, nullable = false)
     private String categoryId;
