@@ -42,7 +42,7 @@ public class Order extends BaseEntity {
     private OrderStatus orderStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "id")
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,7 +52,7 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Review review;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -71,7 +71,7 @@ public class Order extends BaseEntity {
         orderItem.setOrder(this);
     }
 
-    public static Order createOrder(User user, List<OrderItem> orderItems, OrderType orderType, Address address) {
+    public static Order createOrder(User user, List<OrderItem> orderItems, OrderType orderType, Address address, String message) {
         Order order = new Order();
         order.user = user;
         order.address = address;
@@ -82,6 +82,15 @@ public class Order extends BaseEntity {
         order.orderStatus = OrderStatus.COMPLETED;
         order.orderType = orderType;
         return order;
+    }
+
+    public int getTotalPrice() {
+        int totalPrice = 0;
+        for (OrderItem orderItem : orderItems) {
+            totalPrice += orderItem.getTotalPrice();
+        }
+
+        return totalPrice;
     }
 
 
