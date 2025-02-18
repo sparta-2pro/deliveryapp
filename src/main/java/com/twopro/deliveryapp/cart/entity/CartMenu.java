@@ -1,6 +1,6 @@
 package com.twopro.deliveryapp.cart.entity;
 
-import com.twopro.deliveryapp.menu.entity.MenuEntity;
+import com.twopro.deliveryapp.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class CartMenu {
 
     @ManyToOne
     @JoinColumn(name = "menu_id")
-    private MenuEntity menu;
+    private Menu menu;
 
     private int quantity;
     private int totalPrice;

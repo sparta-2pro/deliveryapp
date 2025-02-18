@@ -1,12 +1,12 @@
 package com.twopro.deliveryapp.cart.entity;
 
-import com.twopro.deliveryapp.menu.entity.MenuEntity;
 import com.twopro.deliveryapp.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Cart {
     @Id
-    @Column(columnDefinition = "BINARY(16)")
+    @UuidGenerator
     private UUID cart_id;
 
     @ManyToOne
