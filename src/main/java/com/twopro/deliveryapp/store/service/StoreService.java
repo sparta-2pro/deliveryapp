@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,12 +64,12 @@ public class StoreService {
         store.setMinimumOrderPrice(dto.getMinimumOrderPrice());
         store.setDeliveryTip(dto.getDeliveryTip());
 
-        storeRepository.save(store);
         return store;
     }
 
     @Transactional
     public void deleteStore(String id) {
-        storeRepository.deleteById(id);
+        Store store = storeRepository.findById(id).orElseThrow(() -> new RuntimeException("가게를 찾을 수 없습니다."));
+        store.delete();
     }
 }
