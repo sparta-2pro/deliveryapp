@@ -2,8 +2,10 @@ package com.twopro.deliveryapp.order.controller;
 
 import com.twopro.deliveryapp.common.dto.SingleResponse;
 import com.twopro.deliveryapp.common.enumType.OrderType;
+import com.twopro.deliveryapp.order.dto.FindOrderResponseDto;
 import com.twopro.deliveryapp.order.dto.OrderCreateRequestDto;
 import com.twopro.deliveryapp.order.entity.Order;
+import com.twopro.deliveryapp.order.excepiton.OrderAccessDeniedException;
 import com.twopro.deliveryapp.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,22 +32,22 @@ public class OrderController {
 
     // 사용자 주문 취소
     @PatchMapping("/{orderId}")
-    public ResponseEntity<Void> cancelOrder(@PathVariable UUID orderId, @RequestParam Long userId) {
+    public ResponseEntity cancelOrder(@PathVariable UUID orderId, @RequestParam Long userId) {
         orderService.deleteOrder(orderId, userId);
         return ResponseEntity.ok(null);
     }
 
     // 주문 단일 조회
     @GetMapping("/{orderId}")
-    public ResponseEntity<Void> getOrder(@PathVariable UUID orderId, @RequestParam Long userId) {
+    public ResponseEntity getOrder(@PathVariable UUID orderId, @RequestParam Long userId) {
 
-//        orderService.findOrder(orderId, userId);
-        return ResponseEntity.ok(null);
+        FindOrderResponseDto result = orderService.findOrder(orderId, userId);
+        return ResponseEntity.status(HttpStatus.OK).body(SingleResponse.success(result));
     }
 
     // 사용자 주문 전체 조회
     @GetMapping("/userorders")
-    public ResponseEntity<Void> getUserOrders(@RequestParam Long userId,
+    public ResponseEntity getUserOrders(@RequestParam Long userId,
                                               @RequestParam(required = false) Integer page,
                                               @RequestParam(required = false) Integer size,
                                               @RequestParam(required = false) String sortBy,
@@ -55,7 +57,7 @@ public class OrderController {
 
     // 결제 요청
     @PostMapping("/{orderId}/payment")
-    public ResponseEntity<Void> requestPayment(@PathVariable Long orderId,
+    public ResponseEntity requestPayment(@PathVariable Long orderId,
                                                @RequestBody Map<String, Object> paymentRequest,
                                                @RequestParam Long userId) {
         return ResponseEntity.ok(null);
@@ -63,17 +65,14 @@ public class OrderController {
 
     // 가게주의 주문 상태 변경
     @PutMapping("/{orderId}/status")
-    public ResponseEntity<Void> updateOrderStatus(@PathVariable Long orderId,
+    public ResponseEntity updateOrderStatus(@PathVariable Long orderId,
                                                   @RequestBody Map<String, String> statusUpdate,
                                                   @RequestParam Long userId) {
         return ResponseEntity.ok(null);
     }
 
     // 해당 가게 주문 내역 조회
-    @GetMapping("/stores/{storeId}")
-    public ResponseEntity<Void> getStoreOrders(@PathVariable String storeId, @RequestParam Long userId) {
-        return ResponseEntity.ok(null);
-    }
+
 }
 
 

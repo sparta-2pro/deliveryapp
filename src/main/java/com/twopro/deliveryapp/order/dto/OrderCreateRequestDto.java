@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 public class OrderCreateRequestDto {
     private List<CreateOrderMenuDto> menus;
-    private AddressDto address;
+    private AddressDto addressDto;
     private String message;
     private OrderType orderType;
     private UUID storeId;
