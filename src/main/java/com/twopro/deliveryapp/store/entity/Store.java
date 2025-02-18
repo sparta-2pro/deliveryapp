@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.store.entity;
 
+import com.twopro.deliveryapp.common.entity.Address;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -78,18 +79,6 @@ public class Store {
     @Column(nullable = true)
     private Integer deliveryTip;
 
-    @Column(length = 255, nullable = false)
-    private String address1;
-
-    @Column(length = 255, nullable = true)
-    private String address2;
-
-    @Column(length = 255, nullable = true)
-    private String address3;
-
-    @Column(length = 255, nullable = true)
-    private String address4;
-
-    @Column(length = 255, nullable = true)
-    private String address5;
+    @Embedded
+    private Address address;
 }
