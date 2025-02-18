@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface MenuService {
 
-    MenuResponseDto addMenu(AddMenuRequestDto addMenuRequestDto, Store store);
+    MenuResponseDto addMenu(AddMenuRequestDto addMenuRequestDto);
 
     MenuResponseDto findMenuById(UUID menuId);
 

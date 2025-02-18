@@ -23,8 +23,8 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional
-    public MenuResponseDto addMenu(AddMenuRequestDto addMenuRequestDto, Store store) {
-        Menu menu = menuRepository.addMenu(Menu.of(addMenuRequestDto, store));
+    public MenuResponseDto addMenu(AddMenuRequestDto addMenuRequestDto) {
+        Menu menu = menuRepository.addMenu(Menu.of(addMenuRequestDto));
 
         return MenuResponseDto.from(menu);
     }
