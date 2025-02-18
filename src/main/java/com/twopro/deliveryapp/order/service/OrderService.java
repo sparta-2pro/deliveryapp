@@ -38,7 +38,7 @@ public class OrderService implements OrderServiceImpl {
     public void createOrder(OrderCreateRequestDto requestDto, Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow();
-        Store findStore = storeRepository.findById(requestDto.getStoreId()).orElseThrow();
+        Store findStore = storeRepository.findById(null).orElseThrow();
         if (findStore.getMinimumOrderPrice() > requestDto.getMenus().stream().mapToInt(m -> m.getMenuPrice() * m.getQuantity()).sum()) {
             throw new OrderStoreMinPriceException("최소 주문 금액을 맞춰주세요");
         }
