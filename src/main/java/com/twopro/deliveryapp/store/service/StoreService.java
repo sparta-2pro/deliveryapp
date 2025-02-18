@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +31,12 @@ public class StoreService {
                 .pictureUrl(dto.getPictureUrl())
                 .status(dto.getStatus())
                 .deliveryType(dto.getDeliveryType().toString())
-                .deliveryArea(dto.getDeliveryArea())
+                .deliveryAreas(dto.getDeliveryAreas())
                 .minimumOrderPrice(dto.getMinimumOrderPrice())
                 .deliveryTip(dto.getDeliveryTip())
                 .build();
 
-        return store;
+        return storeRepository.save(store);
     }
 
     @Transactional(readOnly = true)
@@ -46,13 +46,12 @@ public class StoreService {
 
     @Transactional(readOnly = true)
     public Optional<Store> getStoreById(String id) {
-        return storeRepository.findById(id);
+        return storeRepository.findById(UUID.fromString(id));
     }
 
     @Transactional
     public void updateStore(String id, StoreRequestDto dto) {
-        Store store = storeRepository.findById(id).orElseThrow(() -> new NoSuchElementException("가게를 찾을 수 없습니다."));
-
+        Store store = storeRepository.findById(UUID.fromString(id)).orElseThrow(() -> new NoSuchElementException("가게를 찾을 수 없습니다."));
         store.updateStoreDetails(
                 dto.getName(),
                 dto.getPhone(),
@@ -62,7 +61,7 @@ public class StoreService {
                 dto.getCategoryId().toString(),
                 dto.getStatus(),
                 dto.getDeliveryType().toString(),
-                dto.getDeliveryArea(),
+                dto.getDeliveryAreas(),
                 dto.getMinimumOrderPrice(),
                 dto.getDeliveryTip(),
                 Address.of(dto.getAddress())
@@ -71,7 +70,7 @@ public class StoreService {
 
     @Transactional
     public void deleteStore(String id) {
-        Store store = storeRepository.findById(id).orElseThrow(() -> new RuntimeException("가게를 찾을 수 없습니다."));
+        Store store = storeRepository.findById(UUID.fromString(id)).orElseThrow(() -> new RuntimeException("가게를 찾을 수 없습니다."));
         store.delete();
     }
 }
