@@ -1,7 +1,6 @@
 package com.twopro.deliveryapp.order.service;
 
 import com.twopro.deliveryapp.common.entity.Address;
-import com.twopro.deliveryapp.menu.entity.MenuEntity;
 import com.twopro.deliveryapp.menu.repository.MenuRepository;
 import com.twopro.deliveryapp.order.dto.CreateOrderMenuDto;
 import com.twopro.deliveryapp.order.dto.FindOrderResponseDto;

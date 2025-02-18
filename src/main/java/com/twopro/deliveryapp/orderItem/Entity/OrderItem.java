@@ -1,7 +1,7 @@
 package com.twopro.deliveryapp.orderItem.Entity;
 
 import com.twopro.deliveryapp.common.entity.BaseEntity;
-import com.twopro.deliveryapp.menu.entity.MenuEntity;
+import com.twopro.deliveryapp.menu.entity.Menu;
 import com.twopro.deliveryapp.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -29,9 +29,9 @@ public class OrderItem extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="menu_id")
-    private MenuEntity menu;
+    private Menu menu;
 
-    public static OrderItem createOrderItem(MenuEntity menu, int orderPrice, int count) {
+    public static OrderItem createOrderItem(Menu menu, int orderPrice, int count) {
         OrderItem orderItem = new OrderItem();
         orderItem.menu = menu;
         orderItem.orderPrice = orderPrice;
