@@ -1,7 +1,9 @@
 package com.twopro.deliveryapp.common.dto;
 
+import com.twopro.deliveryapp.common.entity.Address;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 @Data
 public class AddressDto {
@@ -12,5 +14,16 @@ public class AddressDto {
     private String sido;           // 시/도 (ex: "서울특별시")
     private String sigungu;        // 시/군/구 (ex: "강남구")
     private String eupMyeonDong;   // 읍/면/동 (ex: "삼성동")
-    private String buildingName;   // 건물명 (선택 사항, ex: "삼성역 현대타워")
+
+    public static AddressDto of(Address address) {
+        AddressDto addressDto = new AddressDto();
+        addressDto.setZipCode(address.getZipCode());
+        addressDto.setRoadAddress(address.getRoadAddress());
+        addressDto.setJibunAddress(address.getJibunAddress());
+        addressDto.setDetailAddress(address.getDetailAddress());
+        addressDto.setSido(address.getSido());
+        addressDto.setSigungu(address.getSigungu());
+        addressDto.setEupMyeonDong(address.getEupMyeonDong());
+        return addressDto;
+    }
 }
