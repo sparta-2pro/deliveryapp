@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.user.entity;
 
+import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,9 @@ public class User extends BaseEntity {
     private String town;
     private String road_address;
     private String detail_address;
+
+    @Embedded
+    Address address;
 
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
