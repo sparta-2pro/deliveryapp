@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +18,8 @@ public interface JpaMenuRepository extends JpaRepository<Menu, UUID> {
             "WHERE m.store.id = :storeId"
     )
     Optional<List<Menu>> findAllMenuByStoreId(@Param("storeId") UUID storeId);
+
+    List<Menu> findMenusByMenuIdIn(Collection<UUID> menuIds);
 
     // 조회시 풀스캔될 위험 있음
     @Query(

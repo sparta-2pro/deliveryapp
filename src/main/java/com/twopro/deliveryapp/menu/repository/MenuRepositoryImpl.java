@@ -30,6 +30,11 @@ public class MenuRepositoryImpl implements MenuRepository {
     }
 
     @Override
+    public List<Menu> findByMenuIdIn(List<UUID> menuIds) {
+        return jpaMenuRepository.findMenusByMenuIdIn(menuIds);
+    }
+
+    @Override
     public Optional<List<Menu>> findAllMenuByName(String name) {
         return jpaMenuRepository.findMenuEntitiesByName(name);
     }

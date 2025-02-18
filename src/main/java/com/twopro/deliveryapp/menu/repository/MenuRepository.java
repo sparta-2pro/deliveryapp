@@ -16,5 +16,7 @@ public interface MenuRepository {
 
     Optional<List<Menu>> findAllMenuByStoreId(UUID storeId);
 
+    List<Menu> findByMenuIdIn(List<UUID> menuIds);
+
     Optional<List<Menu>> findAllMenuByName(String name);
 }
