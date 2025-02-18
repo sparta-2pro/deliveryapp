@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,19 +30,19 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public SingleResponse<MenuResponseDto> findMenuById(String menuId) {
+    public SingleResponse<MenuResponseDto> findMenuById(UUID menuId) {
         MenuResponseDto menuResponseDto = MenuResponseDto.from(findMenuByIdForServer(menuId));
 
         return SingleResponse.success(menuResponseDto);
     }
 
-    private Menu findMenuByIdForServer(String menuId) {
+    private Menu findMenuByIdForServer(UUID menuId) {
         return menuRepository.findMenuById(menuId)
                 .orElseThrow(() -> new MenuNotFoundException("해당 Id 를 가진 메뉴를 찾을 수 없어요!"));
     }
 
     @Override
-    public SingleResponse<List<MenuResponseDto>> findAllMenuByStoreId(String storeId) {
+    public SingleResponse<List<MenuResponseDto>> findAllMenuByStoreId(UUID storeId) {
         List<Menu> menus = findAllMenuByStoreIdForServer(storeId);
 
         return SingleResponse.success(getMenuResponseDtoList(menus));
@@ -55,7 +56,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     // TODO 빈 리스트를 반환하는 게 좋아보임
-    private List<Menu> findAllMenuByStoreIdForServer(String storeId) {
+    private List<Menu> findAllMenuByStoreIdForServer(UUID storeId) {
         return menuRepository.findAllMenuByStoreId(storeId)
                 .orElseThrow(() -> new MenuNotFoundException("현재 가게에 등록된 메뉴가 없어요!"));
     }
@@ -74,7 +75,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional
-    public SingleResponse<MenuResponseDto> updateMenu(String menuId, UpdateMenuRequestDto updateMenuRequestDto) {
+    public SingleResponse<MenuResponseDto> updateMenu(UUID menuId, UpdateMenuRequestDto updateMenuRequestDto) {
         Menu menu = findMenuByIdForServer(menuId);
         Menu updatedMenu = Menu.update(menu, updateMenuRequestDto);
 
@@ -83,7 +84,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional
-    public void deleteMenu(String menuId) {
+    public void deleteMenu(UUID menuId) {
         Menu menu = findMenuByIdForServer(menuId);
         menu.delete();
     }

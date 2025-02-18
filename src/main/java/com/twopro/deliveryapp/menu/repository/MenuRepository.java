@@ -5,15 +5,16 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface MenuRepository {
 
     Menu addMenu(Menu menu);
 
-    Optional<Menu> findMenuById(String menuId);
+    Optional<Menu> findMenuById(UUID menuId);
 
-    Optional<List<Menu>> findAllMenuByStoreId(String storeId);
+    Optional<List<Menu>> findAllMenuByStoreId(UUID storeId);
 
     Optional<List<Menu>> findAllMenuByName(String name);
 }

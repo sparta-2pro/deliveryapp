@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "P_MENU")
 @Builder @Getter
@@ -21,7 +23,7 @@ public class Menu extends BaseEntity {
     @Id
     @GeneratedValue
     @UuidGenerator
-    private String menuId;
+    private UUID menuId;
 
     @ManyToOne
     @JoinColumn(name = "id")
