@@ -7,23 +7,17 @@ import com.twopro.deliveryapp.user.entity.Role;
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.jwt.JwtUtil;
 import com.twopro.deliveryapp.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
-
-    public UserServiceImpl(UserRepository userRepository, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public User signUp(User user) {
@@ -97,8 +91,6 @@ public class UserServiceImpl implements UserService {
             user.setRole(Role.valueOf(updateDto.getRole()));
         }
 
-        user.setUpdated_at(new Date());
-
         User updatedUser = userRepository.save(user);
         return new UserResponseDto(updatedUser);
     }
@@ -107,8 +99,9 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("해당 사용자가 존재하지 않습니다."));
-        user.setDeleted_at(new Date());
-        user.setUpdated_at(new Date());
+
+        user.delete(); // BaseEntity의 delete() 메서드 호출
+
         User updatedUser = userRepository.save(user);
         return new UserResponseDto(updatedUser);
     }
