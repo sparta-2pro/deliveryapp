@@ -1,19 +1,22 @@
 package com.twopro.deliveryapp.menu.repository;
 
-import com.twopro.deliveryapp.menu.entity.MenuEntity;
+import com.twopro.deliveryapp.menu.entity.Menu;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface MenuRepository {
 
-    MenuEntity addMenu(MenuEntity menuEntity);
+    Menu addMenu(Menu menu);
 
-    Optional<MenuEntity> findMenuById(String menuId);
+    Optional<Menu> findMenuById(UUID menuId);
 
-    Optional<List<MenuEntity>> findAllMenuByStoreId(String storeId);
+    Optional<List<Menu>> findAllMenuByStoreId(UUID storeId);
 
-    Optional<List<MenuEntity>> findAllMenuByName(String name);
+    List<Menu> findByMenuIdIn(List<UUID> menuIds);
+
+    Optional<List<Menu>> findAllMenuByName(String name);
 }

@@ -11,17 +11,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "P_MENU")
 @Builder @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuEntity extends BaseEntity {
+public class Menu extends BaseEntity {
 
     @Id
     @GeneratedValue
     @UuidGenerator
-    private String menuId;
+    private UUID menuId;
 
     @ManyToOne
     @JoinColumn(name = "id")
@@ -41,8 +43,8 @@ public class MenuEntity extends BaseEntity {
     @Column(nullable = false)
     private int price;
 
-    public static MenuEntity of(AddMenuRequestDto addMenuRequestDto, Store store) {
-        return MenuEntity.builder()
+    public static Menu of(AddMenuRequestDto addMenuRequestDto, Store store) {
+        return Menu.builder()
                 .store(store)
                 .name(addMenuRequestDto.name())
                 .status(addMenuRequestDto.status())
@@ -52,13 +54,13 @@ public class MenuEntity extends BaseEntity {
                 .build();
     }
 
-    public static MenuEntity update(MenuEntity menuEntity, UpdateMenuRequestDto updateMenuRequestDto) {
-        menuEntity.name = updateMenuRequestDto.name();
-        menuEntity.status = updateMenuRequestDto.status();
-        menuEntity.imageUrl = updateMenuRequestDto.imageUrl();
-        menuEntity.description = updateMenuRequestDto.description();
-        menuEntity.price = updateMenuRequestDto.price();
+    public static Menu update(Menu menu, UpdateMenuRequestDto updateMenuRequestDto) {
+        menu.name = updateMenuRequestDto.name();
+        menu.status = updateMenuRequestDto.status();
+        menu.imageUrl = updateMenuRequestDto.imageUrl();
+        menu.description = updateMenuRequestDto.description();
+        menu.price = updateMenuRequestDto.price();
 
-        return menuEntity;
+        return menu;
     }
 }

@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class OrderCreateRequestDto {
-    private List<CreateOrderMenuDto> menus;
+public class FindOrderResponseDto {
+    private UUID orderId;
     private AddressDto address;
     private String message;
     private OrderType orderType;
-    private UUID storeId;
+    private int totalCount;
+
+    private List<OrderMenuResponseDto> menus;
 }
