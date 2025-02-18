@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,12 +20,12 @@ public class MenuRepositoryImpl implements MenuRepository {
     }
 
     @Override
-    public Optional<Menu> findMenuById(String menuId) {
+    public Optional<Menu> findMenuById(UUID menuId) {
         return jpaMenuRepository.findById(menuId);
     }
 
     @Override
-    public Optional<List<Menu>> findAllMenuByStoreId(String storeId) {
+    public Optional<List<Menu>> findAllMenuByStoreId(UUID storeId) {
         return jpaMenuRepository.findAllMenuByStoreId(storeId);
     }
 
