@@ -1,8 +1,10 @@
 package com.twopro.deliveryapp.user.controller;
 
+import com.twopro.deliveryapp.common.dto.SingleResponse;
 import com.twopro.deliveryapp.user.dto.*;
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,21 +12,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     // 회원 가입
     @PostMapping("/users/signup")
-    public ResponseEntity<UserDto> signUp(@RequestBody UserSignupRequestDto requestDto) {
+    public ResponseEntity<SingleResponse<UserDto>> signUp(@RequestBody UserSignupRequestDto requestDto) {
         User user = requestDto.toEntity();
         User signUpUser = userService.signUp(user);
 
         UserDto responseDto = new UserDto(signUpUser);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(new SingleResponse<>(responseDto));
     }
 
     // 로그인

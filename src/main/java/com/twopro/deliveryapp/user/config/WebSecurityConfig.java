@@ -4,6 +4,7 @@ import com.twopro.deliveryapp.user.jwt.JwtAuthenticationFilter;
 import com.twopro.deliveryapp.user.jwt.JwtAuthorizationFilter;
 import com.twopro.deliveryapp.user.jwt.JwtUtil;
 import com.twopro.deliveryapp.user.security.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,16 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 // WebSecurityConfig 클래스 - 전체 보안 설정
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
-
-    @Autowired
-    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration, PasswordEncoder passwordEncoder) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
-    }
 
     // 2. AuthenticationManager 빈 등록
     @Bean
