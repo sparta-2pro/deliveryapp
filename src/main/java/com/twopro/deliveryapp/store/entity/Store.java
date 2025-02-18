@@ -1,6 +1,7 @@
 package com.twopro.deliveryapp.store.entity;
 
 import com.twopro.deliveryapp.common.entity.Address;
+import com.twopro.deliveryapp.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +13,8 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "store")
-public class Store {
+@Table(name = "p_store")
+public class Store extends BaseEntity {
 
     @Id
     @Column(length = 255, nullable = false)
