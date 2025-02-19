@@ -19,14 +19,17 @@ public class Store extends BaseEntity {
 
     @Id
     @GeneratedValue
-    @Column(length = 255, nullable = false)
-    private UUID StoreId;
+    @Column(name = "store_id", length = 255, nullable = false)
+    private UUID id;
 
     @Column(length = 255, nullable = false)
     private String categoryId;
 
     @Column(length = 255, nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "store")
+    private List<StoreDeliveryArea> storeDeliveryAreas;
 
     @Column(length = 255, nullable = false)
     private String pictureUrl;
@@ -52,9 +55,6 @@ public class Store extends BaseEntity {
     @Column(length = 255, nullable = false)
     private String deliveryType;
 
-    @ElementCollection
-    private List<String> deliveryAreas = new ArrayList<>();
-
     @Column(nullable = true)
     private Integer minimumOrderPrice;
 
@@ -65,7 +65,7 @@ public class Store extends BaseEntity {
     private Address address;
 
     @Builder
-    public Store(String categoryId, String name, String pictureUrl, String phone, String operatingHours, String closedDays, int rating, int reviewCount, String status, String deliveryType, List<String> deliveryAreas, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
+    public Store(String categoryId, String name, String pictureUrl, String phone, String operatingHours, String closedDays, int rating, int reviewCount, String status, String deliveryType, List<UUID> deliveryAreas, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
         this.categoryId = categoryId;
         this.name = name;
         this.pictureUrl = pictureUrl;
@@ -76,13 +76,12 @@ public class Store extends BaseEntity {
         this.reviewCount = reviewCount;
         this.status = status;
         this.deliveryType = deliveryType;
-        this.deliveryAreas = deliveryAreas;
         this.minimumOrderPrice = minimumOrderPrice;
         this.deliveryTip = deliveryTip;
         this.address = address;
     }
 
-    public void updateStoreDetails(String name, String phone, String operatingHours, String closedDays, String pictureUrl, String categoryId, String status, String deliveryType, List<String> deliveryAreas, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
+    public void updateStoreDetails(String name, String phone, String operatingHours, String closedDays, String pictureUrl, String categoryId, String status, String deliveryType, List<UUID> deliveryAreas, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
         if (name != null) this.name = name;
         if (phone != null) this.phone = phone;
         if (operatingHours != null) this.operatingHours = operatingHours;
@@ -91,14 +90,8 @@ public class Store extends BaseEntity {
         if (categoryId != null) this.categoryId = categoryId;
         if (status != null) this.status = status;
         if (deliveryType != null) this.deliveryType = deliveryType;
-        if (deliveryAreas != null) this.deliveryAreas = new ArrayList<>(deliveryAreas);
         if (minimumOrderPrice != null) this.minimumOrderPrice = minimumOrderPrice;
         if (deliveryTip != null) this.deliveryTip = deliveryTip;
         if (address != null) this.address = address;
-    }
-
-    public void updateDeliveryAreas(List<String> deliveryAreas) {
-        this.deliveryAreas.clear();
-        this.deliveryAreas.addAll(deliveryAreas);
     }
 }
