@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "p_cart_menu")
@@ -15,8 +18,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CartMenu {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @UuidGenerator
+    private UUID cartMenuId;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")

@@ -8,12 +8,13 @@ import com.twopro.deliveryapp.user.jwt.JwtUtil;
 import com.twopro.deliveryapp.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -27,8 +28,8 @@ public class UserController {
     public ResponseEntity<SingleResponse<UserDto>> signUp(@RequestBody UserSignupRequestDto requestDto) {
         User user = requestDto.toEntity();
         User signUpUser = userService.signUp(user);
-
         UserDto responseDto = new UserDto(signUpUser);
+        log.info("회원가입 요청 받음: {}", requestDto);
         return ResponseEntity.ok(new SingleResponse<>(responseDto));
     }
 
