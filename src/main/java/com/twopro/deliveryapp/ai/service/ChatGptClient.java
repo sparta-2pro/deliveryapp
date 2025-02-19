@@ -19,10 +19,10 @@ import java.util.Map;
 public class ChatGptClient {
 
     @Value("${ai.openai.api.key}")
-    private final String apiKey;
+    private String apiKey;
 
     @Value("${ai.openai.api.url}")
-    private final String apiUrl;
+    private String apiUrl;
 
     private final RestTemplate restTemplate;
 
