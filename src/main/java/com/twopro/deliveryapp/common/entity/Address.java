@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Address {
-    private String zipCode;        // 우편번호 (5자리)
     private String roadAddress;    // 도로명 주소 (ex: "서울특별시 강남구 테헤란로 427")
     private String jibunAddress;   // 지번 주소 (ex: "서울특별시 강남구 삼성동 123-45")
     private String detailAddress;  // 상세 주소 (ex: "101동 1203호")
@@ -20,7 +19,6 @@ public class Address {
 
     public static Address of(AddressDto addressDto) {
         Address address = new Address();
-        address.zipCode = addressDto.getZipCode();
         address.roadAddress = addressDto.getRoadAddress();
         address.jibunAddress = addressDto.getJibunAddress();
         address.detailAddress = addressDto.getDetailAddress();
