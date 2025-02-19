@@ -23,10 +23,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtUtil.resolveToken(request);
-        if (token != null && jwtUtil.validateToken(token)) {
-            Authentication authentication = jwtUtil.getAuthentication(token);
+        String token = jwtUtil.resolveToken(request); // 토큰 추출
+        if (token != null && jwtUtil.validateToken(token)) { // 유효 검사
+            Authentication authentication = jwtUtil.getAuthentication(token); // 토큰에서 인증 객체 가져옴
             if (authentication != null) {
+                // 인증 객체를 SecurityContext에 설정
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
