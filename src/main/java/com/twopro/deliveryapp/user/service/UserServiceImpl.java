@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public User signUp(User user) {
         if (isEmailDuplication(user.getEmail())) {
             throw new CustomException(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다. 다른 이메일을 사용해주세요.");
@@ -64,12 +66,14 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자가 존재하지 않습니다."));
     }
 
     @Override
+    @Transactional
     public UserResponseDto updateUser(Long userId, UserUpdateRequestDto updateDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자가 존재하지 않습니다."));
@@ -92,11 +96,12 @@ public class UserServiceImpl implements UserService {
             user.setRole(Role.valueOf(String.valueOf(updateDto.getRole())));
         }
 
-        User updatedUser = userRepository.save(user);
-        return new UserResponseDto(updatedUser);
+        //User updatedUser = userRepository.save(user);
+        return new UserResponseDto(user);
     }
 
     @Override
+    @Transactional
     public UserResponseDto deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자가 존재하지 않습니다."));
