@@ -1,5 +1,5 @@
 package com.twopro.deliveryapp.ai.dto;
 
-public record CreateDescriptionAiServiceResponseDto(
+public record CreateDescriptionResponseDto(
         String description
 ) {}

@@ -1,6 +1,7 @@
 package com.twopro.deliveryapp.ai.service;
 
 import com.twopro.deliveryapp.ai.dto.AiResponseDto;
+import com.twopro.deliveryapp.ai.dto.CreateDescriptionRequestDto;
 import com.twopro.deliveryapp.ai.dto.SaveAiServiceRequestDto;
 import com.twopro.deliveryapp.ai.entity.Ai;
 import com.twopro.deliveryapp.ai.exception.AiServiceNotFoundException;
@@ -17,12 +18,35 @@ import java.util.UUID;
 public class AiServiceImpl implements AiService {
 
     private final AiRepository aiRepository;
+    private final ChatGptClient chatGptClient;
 
     @Override
-    public AiResponseDto saveAiService(SaveAiServiceRequestDto saveAiServiceRequestDto) {
+    public String generateDescription(CreateDescriptionRequestDto requestDto) {
+        String prompt = generatePrompt(requestDto);
+
+        String generatedDescription = chatGptClient.generateDescription(prompt);
+        saveAiService(new SaveAiServiceRequestDto(requestDto.menu(), requestDto.question(), generatedDescription));
+
+        return generatedDescription;
+    }
+
+    private String generatePrompt(CreateDescriptionRequestDto requestDto) {
+        return String.format(
+                        "너는 메뉴 설명을 작성하는 전문가야.\n" +
+                        "아래 메뉴에 대한 설명을 작성해줘:\n" +
+                        "메뉴 이름: %s\n" +
+                        "설명 작성 가이드: %s",
+                        requestDto.menu().getName(),
+                        requestDto.question()
+        );
+    }
+
+    @Override
+    // TODO 반환 값 사용하는 곳 없을지 고민해보기
+    public void saveAiService(SaveAiServiceRequestDto saveAiServiceRequestDto) {
         Ai aiService = aiRepository.saveAiService(Ai.from(saveAiServiceRequestDto));
 
-        return AiResponseDto.from(aiService);
+        AiResponseDto.from(aiService);
     }
 
     @Override

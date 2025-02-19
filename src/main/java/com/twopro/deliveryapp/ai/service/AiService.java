@@ -1,6 +1,8 @@
 package com.twopro.deliveryapp.ai.service;
 
 import com.twopro.deliveryapp.ai.dto.AiResponseDto;
+import com.twopro.deliveryapp.ai.dto.CreateDescriptionRequestDto;
+import com.twopro.deliveryapp.ai.dto.CreateDescriptionResponseDto;
 import com.twopro.deliveryapp.ai.dto.SaveAiServiceRequestDto;
 
 import java.time.LocalDate;
@@ -9,7 +11,9 @@ import java.util.UUID;
 
 public interface AiService {
 
-    AiResponseDto saveAiService(SaveAiServiceRequestDto saveAiServiceRequestDto);
+    String generateDescription(CreateDescriptionRequestDto requestDto);
+
+    void saveAiService(SaveAiServiceRequestDto saveAiServiceRequestDto);
 
     AiResponseDto findAiServiceById(UUID aiId);
 
