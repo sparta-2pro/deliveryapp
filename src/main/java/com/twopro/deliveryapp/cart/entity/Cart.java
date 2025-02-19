@@ -21,15 +21,15 @@ import java.util.UUID;
 public class Cart {
     @Id
     @UuidGenerator
-    private UUID cart_id;
+    private UUID cartId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
     @PrePersist
     public void generateId() {
-        this.cart_id = UUID.randomUUID();
+        this.cartId = UUID.randomUUID();
     }
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
