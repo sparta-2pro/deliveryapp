@@ -89,7 +89,7 @@ public class OrderService implements OrderServiceImpl {
      * @param order  DB에서 조회해 온 Order
      */
     private static void validateOrderOwnership(Long userId, Order order) {
-        if (!Objects.equals(order.getUser().getUser_id(), userId)) {
+        if (!Objects.equals(order.getUser().getUserId(), userId)) {
             throw new OrderAccessDeniedException("주문자와 주문 조회자가 일치하지 않습니다.");
         }
     }
