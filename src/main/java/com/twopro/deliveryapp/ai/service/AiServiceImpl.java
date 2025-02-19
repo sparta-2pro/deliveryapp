@@ -1,7 +1,7 @@
 package com.twopro.deliveryapp.ai.service;
 
 import com.twopro.deliveryapp.ai.dto.AiResponseDto;
-import com.twopro.deliveryapp.ai.dto.CreateAiServiceRequestDto;
+import com.twopro.deliveryapp.ai.dto.SaveAiServiceRequestDto;
 import com.twopro.deliveryapp.ai.entity.Ai;
 import com.twopro.deliveryapp.ai.exception.AiServiceNotFoundException;
 import com.twopro.deliveryapp.ai.repository.AiRepository;
@@ -19,8 +19,8 @@ public class AiServiceImpl implements AiService {
     private final AiRepository aiRepository;
 
     @Override
-    public AiResponseDto createAiService(CreateAiServiceRequestDto createAiServiceRequestDto) {
-        Ai aiService = aiRepository.createAiService(Ai.from(createAiServiceRequestDto));
+    public AiResponseDto saveAiService(SaveAiServiceRequestDto saveAiServiceRequestDto) {
+        Ai aiService = aiRepository.saveAiService(Ai.from(saveAiServiceRequestDto));
 
         return AiResponseDto.from(aiService);
     }

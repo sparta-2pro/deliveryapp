@@ -1,6 +1,6 @@
 package com.twopro.deliveryapp.ai.entity;
 
-import com.twopro.deliveryapp.ai.dto.CreateAiServiceRequestDto;
+import com.twopro.deliveryapp.ai.dto.SaveAiServiceRequestDto;
 import com.twopro.deliveryapp.common.entity.BaseEntity;
 import com.twopro.deliveryapp.menu.entity.Menu;
 import jakarta.persistence.*;
@@ -34,11 +34,11 @@ public class Ai extends BaseEntity {
     @Column(length = 255, nullable = false)
     private String aiAnswer;
 
-    public static Ai from(CreateAiServiceRequestDto createAiServiceRequestDto) {
+    public static Ai from(SaveAiServiceRequestDto saveAiServiceRequestDto) {
         return Ai.builder()
-                .menu(createAiServiceRequestDto.menu())
-                .question(createAiServiceRequestDto.question())
-                .aiAnswer(createAiServiceRequestDto.aiAnswer())
+                .menu(saveAiServiceRequestDto.menu())
+                .question(saveAiServiceRequestDto.question())
+                .aiAnswer(saveAiServiceRequestDto.aiAnswer())
                 .build();
     }
 }
