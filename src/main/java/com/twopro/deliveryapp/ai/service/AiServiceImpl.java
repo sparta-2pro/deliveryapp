@@ -2,6 +2,7 @@ package com.twopro.deliveryapp.ai.service;
 
 import com.twopro.deliveryapp.ai.dto.AiResponseDto;
 import com.twopro.deliveryapp.ai.dto.CreateDescriptionRequestDto;
+import com.twopro.deliveryapp.ai.dto.CreateDescriptionResponseDto;
 import com.twopro.deliveryapp.ai.dto.SaveAiServiceRequestDto;
 import com.twopro.deliveryapp.ai.entity.Ai;
 import com.twopro.deliveryapp.ai.exception.AiServiceNotFoundException;
@@ -21,13 +22,13 @@ public class AiServiceImpl implements AiService {
     private final ChatGptClient chatGptClient;
 
     @Override
-    public String generateDescription(CreateDescriptionRequestDto requestDto) {
+    public CreateDescriptionResponseDto generateDescription(CreateDescriptionRequestDto requestDto) {
         String prompt = generatePrompt(requestDto);
 
         String generatedDescription = chatGptClient.generateDescription(prompt);
         saveAiService(new SaveAiServiceRequestDto(requestDto.menu(), requestDto.question(), generatedDescription));
 
-        return generatedDescription;
+        return new CreateDescriptionResponseDto(generatedDescription);
     }
 
     private String generatePrompt(CreateDescriptionRequestDto requestDto) {
@@ -69,7 +70,8 @@ public class AiServiceImpl implements AiService {
         return aiRepository.findAllAiServiceByFilter(startDate, endDate, menuName);
     }
 
-    public void deleteAiService(UUID aiId) {
+    @Override
+    public void deleteAiServiceById(UUID aiId) {
         Ai aiService = findAiServiceByIdForServer(aiId);
         aiService.delete();
     }

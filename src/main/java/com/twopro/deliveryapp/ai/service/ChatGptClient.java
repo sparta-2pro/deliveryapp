@@ -2,6 +2,7 @@ package com.twopro.deliveryapp.ai.service;
 
 import com.twopro.deliveryapp.ai.exception.InvalidChatGptResponseException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatGptClient {
@@ -38,7 +40,11 @@ public class ChatGptClient {
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("model", "gpt-3.5-turbo");
-        payload.put("messages", List.of(Map.of("role", "user", "content", question)));
+        payload.put("messages", List.of(
+                Map.of("role", "user", "content",
+                        List.of(Map.of("tpye", "text", "text", question)))
+                )
+        );
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(payload, headers);
         ResponseEntity<Map> responseEntity = restTemplate.postForEntity(apiUrl, requestEntity, Map.class);
@@ -54,6 +60,8 @@ public class ChatGptClient {
 
         Map<String, Object> message = choices.get(0);
         isMessageValid(message);
+
+        log.info("content :{}", message.get("content"));
 
         return message.get("content").toString();
     }
