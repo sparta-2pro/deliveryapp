@@ -1,23 +1,17 @@
 package com.twopro.deliveryapp.order.excepiton;
 
+import lombok.Getter;
+
+import java.util.UUID;
+
+@Getter
 public class OrderNotFoundException extends RuntimeException {
-    public OrderNotFoundException() {
-        super();
-    }
+    private Long userId;
+    private UUID orderId;
 
-    public OrderNotFoundException(String message) {
+    public OrderNotFoundException(String message, Long userId, UUID orderId) {
         super(message);
-    }
-
-    public OrderNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public OrderNotFoundException(Throwable cause) {
-        super(cause);
-    }
-
-    protected OrderNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+        this.userId = userId;
+        this.orderId = orderId;
     }
 }

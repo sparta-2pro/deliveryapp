@@ -8,8 +8,7 @@ import java.util.UUID;
 /**
  * 사용자가 주문하러가기 눌렀을 때 쓰는 dto
  */
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequestDto {

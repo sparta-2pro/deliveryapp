@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.payment.service;
 
+import com.twopro.deliveryapp.common.enumType.PaymentProvider;
 import com.twopro.deliveryapp.order.excepiton.PaymentProviderNoSearchException;
 import com.twopro.deliveryapp.order.excepiton.PaymentnException;
 import com.twopro.deliveryapp.payment.entity.Payment;
@@ -26,16 +27,21 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final RestTemplate restTemplate;
 
-    private static final Map<String, String> PAYMENT_PROVIDERS = Map.of(
-            "TOSS", "www.tossbank.com",
-            "KAKAO", "www.kakaopay.com"
+    private static final Map<PaymentProvider, String> PAYMENT_PROVIDERS = Map.of(
+            PaymentProvider.TOSS, "www.tossbank.com",
+            PaymentProvider.KAKAO, "www.kakaopay.com",
+            PaymentProvider.NAVER, "www.naverpay.com",
+            PaymentProvider.KB, "www.kbpay.com",
+            PaymentProvider.IBK, "www.ibkpay.com",
+            PaymentProvider.NH, "www.nhpay.com",
+            PaymentProvider.WOORI, "www.wooripay.com"
     );
 
     @Transactional
-    public Payment createPayment(int totalPrice, String paymentProvider) {
+    public Payment createPayment(int totalPrice, PaymentProvider paymentProvider, Long userId) {
         URI uri = Optional.ofNullable(PAYMENT_PROVIDERS.get(paymentProvider))
                 .map(url -> UriComponentsBuilder.fromUriString(url).encode().build().toUri())
-                .orElseThrow(() -> new PaymentProviderNoSearchException("결제대행사가 올바르지 않습니다."));
+                .orElseThrow(() -> new PaymentProviderNoSearchException("결제대행사가 올바르지 않습니다.", userId, paymentProvider));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
