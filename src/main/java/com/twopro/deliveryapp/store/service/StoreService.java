@@ -1,6 +1,7 @@
 package com.twopro.deliveryapp.store.service;
 
 import com.twopro.deliveryapp.common.entity.Address;
+import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
 import com.twopro.deliveryapp.store.entity.DeliveryArea;
 import com.twopro.deliveryapp.store.entity.Store;
@@ -26,6 +27,8 @@ public class StoreService {
 
     @Transactional
     public Store createStore(StoreRequestDto dto) {
+        validateStoreStatus(dto.getStatus());
+
         Store store = Store.builder()
                 .categoryId(dto.getCategoryId().toString())
                 .name(dto.getName())
@@ -45,6 +48,12 @@ public class StoreService {
         }
 
         return store;
+    }
+
+    private void validateStoreStatus(StoreStatus status) {
+        if (status == null || !(status == StoreStatus.OPEN || status == StoreStatus.CLOSED || status == StoreStatus.DELETED)) {
+            throw new IllegalArgumentException("유효하지 않은 상태 값입니다.");
+        }
     }
 
     @Transactional(readOnly = true)
