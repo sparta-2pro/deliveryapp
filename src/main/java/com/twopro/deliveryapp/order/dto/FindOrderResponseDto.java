@@ -2,6 +2,7 @@ package com.twopro.deliveryapp.order.dto;
 
 import com.twopro.deliveryapp.common.dto.AddressDto;
 import com.twopro.deliveryapp.common.enumType.OrderType;
+import com.twopro.deliveryapp.order.entity.Order;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,7 +16,14 @@ public class FindOrderResponseDto {
     private AddressDto address;
     private String message;
     private OrderType orderType;
-    private int totalCount;
-
+    private int totalPrice;
     private List<OrderMenuResponseDto> menus;
+
+    public FindOrderResponseDto(Order o) {
+        orderId = o.getId();
+        address = AddressDto.of(o.getAddress());
+        message = o.getMessage();
+        orderType = o.getOrderType();
+        totalPrice = o.getTotalPrice();
+    }
 }

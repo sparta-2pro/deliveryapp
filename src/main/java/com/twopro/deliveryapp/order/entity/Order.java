@@ -5,6 +5,7 @@ import com.twopro.deliveryapp.common.entity.BaseEntity;
 import com.twopro.deliveryapp.common.enumType.OrderStatus;
 import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.orderItem.Entity.OrderItem;
+import com.twopro.deliveryapp.payment.entity.Payment;
 import com.twopro.deliveryapp.review.entity.Review;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.user.entity.User;
@@ -35,7 +36,7 @@ public class Order extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderType orderType;
+    private OrderType orderType; // 배달인지 포장인지
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -52,8 +53,8 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Review review;
+//    @OneToOne(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//    private Review review;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
@@ -71,15 +72,17 @@ public class Order extends BaseEntity {
         orderItem.setOrder(this);
     }
 
-    public static Order createOrder(User user, List<OrderItem> orderItems, OrderType orderType, Address address, String message) {
+    public static Order createOrder(User user, List<OrderItem> orderItems, OrderType orderType, Address address, String message, Payment payment) {
         Order order = new Order();
+        order.payment = payment;
         order.user = user;
         order.address = address;
+        order.message = message;
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
         }
 
-        order.orderStatus = OrderStatus.COMPLETED;
+        order.orderStatus = OrderStatus.CUSTOMER_REQUESTED;
         order.orderType = orderType;
         return order;
     }
@@ -94,4 +97,7 @@ public class Order extends BaseEntity {
     }
 
 
+    public void updateStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 }

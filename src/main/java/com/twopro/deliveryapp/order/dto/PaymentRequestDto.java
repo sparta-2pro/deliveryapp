@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class OrderCreateRequestDto {
+public class PaymentRequestDto {
     private List<CreateOrderMenuDto> menus;
-    private AddressDto addressDto;
+    private AddressDto address;
     private String message;
     private OrderType orderType;
     private UUID storeId;
+    private String paymentProvider;
 }
