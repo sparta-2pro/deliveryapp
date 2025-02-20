@@ -1,0 +1,27 @@
+### GPT 에게 질문
+POST http://localhost:8080/api/v1/ai/description
+Content-Type: application/json
+
+{
+  "menu": {
+    "menuId": "9f86da5f-501f-4184-aaa5-ce92ced42b27",
+    "store": {
+      "id": "6986d670-15f4-4fd9-b6a7-f81ccccf8666",
+      "categoryId": "9b4e5fc2-4af8-46a9-a9ab-0c50339196d0",
+      "name": "bbq",
+      "pictureUrl": "http://test.test",
+      "phone": "01000000000",
+      "operatingHours": "10:00 ~ 19:00",
+      "rating": 5,
+      "reviewCount": 10,
+      "status": "OPEN",
+      "deliveryType": "DELIVERY"
+    },
+    "name": "fried",
+    "status": "SOLD_OUT",
+    "imageUrl": "http://test.test",
+    "description": "not yet",
+    "price": 20000
+  },
+  "question": "후라이드 치킨을 깨끗한 기름에 바삭바삭 튀겼다는 걸 강조하고 싶어."
+}

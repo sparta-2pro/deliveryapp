@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface AiService {
 
-    String generateDescription(CreateDescriptionRequestDto requestDto);
+    CreateDescriptionResponseDto generateDescription(CreateDescriptionRequestDto requestDto);
 
     void saveAiService(SaveAiServiceRequestDto saveAiServiceRequestDto);
 
@@ -19,5 +19,7 @@ public interface AiService {
 
     List<AiResponseDto> findAllAiServices();
 
-    List<AiResponseDto> findAllAiServiceByFilter(LocalDate startDate, LocalDate endDate, String menuName);;
+    List<AiResponseDto> findAllAiServiceByFilter(LocalDate startDate, LocalDate endDate, String menuName);
+
+    void deleteAiServiceById(UUID aiId);
 }

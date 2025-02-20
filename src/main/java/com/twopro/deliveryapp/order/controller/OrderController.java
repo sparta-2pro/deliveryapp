@@ -1,46 +1,60 @@
 package com.twopro.deliveryapp.order.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twopro.deliveryapp.common.dto.MultiResponse;
 import com.twopro.deliveryapp.common.dto.SingleResponse;
-import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.order.dto.FindOrderResponseDto;
-import com.twopro.deliveryapp.order.dto.OrderCreateRequestDto;
-import com.twopro.deliveryapp.order.entity.Order;
-import com.twopro.deliveryapp.order.excepiton.OrderAccessDeniedException;
+import com.twopro.deliveryapp.order.dto.OrderRequestDto;
+import com.twopro.deliveryapp.order.dto.OrderStatusRequestDto;
+import com.twopro.deliveryapp.order.dto.PaymentRequestDto;
 import com.twopro.deliveryapp.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/v1/orders")
 public class OrderController {
     private final OrderService orderService;
+    private final ObjectMapper objectMapper;
 
-    // 주문 요청
+    // 주문하러 가기 클릭 상황
     @PostMapping
-    public ResponseEntity createOrder(@RequestBody OrderCreateRequestDto requestDto, @RequestParam Long userId) {
+    public ResponseEntity createOrder(@RequestBody OrderRequestDto requestDto, @RequestParam Long userId) {
+        log.debug("REQUSET :: {}", requestDto);
         orderService.createOrder(requestDto, userId);
-        return null;
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // 결제 요청
+    @PostMapping("/payment")
+    public ResponseEntity requestPayment(@RequestBody PaymentRequestDto requestDto, @RequestParam Long userId) {
+        log.debug("REQUSET :: {}", requestDto);
+        orderService.paymentRequest(requestDto, userId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     // 사용자 주문 취소
     @PatchMapping("/{orderId}")
     public ResponseEntity cancelOrder(@PathVariable UUID orderId, @RequestParam Long userId) {
+        log.debug("orderId :: {}, userId :: {}", orderId, userId);
         orderService.deleteOrder(orderId, userId);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     // 주문 단일 조회
     @GetMapping("/{orderId}")
     public ResponseEntity getOrder(@PathVariable UUID orderId, @RequestParam Long userId) {
-
+        log.debug("orderId :: {}, userId :: {}", orderId, userId);
         FindOrderResponseDto result = orderService.findOrder(orderId, userId);
         return ResponseEntity.status(HttpStatus.OK).body(SingleResponse.success(result));
     }
@@ -52,27 +66,19 @@ public class OrderController {
                                               @RequestParam(required = false) Integer size,
                                               @RequestParam(required = false) String sortBy,
                                               @RequestParam(required = false) Boolean isAsc) {
-        return ResponseEntity.ok(null);
+        log.debug("userId :: {}, page :: {}, size :: {}, sortBy :: {}, isAsc :: {}", userId, size, page, sortBy, isAsc);
+        List<FindOrderResponseDto> orders = orderService.findOrders(userId, page - 1, size, sortBy, isAsc);
+        MultiResponse.success(orders);
+        return ResponseEntity.ok(MultiResponse.success(orders));
     }
 
-    // 결제 요청
-    @PostMapping("/{orderId}/payment")
-    public ResponseEntity requestPayment(@PathVariable Long orderId,
-                                               @RequestBody Map<String, Object> paymentRequest,
-                                               @RequestParam Long userId) {
-        return ResponseEntity.ok(null);
-    }
-
-    // 가게주의 주문 상태 변경
+    // 가게주의 주문 확인, 가게주의 배달 출발, 가게주위 배달 취소
     @PutMapping("/{orderId}/status")
-    public ResponseEntity updateOrderStatus(@PathVariable Long orderId,
-                                                  @RequestBody Map<String, String> statusUpdate,
-                                                  @RequestParam Long userId) {
+    public ResponseEntity updateOrderStatus(@RequestParam Long userId, @RequestBody OrderStatusRequestDto requestDto) {
+        log.debug("userId :: {}, requestDto :: {}", userId, requestDto);
+        orderService.updateStatus(requestDto, userId);
         return ResponseEntity.ok(null);
     }
-
-    // 해당 가게 주문 내역 조회
-
 }
 
 
