@@ -10,6 +10,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "p_delivery_area")
 public class DeliveryArea {
 
     @Id
@@ -22,4 +23,12 @@ public class DeliveryArea {
 
     @OneToMany(mappedBy = "deliveryArea")
     private List<StoreDeliveryArea> storeDeliveryAreas;
+
+    public DeliveryArea(String name) {
+        this.name = name;
+    }
+
+    public void updateName(String newName) {
+        this.name = newName;
+    }
 }
