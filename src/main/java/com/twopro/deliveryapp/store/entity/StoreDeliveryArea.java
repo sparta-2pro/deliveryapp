@@ -9,6 +9,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "p_store_delivery_area")
 public class StoreDeliveryArea {
     @Id
     @GeneratedValue

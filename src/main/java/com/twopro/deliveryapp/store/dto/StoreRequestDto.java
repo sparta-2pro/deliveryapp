@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class StoreRequestDto {
     private String name;
-    private Long categoryId;
+    private UUID categoryId;
     private AddressDto address;
     private String phone;
     private String operatingHours;

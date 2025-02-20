@@ -1,0 +1,46 @@
+package com.twopro.deliveryapp.store.controller;
+
+import com.twopro.deliveryapp.store.entity.DeliveryArea;
+import com.twopro.deliveryapp.store.service.StoreDeliveryAreaService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/store-delivery-areas")
+public class StoreDeliveryAreaController {
+
+    private final StoreDeliveryAreaService storeDeliveryAreaService;
+
+    // 가게에 배달 가능 지역 추가
+    @PostMapping("/{storeId}")
+    public ResponseEntity<Void> addStoreDeliveryAreas(@PathVariable UUID storeId, @RequestBody List<UUID> deliveryAreaIds) {
+        storeDeliveryAreaService.addStoreDeliveryAreas(storeId, deliveryAreaIds);
+        return ResponseEntity.ok().build();
+    }
+
+    // 가게의 배달 가능 지역 조회
+    @GetMapping("/{storeId}")
+    public ResponseEntity<List<DeliveryArea>> getDeliveryAreasByStore(@PathVariable UUID storeId) {
+        List<DeliveryArea> deliveryAreas = storeDeliveryAreaService.getDeliveryAreasByStore(storeId);
+        return ResponseEntity.ok(deliveryAreas);
+    }
+
+    // 가게의 배달 지역 수정
+    @PutMapping("/{storeId}")
+    public ResponseEntity<Void> updateDeliveryAreas(@PathVariable UUID storeId, @RequestBody List<UUID> deliveryAreaIds) {
+        storeDeliveryAreaService.updateDeliveryAreas(storeId, deliveryAreaIds);
+        return ResponseEntity.ok().build();
+    }
+
+    // 가게에서 배달 가능 지역 삭제
+    @DeleteMapping("/{storeId}/{deliveryAreaId}")
+    public ResponseEntity<Void> deleteStoreDeliveryArea(@PathVariable UUID storeId, @PathVariable UUID deliveryAreaId) {
+        storeDeliveryAreaService.deleteStoreDeliveryArea(storeId, deliveryAreaId);
+        return ResponseEntity.ok().build();
+    }
+}

@@ -23,8 +23,9 @@ public class Store extends BaseEntity {
     @Column(name = "store_id", length = 255, nullable = false)
     private UUID id;
 
-    @Column(length = 255, nullable = false)
-    private String categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @Column(length = 255, nullable = false)
     private String name;
@@ -68,8 +69,8 @@ public class Store extends BaseEntity {
     private Address address;
 
     @Builder
-    public Store(String categoryId, String name, String pictureUrl, String phone, String operatingHours, String closedDays, int rating, int reviewCount, StoreStatus status, OrderType deliveryType, List<UUID> deliveryAreas, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
-        this.categoryId = categoryId;
+    public Store(Category category, String name, String pictureUrl, String phone, String operatingHours, String closedDays, int rating, int reviewCount, StoreStatus status, OrderType deliveryType, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
+        this.category = category;
         this.name = name;
         this.pictureUrl = pictureUrl;
         this.phone = phone;
@@ -84,17 +85,21 @@ public class Store extends BaseEntity {
         this.address = address;
     }
 
-    public void updateStoreDetails(String name, String phone, String operatingHours, String closedDays, String pictureUrl, String categoryId, StoreStatus status, OrderType deliveryType, List<UUID> deliveryAreas, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
+    public void updateStoreDetails(String name, String phone, String operatingHours, String closedDays, String pictureUrl, Category category, StoreStatus status, OrderType deliveryType, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
         if (name != null) this.name = name;
         if (phone != null) this.phone = phone;
         if (operatingHours != null) this.operatingHours = operatingHours;
         if (closedDays != null) this.closedDays = closedDays;
         if (pictureUrl != null) this.pictureUrl = pictureUrl;
-        if (categoryId != null) this.categoryId = categoryId;
+        if (category != null) this.category = category;
         if (status != null) this.status = status;
         if (deliveryType != null) this.deliveryType = deliveryType;
         if (minimumOrderPrice != null) this.minimumOrderPrice = minimumOrderPrice;
         if (deliveryTip != null) this.deliveryTip = deliveryTip;
         if (address != null) this.address = address;
+    }
+
+    public UUID getCategoryId() {
+        return this.category != null ? this.category.getId() : null;
     }
 }

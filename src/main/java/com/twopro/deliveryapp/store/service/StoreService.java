@@ -4,11 +4,9 @@ import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
-import com.twopro.deliveryapp.store.entity.DeliveryArea;
+import com.twopro.deliveryapp.store.entity.Category;
 import com.twopro.deliveryapp.store.entity.Store;
-import com.twopro.deliveryapp.store.entity.StoreDeliveryArea;
-import com.twopro.deliveryapp.store.repository.DeliveryAreaRepository;
-import com.twopro.deliveryapp.store.repository.StoreDeliveryAreaRepository;
+import com.twopro.deliveryapp.store.repository.CategoryRepository;
 import com.twopro.deliveryapp.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,16 +21,16 @@ import java.util.UUID;
 public class StoreService {
 
     private final StoreRepository storeRepository;
-    private final DeliveryAreaRepository deliveryAreaRepository;
-    private final StoreDeliveryAreaRepository storeDeliveryAreaRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public Store createStore(StoreRequestDto dto) {
         validateStoreStatus(dto.getStatus());
         validateDeliveryType(dto.getDeliveryType());
+        Category category = getCategoryById(dto.getCategoryId());
 
         Store store = Store.builder()
-                .categoryId(dto.getCategoryId().toString())
+                .category(category)
                 .name(dto.getName())
                 .address(Address.of(dto.getAddress()))
                 .phone(dto.getPhone())
@@ -45,7 +43,7 @@ public class StoreService {
                 .deliveryTip(dto.getDeliveryTip())
                 .build();
 
-        return store;
+        return storeRepository.save(store);
     }
 
     private void validateStoreStatus(StoreStatus status) {
@@ -58,6 +56,11 @@ public class StoreService {
         if (deliveryType == null || !(deliveryType == OrderType.DELIVERY || deliveryType == OrderType.PICKUP)) {
             throw new IllegalArgumentException("유효하지 않은 배달 타입입니다.");
         }
+    }
+
+    private Category getCategoryById(UUID categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리를 찾을 수 없습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -74,6 +77,7 @@ public class StoreService {
     public void updateStore(UUID id, StoreRequestDto dto) {
         Store store = storeRepository.findById(id).orElseThrow();
         validateDeliveryType(dto.getDeliveryType());
+        Category category = getCategoryById(dto.getCategoryId());
 
         store.updateStoreDetails(
                 dto.getName(),
@@ -81,53 +85,21 @@ public class StoreService {
                 dto.getOperatingHours(),
                 dto.getClosedDays(),
                 dto.getPictureUrl(),
-                dto.getCategoryId().toString(),
+                category,
                 dto.getStatus(),
                 dto.getDeliveryType(),
-                dto.getDeliveryAreas(),
                 dto.getMinimumOrderPrice(),
                 dto.getDeliveryTip(),
                 Address.of(dto.getAddress())
         );
+
+        storeRepository.save(store);
     }
 
     @Transactional
     public void deleteStore(UUID id) {
         Store store = storeRepository.findById(id).orElseThrow();
         store.delete();
-    }
-
-    public List<String> getAvailableDeliveryAreas() {
-        return deliveryAreaRepository.findAll().stream()
-                .map(DeliveryArea::getName)
-                .toList();
-    }
-
-    @Transactional
-    public void addDeliveryAreaToStore(UUID storeId, UUID deliveryAreaId) {
-        Store store = storeRepository.findById(storeId).orElseThrow();
-        DeliveryArea deliveryArea = deliveryAreaRepository.findById(deliveryAreaId).orElseThrow();
-
-        boolean exists = storeDeliveryAreaRepository.existsByStoreAndDeliveryArea(store, deliveryArea);
-        if (!exists) {
-            StoreDeliveryArea sda = new StoreDeliveryArea(store, deliveryArea);
-            storeDeliveryAreaRepository.save(sda);
-        }
-    }
-
-    @Transactional
-    public List<Store> getStoresByDeliveryArea(UUID deliveryAreaId) {
-        return storeDeliveryAreaRepository.findByDeliveryAreaId(deliveryAreaId).stream()
-                .map(StoreDeliveryArea::getStore)
-                .toList();
-    }
-
-    @Transactional
-    public void updateDeliveryAreas(UUID storeId, List<UUID> deliveryAreaIds) {
-        Store store = storeRepository.findById(storeId).orElseThrow();
-
-        List<StoreDeliveryArea> newDeliveryAreas = deliveryAreaIds.stream()
-                .map(areaId -> new StoreDeliveryArea(store, deliveryAreaRepository.findById(areaId).orElseThrow()))
-                .toList();
+        storeRepository.save(store);
     }
 }
