@@ -52,32 +52,4 @@ public class StoreController {
         storeService.deleteStore(id);
         return ResponseEntity.ok().build();
     }
-
-    // 등록된 배달 가능 지역 목록 조회
-    @GetMapping("/delivery-areas")
-    public ResponseEntity<List<String>> getAvailableDeliveryAreas() {
-        List<String> areas = storeService.getAvailableDeliveryAreas();
-        return ResponseEntity.ok(areas);
-    }
-
-    // 해당 배달 지역의 가게 조회
-    @GetMapping("/delivery-areas/{deliveryAreaId}")
-    public ResponseEntity<List<Store>> getStoresByDeliveryArea(@PathVariable UUID deliveryAreaId) {
-        List<Store> stores = storeService.getStoresByDeliveryArea(deliveryAreaId);
-        return ResponseEntity.ok(stores);
-    }
-
-    // 해당 가게의 배달 지역 추가
-    @PostMapping("/{storeId}/delivery-areas/{deliveryAreaId}")
-    public ResponseEntity<Void> addDeliveryAreaToStore(@PathVariable UUID storeId, @PathVariable UUID deliveryAreaId) {
-        storeService.addDeliveryAreaToStore(storeId, deliveryAreaId);
-        return ResponseEntity.ok().build();
-    }
-
-    // 해당 가게의 배달 지역 수정
-    @PutMapping("/{storeId}/delivery-areas")
-    public ResponseEntity<Void> updateDeliveryAreas(@PathVariable UUID storeId, @RequestBody List<UUID> deliveryAreaIds) {
-        storeService.updateDeliveryAreas(storeId, deliveryAreaIds);
-        return ResponseEntity.ok().build();
-    }
 }
