@@ -2,6 +2,7 @@ package com.twopro.deliveryapp.order.dto;
 
 import com.twopro.deliveryapp.common.dto.AddressDto;
 import com.twopro.deliveryapp.common.enumType.OrderType;
+import com.twopro.deliveryapp.common.enumType.PaymentProvider;
 import lombok.Data;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public class PaymentRequestDto {
     private String message;
     private OrderType orderType;
     private UUID storeId;
-    private String paymentProvider;
+    private PaymentProvider paymentProvider;
 }

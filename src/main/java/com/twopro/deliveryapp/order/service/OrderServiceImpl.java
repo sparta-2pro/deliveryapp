@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
             Menu menu = findMenus.stream()
                     .filter(m -> m.getMenuId().equals(menuDto.getMenuId()))
                     .findFirst()
-                    .orElseThrow(() -> new NoSuchMenuException("메뉴를 찾을 수 없습니다.")); // 메뉴 ID가 존재하지 않으면 예외 발생
+                    .orElseThrow(() -> new NoSuchMenuException("메뉴를 찾을 수 없습니다.", userId, requestDto.getMenus())); // 메뉴 ID가 존재하지 않으면 예외 발생
             totalPrice += menu.getPrice() * menuDto.getQuantity();
         }
 
@@ -106,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
             Menu menu = findMenus.stream()
                     .filter(m -> m.getMenuId().equals(menuDto.getMenuId()))
                     .findFirst()
-                    .orElseThrow(() -> new NoSuchMenuException("메뉴를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new NoSuchMenuException("메뉴를 찾을 수 없습니다.", userId, requestDto.getMenus()));
             // OrderItem 추가
             orderItems.add(OrderItem.createOrderItem(menu, menu.getPrice(), menuDto.getQuantity()));
             // totalPrice 계산

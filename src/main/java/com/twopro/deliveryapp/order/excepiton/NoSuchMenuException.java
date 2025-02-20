@@ -1,23 +1,20 @@
 package com.twopro.deliveryapp.order.excepiton;
 
+import com.twopro.deliveryapp.order.dto.CreateOrderMenuDto;
+import lombok.Getter;
+
+import java.util.List;
+
+@Getter
 public class NoSuchMenuException extends RuntimeException{
-    public NoSuchMenuException() {
-        super();
-    }
+    private Long userId;
+    private List<CreateOrderMenuDto> menus;
 
-    public NoSuchMenuException(String message) {
+    public NoSuchMenuException(String message, Long userId, List<CreateOrderMenuDto> menus) {
         super(message);
+        this.userId = userId;
+        this.menus = menus;
     }
 
-    public NoSuchMenuException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
-    public NoSuchMenuException(Throwable cause) {
-        super(cause);
-    }
-
-    protected NoSuchMenuException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }
