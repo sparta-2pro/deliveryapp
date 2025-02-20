@@ -4,6 +4,7 @@ import com.twopro.deliveryapp.common.dto.AddressDto;
 import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.entity.BaseEntity;
 import com.twopro.deliveryapp.common.enumType.OrderStatus;
+import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.menu.entity.Menu;
 import com.twopro.deliveryapp.menu.repository.MenuRepository;
 import com.twopro.deliveryapp.order.dto.*;
@@ -91,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
         Store findStore = storeRepository.findById(requestDto.getStoreId()).orElseThrow();
 
         // 영업중인지 확인 로직
-        if (findStore.getStatus().equals("N")) { // 추후 N은 변경 예정
+        if (!findStore.getStatus().equals(StoreStatus.OPEN)) { // 추후 N은 변경 예정
             throw new StoreNoOpenException("영업중인 가게가 아닙니다.");
         }
 
@@ -112,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
             totalPrice += menu.getPrice() * menuDto.getQuantity();
         }
         // 결제 처리
-        Payment payment = paymentService.createPayment(totalPrice, requestDto.getPaymentProvider());
+        Payment payment = paymentService.createPayment(totalPrice, requestDto.getPaymentProvider(), userId);
         // 주문 생성
         Order order = Order.createOrder(user, orderItems, requestDto.getOrderType(), address, requestDto.getMessage(), payment);
         orderRepository.save(order);
@@ -130,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public FindOrderResponseDto findOrder(UUID orderId, Long userId) {
         Order order = orderRepository.findByOrderItemsAndMenu(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다."));
+                .orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다.", userId, orderId));
 
         validateOrderOwnership(userId, order);
 
@@ -185,7 +186,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void deleteOrder(UUID orderId, Long userId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다."));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다.", userId, orderId));
         validateOrderOwnership(userId, order);
 
         if (order.getOrderStatus().equals(OrderStatus.CUSTOMER_REQUESTED)) { // 아직 가게주가 주문확인을 안했을 경우만 취소
@@ -205,7 +206,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void updateStatus(OrderStatusRequestDto requestDto, Long userId) {
-        Order findOrder = orderRepository.findById(requestDto.getOrderId()).orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다."));
+        Order findOrder = orderRepository.findById(requestDto.getOrderId()).orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다.", userId, requestDto.getOrderId()));
         if (requestDto.getOrderStatus().equals(OrderStatus.OWNER_ACCEPTED)) { //가게주 주문 확인
             findOrder.updateStatus(requestDto.getOrderStatus());
         } else if (requestDto.getOrderStatus().equals(OrderStatus.OWNER_CANCELLED)) {//가게주 주문 취소
