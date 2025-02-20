@@ -1,6 +1,7 @@
 package com.twopro.deliveryapp.store.service;
 
 import com.twopro.deliveryapp.common.entity.Address;
+import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
 import com.twopro.deliveryapp.store.entity.DeliveryArea;
@@ -28,6 +29,7 @@ public class StoreService {
     @Transactional
     public Store createStore(StoreRequestDto dto) {
         validateStoreStatus(dto.getStatus());
+        validateDeliveryType(dto.getDeliveryType());
 
         Store store = Store.builder()
                 .categoryId(dto.getCategoryId().toString())
@@ -38,14 +40,10 @@ public class StoreService {
                 .closedDays(dto.getClosedDays())
                 .pictureUrl(dto.getPictureUrl())
                 .status(dto.getStatus())
-                .deliveryType(dto.getDeliveryType().toString())
+                .deliveryType(dto.getDeliveryType())
                 .minimumOrderPrice(dto.getMinimumOrderPrice())
                 .deliveryTip(dto.getDeliveryTip())
                 .build();
-
-        if (dto.getDeliveryAreas() != null && !dto.getDeliveryAreas().isEmpty()) {
-            dto.getDeliveryAreas().forEach(areaId -> addDeliveryAreaToStore(store.getId(), areaId));
-        }
 
         return store;
     }
@@ -53,6 +51,12 @@ public class StoreService {
     private void validateStoreStatus(StoreStatus status) {
         if (status == null || !(status == StoreStatus.OPEN || status == StoreStatus.CLOSED || status == StoreStatus.DELETED)) {
             throw new IllegalArgumentException("유효하지 않은 상태 값입니다.");
+        }
+    }
+
+    private void validateDeliveryType(OrderType deliveryType) {
+        if (deliveryType == null || !(deliveryType == OrderType.DELIVERY || deliveryType == OrderType.PICKUP)) {
+            throw new IllegalArgumentException("유효하지 않은 배달 타입입니다.");
         }
     }
 
@@ -69,6 +73,8 @@ public class StoreService {
     @Transactional
     public void updateStore(UUID id, StoreRequestDto dto) {
         Store store = storeRepository.findById(id).orElseThrow();
+        validateDeliveryType(dto.getDeliveryType());
+
         store.updateStoreDetails(
                 dto.getName(),
                 dto.getPhone(),
@@ -77,7 +83,7 @@ public class StoreService {
                 dto.getPictureUrl(),
                 dto.getCategoryId().toString(),
                 dto.getStatus(),
-                dto.getDeliveryType().toString(),
+                dto.getDeliveryType(),
                 dto.getDeliveryAreas(),
                 dto.getMinimumOrderPrice(),
                 dto.getDeliveryTip(),
