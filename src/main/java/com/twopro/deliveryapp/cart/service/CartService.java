@@ -8,9 +8,15 @@ import java.util.UUID;
 public interface CartService {
     Cart getCartByUserId(Long userId);
 
-    Cart addMenuToCart(UUID cartId, CartMenuDto cartMenuDto);
+    void addMenuToCart(UUID cartId, CartMenuDto cartMenuDto);
 
-    void removeMenuFromCart(UUID cartId, Long cartMenuId);
+    void removeMenuFromCart(UUID cartId, UUID menuId);
 
     Cart getOrCreatecart(Long userId);
+
+    void updateMenuQuantity(UUID cartId, UUID menuId, int quantity);
+
+    void clearCart(UUID cartId);
+
+    int calculateTotalPrice(UUID cartId);
 }

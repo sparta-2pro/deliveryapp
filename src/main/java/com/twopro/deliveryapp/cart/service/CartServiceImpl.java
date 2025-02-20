@@ -3,6 +3,7 @@ package com.twopro.deliveryapp.cart.service;
 import com.twopro.deliveryapp.cart.dto.CartMenuDto;
 import com.twopro.deliveryapp.cart.entity.Cart;
 import com.twopro.deliveryapp.cart.entity.CartMenu;
+import com.twopro.deliveryapp.cart.repository.CartMenuRepository;
 import com.twopro.deliveryapp.cart.repository.CartRepository;
 import com.twopro.deliveryapp.menu.entity.Menu;
 import com.twopro.deliveryapp.menu.repository.MenuRepository;
@@ -24,6 +25,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
+    private final CartMenuRepository cartMenuRepository;
 
     // user_id로 장바구니 조회
     @Override
@@ -41,7 +43,7 @@ public class CartServiceImpl implements CartService {
     // 장바구니에 메뉴 추가
     @Override
     @Transactional
-    public Cart addMenuToCart(UUID cartId, CartMenuDto cartMenuDto) {
+    public void addMenuToCart(UUID cartId, CartMenuDto cartMenuDto) {
         // 장바구니 조회
         Cart cart = cartRepository.findByCartId(cartId)
                 .orElseThrow(() -> new RuntimeException("장바구니를 찾을 수 없습니다."));
@@ -55,7 +57,6 @@ public class CartServiceImpl implements CartService {
         // 장바구니에 메뉴 추가
         cart.getCartMenus().add(cartMenu);
 
-        return cart;
     }
 
     @Override
@@ -76,17 +77,45 @@ public class CartServiceImpl implements CartService {
         return cartRepository.save(cart);  // 장바구니 저장
     }
 
+    // 메뉴 수량 변경
+    @Override
+    public void updateMenuQuantity(UUID cartId, UUID menuId, int quantity) {
+        CartMenu cartMenu = cartMenuRepository.findByCart_CartIdAndMenu_MenuId(cartId, menuId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 메뉴가 장바구니에 없습니다."));
+
+        cartMenu.setQuantity(quantity);
+        cartMenuRepository.save(cartMenu);
+    }
+
+    // 장바구니에 메뉴 제거
     @Override
     @Transactional
-    public void removeMenuFromCart(UUID cartId, Long cartMenuId) {
+    public void removeMenuFromCart(UUID cartId, UUID menuId) {
         Cart cart = cartRepository.findByCartId(cartId)
-                .orElseThrow(() -> new RuntimeException("장바구니를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "장바구니를 찾을 수 없습니다."));
 
-        CartMenu cartMenu = cart.getCartMenus().stream()
-                .filter(menu -> menu.getCartMenuId().equals(cartMenuId))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("장바구니 메뉴를 찾을 수 없습니다."));
+        CartMenu cartMenu = cartMenuRepository.findByCart_CartIdAndMenu_MenuId(cartId, menuId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "장바구니에서 해당 메뉴를 찾을 수 없습니다."));
 
-        cart.getCartMenus().remove(cartMenu);  // 메뉴 삭제
+        cartMenuRepository.delete(cartMenu);
+    }
+
+    // 장바구니 비우기
+    @Override
+    public void clearCart(UUID cartId) {
+        Cart cart = cartRepository.findByCartId(cartId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "장바구니를 찾을 수 없습니다."));
+        cartMenuRepository.deleteAllByCart_CartId(cartId);
+    }
+
+    // 총 수량
+    @Override
+    public int calculateTotalPrice(UUID cartId) {
+        Cart cart = cartRepository.findByCartId(cartId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "장바구니를 찾을 수 없습니다."));
+
+        int totalPrice = cart.getCartMenus().stream()
+                .mapToInt(cartMenu -> cartMenu.getQuantity() * cartMenu.getMenu().getPrice()).sum();
+        return totalPrice;
     }
 }
