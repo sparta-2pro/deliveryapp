@@ -1,23 +1,16 @@
 package com.twopro.deliveryapp.order.excepiton;
 
+import lombok.Getter;
+
+@Getter
 public class OrderStoreMinPriceException extends RuntimeException {
-    public OrderStoreMinPriceException() {
-        super();
-    }
+    private int totalPrice;
+    private Long userId;
 
-    public OrderStoreMinPriceException(String message) {
+    public OrderStoreMinPriceException(String message, int totalPrice, Long userId) {
         super(message);
+        this.totalPrice = totalPrice;
+        this.userId = userId;
     }
 
-    public OrderStoreMinPriceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public OrderStoreMinPriceException(Throwable cause) {
-        super(cause);
-    }
-
-    protected OrderStoreMinPriceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }
