@@ -56,4 +56,9 @@ public class RestAdviceController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_3"));
     }
 
+    @ExceptionHandler(PaymentProviderNoSearchException.class)
+    public ResponseEntity handlePaymentProviderNoSearchException(PaymentProviderNoSearchException e) {
+        log.info("errorMessage : {}, userId: {}, meIds: {}", e.getMessage(), e.getUserId(), e.getPaymentProvider());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_3"));
+    }
 }

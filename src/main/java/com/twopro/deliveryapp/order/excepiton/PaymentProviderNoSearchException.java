@@ -1,23 +1,18 @@
 package com.twopro.deliveryapp.order.excepiton;
 
+import com.twopro.deliveryapp.common.enumType.PaymentProvider;
+import lombok.Getter;
+
+@Getter
 public class PaymentProviderNoSearchException extends RuntimeException {
-    public PaymentProviderNoSearchException() {
-        super();
-    }
+    private Long userId;
+    private PaymentProvider paymentProvider;
 
-    public PaymentProviderNoSearchException(String message) {
+    public PaymentProviderNoSearchException(String message, Long userId, PaymentProvider paymentProvider) {
         super(message);
+        this.userId = userId;
+        this.paymentProvider = paymentProvider;
     }
 
-    public PaymentProviderNoSearchException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
-    public PaymentProviderNoSearchException(Throwable cause) {
-        super(cause);
-    }
-
-    protected PaymentProviderNoSearchException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }
