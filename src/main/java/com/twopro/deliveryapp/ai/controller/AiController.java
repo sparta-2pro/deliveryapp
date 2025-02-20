@@ -6,6 +6,7 @@ import com.twopro.deliveryapp.ai.dto.CreateDescriptionResponseDto;
 import com.twopro.deliveryapp.ai.service.AiService;
 import com.twopro.deliveryapp.common.dto.SingleResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
