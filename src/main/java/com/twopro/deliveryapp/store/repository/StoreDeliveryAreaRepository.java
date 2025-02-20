@@ -15,5 +15,7 @@ public interface StoreDeliveryAreaRepository extends JpaRepository<StoreDelivery
 
     Optional<StoreDeliveryArea> findByStoreAndDeliveryArea(Store store, DeliveryArea deliveryArea);
 
+    List<StoreDeliveryArea> findByStore(Store store);
+
     List<StoreDeliveryArea> findByDeliveryAreaId(UUID deliveryAreaId);
 }

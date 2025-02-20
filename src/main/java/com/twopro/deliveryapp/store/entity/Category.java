@@ -3,18 +3,19 @@ package com.twopro.deliveryapp.store.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import java.util.UUID;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "category")
+@Table(name = "p_category")
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "category_id")
-    private Long id;
+    private UUID id;
 
     @Column(length = 255, nullable = false)
     private String name;

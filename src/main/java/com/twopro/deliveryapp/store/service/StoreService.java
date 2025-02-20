@@ -4,7 +4,9 @@ import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
+import com.twopro.deliveryapp.store.entity.Category;
 import com.twopro.deliveryapp.store.entity.Store;
+import com.twopro.deliveryapp.store.repository.CategoryRepository;
 import com.twopro.deliveryapp.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,14 +21,16 @@ import java.util.UUID;
 public class StoreService {
 
     private final StoreRepository storeRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public Store createStore(StoreRequestDto dto) {
         validateStoreStatus(dto.getStatus());
         validateDeliveryType(dto.getDeliveryType());
+        Category category = getCategoryById(dto.getCategoryId());
 
         Store store = Store.builder()
-                .categoryId(dto.getCategoryId().toString())
+                .category(category)
                 .name(dto.getName())
                 .address(Address.of(dto.getAddress()))
                 .phone(dto.getPhone())
@@ -54,6 +58,11 @@ public class StoreService {
         }
     }
 
+    private Category getCategoryById(UUID categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리를 찾을 수 없습니다."));
+    }
+
     @Transactional(readOnly = true)
     public List<Store> getAllStores() {
         return storeRepository.findAll();
@@ -68,6 +77,7 @@ public class StoreService {
     public void updateStore(UUID id, StoreRequestDto dto) {
         Store store = storeRepository.findById(id).orElseThrow();
         validateDeliveryType(dto.getDeliveryType());
+        Category category = getCategoryById(dto.getCategoryId());
 
         store.updateStoreDetails(
                 dto.getName(),
@@ -75,10 +85,9 @@ public class StoreService {
                 dto.getOperatingHours(),
                 dto.getClosedDays(),
                 dto.getPictureUrl(),
-                dto.getCategoryId().toString(),
+                category,
                 dto.getStatus(),
                 dto.getDeliveryType(),
-                dto.getDeliveryAreas(),
                 dto.getMinimumOrderPrice(),
                 dto.getDeliveryTip(),
                 Address.of(dto.getAddress())
