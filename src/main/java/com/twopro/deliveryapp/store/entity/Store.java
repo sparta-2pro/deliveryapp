@@ -21,7 +21,7 @@ public class Store extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name = "store_id", length = 255, nullable = false)
-    private UUID id;
+    private UUID storeId;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)

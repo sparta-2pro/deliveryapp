@@ -1,6 +1,7 @@
 package com.twopro.deliveryapp.payment.service;
 
 import com.twopro.deliveryapp.common.enumType.PaymentProvider;
+import com.twopro.deliveryapp.common.enumType.PaymentStatus;
 import com.twopro.deliveryapp.order.excepiton.PaymentProviderNoSearchException;
 import com.twopro.deliveryapp.order.excepiton.PaymentnException;
 import com.twopro.deliveryapp.payment.entity.Payment;
@@ -56,9 +57,9 @@ public class PaymentService {
             //ResponseEntity<String> response = restTemplate.exchange(RequestEntity.post(uri).headers(headers).body(body), String.class);
 //            if (response.getStatusCode().is2xxSuccessful()) { // 실제 api를 쓸 수 없어서 무조건 true로 성공하게 주석처리
             if(true){
-                return paymentRepository.save(Payment.createPayment(totalPrice, "Y", paymentProvider));
+                return paymentRepository.save(Payment.createPayment(totalPrice, PaymentStatus.SUCCESS, paymentProvider));
             } else {
-                return paymentRepository.save(Payment.createPayment(totalPrice, "N", paymentProvider));
+                return paymentRepository.save(Payment.createPayment(totalPrice, PaymentStatus.FAIL, paymentProvider));
             }
         } catch (Exception e) {
             throw new PaymentnException("결제 API 요청 중 에러가 생겼습니다.");

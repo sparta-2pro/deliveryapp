@@ -2,6 +2,8 @@ package com.twopro.deliveryapp.common.config.generator;
 
 import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.enumType.OrderType;
+import com.twopro.deliveryapp.common.enumType.PaymentProvider;
+import com.twopro.deliveryapp.common.enumType.PaymentStatus;
 import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.menu.entity.Menu;
 import com.twopro.deliveryapp.menu.entity.MenuStatus;
@@ -9,10 +11,13 @@ import com.twopro.deliveryapp.menu.repository.MenuRepository;
 import com.twopro.deliveryapp.order.entity.Order;
 import com.twopro.deliveryapp.order.repository.OrderRepository;
 import com.twopro.deliveryapp.orderItem.Entity.OrderItem;
+import com.twopro.deliveryapp.payment.entity.Payment;
+import com.twopro.deliveryapp.payment.repository.PaymentRepository;
 import com.twopro.deliveryapp.store.entity.Category;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.repository.CategoryRepository;
 import com.twopro.deliveryapp.store.repository.StoreRepository;
+import com.twopro.deliveryapp.user.entity.Role;
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.repository.UserRepository;
 import org.springframework.boot.ApplicationRunner;
@@ -30,7 +35,7 @@ public class DummyDataGenerator {
     public ApplicationRunner dataInitializer(StoreRepository storeRepository,
                                              MenuRepository menuRepository,
                                              UserRepository userRepository,
-                                             OrderRepository orderRepository, CategoryRepository categoryRepository) {
+                                             OrderRepository orderRepository, CategoryRepository categoryRepository, PaymentRepository paymentRepository) {
         return args -> {
             Random random = new Random();
 
@@ -56,8 +61,9 @@ public class DummyDataGenerator {
                         .deliveryType(OrderType.DELIVERY)
                         .minimumOrderPrice(10000 + random.nextInt(10000))  // 10000 ~ 19999
                         .deliveryTip(1000 + random.nextInt(4000))           // 1000 ~ 4999
-                        .address(new Address("Seoul", "Gangnam-gu", "Yeoksam-dong", "123-45"))
+                        .address(new Address("Seoul", "Gangnam-gu", "Yeoksam-dong", "123-45", "서울특별시 강남구 삼성동 123-45", "101동 1203호"))
                         .build();
+
                 stores.add(store);
             }
             storeRepository.saveAll(stores);
@@ -82,6 +88,10 @@ public class DummyDataGenerator {
             for (int i = 1; i <= 100; i++) {
                 User user = new User();
                 user.setNickname("User #" + i);
+                user.setEmail("user" + i + "@example.com");
+                user.setPassword("1234");
+                user.setRole(i % 2 == 0 ? Role.CUSTOMER : Role.OWNER);
+                user.setAddress( new Address("Seoul", "Gangnam-gu", "Yeoksam-dong", "123-45", "서울특별시 강남구 삼성동 123-45", "101동 1203호"));
                 users.add(user);
             }
             userRepository.saveAll(users);
@@ -92,12 +102,16 @@ public class DummyDataGenerator {
                 Store randomStore = stores.get(random.nextInt(stores.size()));
 
                 List<OrderItem> orderItems = new ArrayList<>();
+                OrderItem orderItem = OrderItem.createOrderItem(menus.get(random.nextInt(menus.size())), 10000, 3);
+                orderItems.add(orderItem);
 
-                Address orderAddress = new Address("Seoul", "Gangnam-gu", "Yeoksam-dong", "123-45");
-                Order order = Order.createOrder(randomUser, orderItems, OrderType.DELIVERY, orderAddress, "Dummy order " + i, null);
+                Address orderAddress = new Address("Seoul", "Gangnam-gu", "Yeoksam-dong", "123-45", "서울특별시 강남구 삼성동 123-45", "101동 1203호");
+                Payment payment = Payment.createPayment(30000, PaymentStatus.SUCCESS, PaymentProvider.NH);
+                Order order = Order.createOrder(randomUser, orderItems,
+                        OrderType.DELIVERY, orderAddress,
+                        "Dummy order " + i, paymentRepository.save(payment));
 
                 order.setStore(randomStore);
-
                 orders.add(order);
             }
             orderRepository.saveAll(orders);

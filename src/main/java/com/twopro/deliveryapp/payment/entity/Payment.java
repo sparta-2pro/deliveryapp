@@ -5,6 +5,7 @@ import com.twopro.deliveryapp.common.entity.BaseEntity;
 import com.twopro.deliveryapp.common.enumType.OrderStatus;
 import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.common.enumType.PaymentProvider;
+import com.twopro.deliveryapp.common.enumType.PaymentStatus;
 import com.twopro.deliveryapp.order.entity.Order;
 import com.twopro.deliveryapp.orderItem.Entity.OrderItem;
 import com.twopro.deliveryapp.user.entity.User;
@@ -27,10 +28,10 @@ public class Payment extends BaseEntity {
     private UUID id;
 
     private int totalPrice;
-    private String paymentStatus;
+    private PaymentStatus paymentStatus;
     private PaymentProvider paymentProvider;
 
-    public static Payment createPayment(int totalPrice, String paymentStatus, PaymentProvider paymentProvider) {
+    public static Payment createPayment(int totalPrice, PaymentStatus paymentStatus, PaymentProvider paymentProvider) {
         Payment payment = new Payment();
         payment.totalPrice = totalPrice;
         payment.paymentStatus = paymentStatus;

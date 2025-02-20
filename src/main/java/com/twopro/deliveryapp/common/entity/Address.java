@@ -28,10 +28,12 @@ public class Address {
         return address;
     }
 
-    public Address(String sido, String sigungu, String eupMyeonDong, String roadAddress) {
+    public Address(String sido, String sigungu, String eupMyeonDong, String roadAddress, String jibunAddress, String detailAddress) {
         this.sido = sido;
         this.sigungu = sigungu;
-        this.detailAddress = roadAddress;
         this.roadAddress = roadAddress;
+        this.eupMyeonDong = eupMyeonDong;
+        this.jibunAddress = jibunAddress;
+        this.detailAddress = detailAddress;
     }
 }
