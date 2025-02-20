@@ -27,4 +27,11 @@ public class Address {
         address.eupMyeonDong = addressDto.getEupMyeonDong();
         return address;
     }
+
+    public Address(String sido, String sigungu, String eupMyeonDong, String roadAddress) {
+        this.sido = sido;
+        this.sigungu = sigungu;
+        this.detailAddress = roadAddress;
+        this.roadAddress = roadAddress;
+    }
 }

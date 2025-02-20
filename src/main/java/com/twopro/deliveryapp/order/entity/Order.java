@@ -13,6 +13,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
+    @Setter
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)

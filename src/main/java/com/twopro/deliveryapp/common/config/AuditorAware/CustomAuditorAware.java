@@ -15,9 +15,14 @@ public class CustomAuditorAware implements AuditorAware<String> {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 인증되지 않은 사용자일 경우 예외를 던짐
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getName())) {
-//            throw new RuntimeException("인증되지 않은 사용자");// security 설정 전이므로 주석처리
-            return Optional.of(authentication.getName());
+//        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getName())) {
+////            throw new RuntimeException("인증되지 않은 사용자");// security 설정 전이므로 주석처리
+//            return Optional.of(authentication.getName());
+//        }
+
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return Optional.of("system"); // 인증이 없을 때 사용할 기본 값
         }
 
         return Optional.of(authentication.getName());

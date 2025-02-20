@@ -40,9 +40,9 @@ public class ChatGptClient {
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("model", "gpt-3.5-turbo");
-        payload.put("messages", List.of(
-                Map.of("role", "user", "content",
-                        List.of(Map.of("tpye", "text", "text", question)))
+        payload.put("messages", List.of(Map.of(
+                "role", "user",
+                "content", question)
                 )
         );
 
@@ -58,7 +58,8 @@ public class ChatGptClient {
         List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
         isChoiceEmpty(choices);
 
-        Map<String, Object> message = choices.get(0);
+        Map<String, Object> choice = choices.get(0);
+        Map<String, Object> message = (Map<String, Object>) choice.get("message");
         isMessageValid(message);
 
         log.info("content :{}", message.get("content"));
