@@ -4,7 +4,6 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twopro.deliveryapp.ai.dto.AiResponseDto;
-import com.twopro.deliveryapp.ai.dto.CreateAiServiceRequestDto;
 import com.twopro.deliveryapp.ai.entity.Ai;
 import com.twopro.deliveryapp.ai.entity.QAi;
 import com.twopro.deliveryapp.menu.entity.QMenu;
@@ -25,7 +24,7 @@ public class AiRepositoryImpl implements AiRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Ai createAiService(Ai ai) {
+    public Ai saveAiService(Ai ai) {
         return jpaAiRepository.save(ai);
     }
 

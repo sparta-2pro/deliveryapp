@@ -20,4 +20,5 @@ public interface OrderService {
     public void deleteOrder(UUID orderId, Long userId);
 
     void updateStatus(OrderStatusRequestDto requestDto, Long userId);
+
 }

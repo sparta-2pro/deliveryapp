@@ -8,7 +8,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @Setter
 public class UserSignupRequestDto {
@@ -19,7 +21,7 @@ public class UserSignupRequestDto {
     private String password;
     @NotNull
     private String nickname;
-    private Role role; // 기본값 설정해줘야 하는지?
+    private Role role = Role.CUSTOMER; // 기본값 설정해줘야 하는지?
     private AddressDto address;
 
     public User toEntity() {
@@ -27,13 +29,19 @@ public class UserSignupRequestDto {
         user.setEmail(this.email);
         user.setPassword(this.password);
         user.setNickname(this.nickname);
-        user.setRole(this.role);
+        if (this.role == null) {
+            user.setRole(Role.CUSTOMER);  // role이 없으면 기본값으로 설정
+        } else {
+            user.setRole(this.role);
+        }
 
         // User 엔티티에서 Address를 임베딩하는법
         // AddressDto를 Address 객체로 변환하여 Address 엔티티로 설정
         if (this.address != null) {
+            log.info("Address 변환 시작: {}", this.address);
             Address address = Address.of(this.address);  // AddressDto를 Address 엔티티로 변환
             user.setAddress(address);  // 변환된 Address 객체를 User 엔티티에 설정
+            log.info("Address 변환 완료: {}", address);
         }
 
         return user;
