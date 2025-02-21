@@ -1,5 +1,7 @@
 package com.twopro.deliveryapp.store.controller;
 
+import com.twopro.deliveryapp.common.dto.SingleResponse;
+import com.twopro.deliveryapp.common.dto.MultiResponse;
 import com.twopro.deliveryapp.store.entity.DeliveryArea;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.service.DeliveryAreaService;
@@ -19,36 +21,36 @@ public class DeliveryAreaController {
 
     // 배달 가능 지역 생성
     @PostMapping
-    public ResponseEntity<List<DeliveryArea>> createDeliveryAreas(@RequestBody List<String> names) {
+    public ResponseEntity<MultiResponse<DeliveryArea>> createDeliveryAreas(@RequestBody List<String> names) {
         List<DeliveryArea> createdAreas = deliveryAreaService.createDeliveryAreas(names);
-        return ResponseEntity.ok(createdAreas);
+        return ResponseEntity.ok(MultiResponse.success(createdAreas));
     }
 
     // 모든 배달 가능 지역 조회
     @GetMapping
-    public ResponseEntity<List<DeliveryArea>> getAllDeliveryAreas() {
+    public ResponseEntity<MultiResponse<DeliveryArea>> getAllDeliveryAreas() {
         List<DeliveryArea> areas = deliveryAreaService.getAllDeliveryAreas();
-        return ResponseEntity.ok(areas);
+        return ResponseEntity.ok(MultiResponse.success(areas));
     }
 
     // 배달 가능 지역 수정
     @PutMapping("/{deliveryAreaId}")
-    public ResponseEntity<Void> updateDeliveryArea(@PathVariable UUID deliveryAreaId, @RequestBody String newName) {
+    public ResponseEntity<SingleResponse<Void>> updateDeliveryArea(@PathVariable UUID deliveryAreaId, @RequestBody String newName) {
         deliveryAreaService.updateDeliveryArea(deliveryAreaId, newName);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(SingleResponse.success(null));
     }
 
     // 배달 가능 지역 삭제
     @DeleteMapping("/{deliveryAreaId}")
-    public ResponseEntity<Void> deleteDeliveryArea(@PathVariable UUID deliveryAreaId) {
+    public ResponseEntity<SingleResponse<Void>> deleteDeliveryArea(@PathVariable UUID deliveryAreaId) {
         deliveryAreaService.deleteDeliveryArea(deliveryAreaId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(SingleResponse.success(null));
     }
 
     // 특정 배달 가능 지역의 가게 조회
     @GetMapping("/{deliveryAreaId}/stores")
-    public ResponseEntity<List<Store>> getStoresByDeliveryArea(@PathVariable UUID deliveryAreaId) {
+    public ResponseEntity<MultiResponse<Store>> getStoresByDeliveryArea(@PathVariable UUID deliveryAreaId) {
         List<Store> stores = deliveryAreaService.getStoresByDeliveryArea(deliveryAreaId);
-        return ResponseEntity.ok(stores);
+        return ResponseEntity.ok(MultiResponse.success(stores));
     }
 }
