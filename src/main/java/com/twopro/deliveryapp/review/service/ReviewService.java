@@ -1,9 +1,11 @@
 package com.twopro.deliveryapp.review.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.twopro.deliveryapp.review.entity.Review;
 
-@Service
-@RequiredArgsConstructor
-public class ReviewService {
+import java.util.UUID;
+
+public interface ReviewService {
+    void createReview(Long userId, UUID orderId);
+
+    Review findById(UUID reviewId);
 }

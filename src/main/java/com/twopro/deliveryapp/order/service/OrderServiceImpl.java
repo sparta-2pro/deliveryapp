@@ -13,7 +13,7 @@ import com.twopro.deliveryapp.order.excepiton.*;
 import com.twopro.deliveryapp.order.repository.OrderRepository;
 import com.twopro.deliveryapp.orderItem.Entity.OrderItem;
 import com.twopro.deliveryapp.payment.entity.Payment;
-import com.twopro.deliveryapp.payment.service.PaymentService;
+import com.twopro.deliveryapp.payment.service.PaymentServiceImpl;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.repository.StoreRepository;
 import com.twopro.deliveryapp.user.entity.User;
@@ -27,10 +27,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
-    private final PaymentService paymentService;
+    private final PaymentServiceImpl paymentService;
 
     /**
      * 사용자가 음식을 선택하고 결제페이지로 넘어가는 로직
@@ -217,6 +214,10 @@ public class OrderServiceImpl implements OrderService {
         } else {
             throw new OrderUpdateStatusException("잘못된 오더 상태 변경값입니다.", userId, requestDto.getOrderId(), requestDto.getOrderStatus());
         }
+    }
+
+    public Order findById(UUID orderId) {
+        return orderRepository.findById(orderId).orElseThrow(()->new OrderNotFoundException("주문을 찾을 수 없습니다"));
     }
 
     /**
