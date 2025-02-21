@@ -14,4 +14,8 @@ public class OrderNotFoundException extends RuntimeException {
         this.userId = userId;
         this.orderId = orderId;
     }
+
+    public OrderNotFoundException(String message) {
+        super(message);
+    }
 }
