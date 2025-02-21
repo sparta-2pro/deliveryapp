@@ -46,7 +46,7 @@ public class Store extends BaseEntity {
     private String closedDays;
 
     @Column(nullable = false)
-    private int rating;
+    private double rating;
 
     @Column(nullable = false)
     private int reviewCount;
