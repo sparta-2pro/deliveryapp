@@ -56,7 +56,7 @@ public class QStore extends EntityPathBase<Store> {
 
     public final StringPath pictureUrl = createString("pictureUrl");
 
-    public final NumberPath<Integer> rating = createNumber("rating", Integer.class);
+    public final NumberPath<Double> rating = createNumber("rating", Double.class);
 
     public final NumberPath<Integer> reviewCount = createNumber("reviewCount", Integer.class);
 
