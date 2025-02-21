@@ -116,4 +116,9 @@ public class UserServiceImpl implements UserService {
     private boolean isValid(String value) {
         return value != null && !value.isEmpty();
     }
+
+    public User findById(Long userId){
+        return userRepository.findById(userId).orElseThrow();
+    }
+
 }
