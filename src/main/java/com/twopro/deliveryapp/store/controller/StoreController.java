@@ -1,5 +1,7 @@
 package com.twopro.deliveryapp.store.controller;
 
+import com.twopro.deliveryapp.common.dto.SingleResponse;
+import com.twopro.deliveryapp.common.dto.MultiResponse;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.service.StoreService;
@@ -19,37 +21,37 @@ public class StoreController {
 
     // 가게 생성
     @PostMapping
-    public ResponseEntity<Store> createStore(@RequestBody StoreRequestDto storeRequestDto) {
+    public ResponseEntity<SingleResponse<Store>> createStore(@RequestBody StoreRequestDto storeRequestDto) {
         Store store = storeService.createStore(storeRequestDto);
-        return ResponseEntity.ok(store);
+        return ResponseEntity.ok(SingleResponse.success(store));
     }
 
     // 모든 가게 조회
     @GetMapping
-    public ResponseEntity<List<Store>> getAllStores() {
+    public ResponseEntity<MultiResponse<Store>> getAllStores() {
         List<Store> stores = storeService.getAllStores();
-        return ResponseEntity.ok(stores);
+        return ResponseEntity.ok(MultiResponse.success(stores));
     }
 
     // 해당 가게 조회
     @GetMapping("/{id}")
-    public ResponseEntity<Store> getStoreById(@PathVariable UUID id) {
+    public ResponseEntity<SingleResponse<Store>> getStoreById(@PathVariable UUID id) {
         return storeService.getStoreById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(store -> ResponseEntity.ok(SingleResponse.success(store)))
+                .orElseGet(() -> ResponseEntity.ok(SingleResponse.error("Store not found", "404")));
     }
 
     // 가게 정보 수정
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStore(@PathVariable UUID id, @RequestBody StoreRequestDto storeRequestDto) {
+    public ResponseEntity<SingleResponse<Void>> updateStore(@PathVariable UUID id, @RequestBody StoreRequestDto storeRequestDto) {
         storeService.updateStore(id, storeRequestDto);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(SingleResponse.success(null));
     }
 
     // 가게 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStore(@PathVariable UUID id) {
+    public ResponseEntity<SingleResponse<Void>> deleteStore(@PathVariable UUID id) {
         storeService.deleteStore(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(SingleResponse.success(null));
     }
 }
