@@ -23,7 +23,7 @@ public class Store extends BaseEntity {
     @Column(name = "store_id", length = 255, nullable = false)
     private UUID storeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
@@ -46,7 +46,7 @@ public class Store extends BaseEntity {
     private String closedDays;
 
     @Column(nullable = false)
-    private int rating;
+    private double rating;
 
     @Column(nullable = false)
     private int reviewCount;

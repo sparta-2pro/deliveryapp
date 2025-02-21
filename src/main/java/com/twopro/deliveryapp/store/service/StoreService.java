@@ -23,6 +23,10 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
 
+    public Optional<Store> findByID(UUID id) {
+        return storeRepository.findById(id);
+    }
+
     @Transactional
     public Store createStore(StoreRequestDto dto) {
         validateStoreStatus(dto.getStatus());
