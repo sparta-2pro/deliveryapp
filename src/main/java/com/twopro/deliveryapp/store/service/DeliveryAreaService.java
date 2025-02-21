@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,6 +19,10 @@ public class DeliveryAreaService {
 
     private final DeliveryAreaRepository deliveryAreaRepository;
     private final StoreDeliveryAreaRepository storeDeliveryAreaRepository;
+
+    public Optional<DeliveryArea> findByID(UUID id) {
+        return deliveryAreaRepository.findById(id);
+    }
 
     @Transactional
     public List<DeliveryArea> createDeliveryAreas(List<String> names) {
