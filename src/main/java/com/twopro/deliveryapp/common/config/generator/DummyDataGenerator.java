@@ -20,9 +20,11 @@ import com.twopro.deliveryapp.store.repository.StoreRepository;
 import com.twopro.deliveryapp.user.entity.Role;
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +32,16 @@ import java.util.Random;
 
 @Configuration
 public class DummyDataGenerator {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Bean
     public ApplicationRunner dataInitializer(StoreRepository storeRepository,
                                              MenuRepository menuRepository,
                                              UserRepository userRepository,
-                                             OrderRepository orderRepository, CategoryRepository categoryRepository, PaymentRepository paymentRepository) {
+                                             OrderRepository orderRepository,
+                                             CategoryRepository categoryRepository,
+                                             PaymentRepository paymentRepository) {
         return args -> {
             Random random = new Random();
 
@@ -85,11 +91,11 @@ public class DummyDataGenerator {
             menus.forEach(menuRepository::addMenu);
 
             List<User> users = new ArrayList<>();
-            for (int i = 1; i <= 100; i++) {
+            for (int i = 1; i <= 6; i++) {
                 User user = new User();
                 user.setNickname("User #" + i);
                 user.setEmail("user" + i + "@example.com");
-                user.setPassword("1234");
+                user.setPassword(passwordEncoder.encode("1234"));
                 user.setRole(i % 2 == 0 ? Role.CUSTOMER : Role.OWNER);
                 user.setAddress( new Address("Seoul", "Gangnam-gu", "Yeoksam-dong", "123-45", "서울특별시 강남구 삼성동 123-45", "101동 1203호"));
                 users.add(user);

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 // WebSecurityConfig 클래스 - 전체 보안 설정
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
@@ -50,12 +52,14 @@ public class WebSecurityConfig {
                         // 인증 없이 접근 가능 경로 (회원가입, 로그인)
                         .requestMatchers("/api/v1/users/**").permitAll()
                         // 권한을 가진 사용자만 접근 가능 경로
-                        .requestMatchers("/api/v1/auth/**").hasAnyRole("CUSTOMER", "OWNER")
+                        .requestMatchers("/api/v1/auth/**", "/api/v1/orders/**").hasAnyRole("CUSTOMER", "OWNER", "ADMIN")
+                        .requestMatchers("/api/v1/stores/**").hasAnyRole("OWNER","ADMIN")
+                        .requestMatchers("/api/v1/carts/**").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/ai/**").hasRole("OWNER")
                         // ADMIN 권한을 가진 사용자만 접근 가능한 경로
                         //.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        // 인증 필요한 경로 -> 임시로 모두 허용으로 바꿔놓움
-                        //.anyRequest().authenticated());
-                        .anyRequest().permitAll());
+                        .anyRequest().authenticated());
+                        //.anyRequest().permitAll());
 
         // JWT 인증 필터 추가
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -76,4 +80,5 @@ public class WebSecurityConfig {
     public JwtAuthorizationFilter jwtAuthorizationFilter() throws Exception {
         return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
     }
+
 }

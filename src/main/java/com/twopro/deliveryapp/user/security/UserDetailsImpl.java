@@ -3,10 +3,11 @@ package com.twopro.deliveryapp.user.security;
 import com.twopro.deliveryapp.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
@@ -15,14 +16,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRole() != null
-                ? List.of(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return user.getRole().name(); // Role이 enum이라면 그 이름을 권한으로 사용
-            }
-        })
-                : List.of();
+        // 리스트 -> 단일 권한 반환으로 변경, SimpleGrantedAuthority 권한 표현 기본 클래스 사용
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+    }
+
+    public User getUser() {
+        return user;
     }
 
     @Override
