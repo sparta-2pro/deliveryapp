@@ -18,6 +18,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     Optional<Order> findByOrderItemsAndMenu(UUID orderId);
 
     //해당 유저의 모든 주문내용 가져오기
-    @Query("select o from Order o join fetch o.orderItems oi join fetch oi.menu where o.user = :user")
+    @Query("select o from Order o join fetch o.orderItems oi join fetch oi.menu join fetch o.store where o.user = :user")
     Page<Order> findAllByUser(User user, Pageable pageable);
 }

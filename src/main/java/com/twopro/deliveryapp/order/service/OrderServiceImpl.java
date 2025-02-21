@@ -6,7 +6,7 @@ import com.twopro.deliveryapp.common.entity.BaseEntity;
 import com.twopro.deliveryapp.common.enumType.OrderStatus;
 import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.menu.entity.Menu;
-import com.twopro.deliveryapp.menu.repository.MenuRepository;
+import com.twopro.deliveryapp.menu.service.MenuService;
 import com.twopro.deliveryapp.order.dto.*;
 import com.twopro.deliveryapp.order.entity.Order;
 import com.twopro.deliveryapp.order.excepiton.*;
@@ -15,9 +15,10 @@ import com.twopro.deliveryapp.orderItem.Entity.OrderItem;
 import com.twopro.deliveryapp.payment.entity.Payment;
 import com.twopro.deliveryapp.payment.service.PaymentServiceImpl;
 import com.twopro.deliveryapp.store.entity.Store;
-import com.twopro.deliveryapp.store.repository.StoreRepository;
+import com.twopro.deliveryapp.store.service.StoreService;
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.repository.UserRepository;
+import com.twopro.deliveryapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -36,10 +40,11 @@ import java.util.*;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
-    private final MenuRepository menuRepository;
-    private final StoreRepository storeRepository;
     private final PaymentServiceImpl paymentService;
+    private final StoreService storeService;
+    private final MenuService menuService;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
     /**
      * 사용자가 음식을 선택하고 결제페이지로 넘어가는 로직
@@ -56,10 +61,10 @@ public class OrderServiceImpl implements OrderService {
     public void createOrder(OrderRequestDto requestDto, Long userId) {
         //가게 id로 가게 찾아오기
         //리팩토링 필요, 가게 id로 menu 정보 한번에 찾아올 수 있을 듯
-        Store findStore = storeRepository.findById(requestDto.getStoreId()).orElseThrow(() -> new StoreNotFoundException("가게ID와 일치하는 가게가 없습니다."));
+        Store findStore = storeService.findByID(requestDto.getStoreId()).orElseThrow(() -> new StoreNotFoundException("가게ID와 일치하는 가게가 없습니다."));
 
         //requestDto에 들어온 menuId로 실제 db의 menu의 가격 가져와서 최소주문금액 구하는 로직
-        List<Menu> findMenus = menuRepository.findByMenuIdIn(requestDto.getMenus().stream().map(CreateOrderMenuDto::getMenuId).toList());
+        List<Menu> findMenus = menuService.findByMenuIdIn(requestDto.getMenus().stream().map(CreateOrderMenuDto::getMenuId).toList());
         int totalPrice = 0;
         for (CreateOrderMenuDto menuDto : requestDto.getMenus()) {
             Menu menu = findMenus.stream()
@@ -86,14 +91,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void paymentRequest(PaymentRequestDto requestDto, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("유저Id와 일치하는 유저 정보가 없습니다.", userId));
-        Store findStore = storeRepository.findById(requestDto.getStoreId()).orElseThrow();
+        Store findStore = storeService.findByID(requestDto.getStoreId()).orElseThrow();
 
         // 영업중인지 확인 로직
         if (!findStore.getStatus().equals(StoreStatus.OPEN)) { // 추후 N은 변경 예정
             throw new StoreNoOpenException("영업중인 가게가 아닙니다.");
         }
 
-        List<Menu> findMenus = menuRepository.findByMenuIdIn(requestDto.getMenus().stream().map(CreateOrderMenuDto::getMenuId).toList());
+        List<Menu> findMenus = menuService.findByMenuIdIn(requestDto.getMenus().stream().map(CreateOrderMenuDto::getMenuId).toList());
         Address address = Address.of(requestDto.getAddress());
 
         List<OrderItem> orderItems = new ArrayList<>();
