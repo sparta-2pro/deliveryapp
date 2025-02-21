@@ -16,11 +16,11 @@ public class StoreDeliveryArea {
     @Column(name = "store_delivery_area_id")
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_area_id")
     private DeliveryArea deliveryArea;
 
