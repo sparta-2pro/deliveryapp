@@ -46,6 +46,25 @@ public class DummyDataGenerator {
 
             // 100개의 가게 생성
             List<Store> stores = new ArrayList<>();
+
+            // 고정 가게 데이터 저장
+            stores.add(Store.builder()
+                    .category(category)
+                    .name("bbq")
+                    .pictureUrl("http://bbq.test")
+                    .phone("010-0000-0000")
+                    .operatingHours("11:00 - 02:00")
+                    .closedDays("None")
+                    .rating(5)          // 1 ~ 5
+                    .reviewCount(100)         // 0 ~ 99
+                    .status(StoreStatus.OPEN)
+                    .deliveryType(OrderType.DELIVERY)
+                    .minimumOrderPrice(20000)  // 10000 ~ 19999
+                    .deliveryTip(3000)           // 1000 ~ 4999
+                    .address(new Address("Seoul", "Yongsan-gu", "hankangrodong", "hankangro", "서울특별시 용산구 한강로 2가", "102동 102호"))
+                    .build()
+            );
+
             for (int i = 1; i <= 100; i++) {
                 String storeName = String.format("Store #%02d", i);
                 Store store = Store.builder()

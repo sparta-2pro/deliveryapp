@@ -15,7 +15,16 @@ public interface JpaMenuRepository extends JpaRepository<Menu, UUID> {
     @Query(
             "SELECT m " +
             "FROM Menu m " +
-            "WHERE m.store.id = :storeId"
+            "WHERE m.menuId = :menuId " +
+            "AND m.deleted_at IS NULL"
+    )
+    Optional<Menu> findById(@Param("menuId") UUID menuId);
+
+    @Query(
+            "SELECT m " +
+            "FROM Menu m " +
+            "WHERE m.store.id = :storeId " +
+            "AND m.deleted_at IS NULL"
     )
     Optional<List<Menu>> findAllMenuByStoreId(@Param("storeId") UUID storeId);
 
@@ -26,7 +35,8 @@ public interface JpaMenuRepository extends JpaRepository<Menu, UUID> {
             "SELECT m " +
             "FROM Menu m " +
             "WHERE m.name " +
-            "LIKE %:name%"
+            "LIKE %:name% " +
+            "AND m.deleted_at IS NULL "
     )
     Optional<List<Menu>> findMenuEntitiesByName(@Param("name") String name);
 }
