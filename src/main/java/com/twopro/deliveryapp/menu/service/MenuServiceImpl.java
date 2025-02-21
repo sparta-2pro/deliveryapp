@@ -6,6 +6,8 @@ import com.twopro.deliveryapp.menu.dto.UpdateMenuRequestDto;
 import com.twopro.deliveryapp.menu.entity.Menu;
 import com.twopro.deliveryapp.menu.exception.MenuNotFoundException;
 import com.twopro.deliveryapp.menu.repository.MenuRepository;
+import com.twopro.deliveryapp.store.entity.Store;
+import com.twopro.deliveryapp.store.service.StoreService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,12 +21,21 @@ public class MenuServiceImpl implements MenuService {
 
     private final MenuRepository menuRepository;
 
+    private final StoreService storeService;
+
     @Override
     @Transactional
     public MenuResponseDto addMenu(AddMenuRequestDto addMenuRequestDto) {
         Menu menu = menuRepository.addMenu(Menu.of(addMenuRequestDto));
+        menu.setStore(getStore(addMenuRequestDto.storeId()));
 
         return MenuResponseDto.from(menu);
+    }
+
+    // TODO store 담당자가 서비스 레이어에서 optional 처리해줘야 함
+    private Store getStore(UUID storeId) {
+        return storeService.findByID(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("가게 없음"));
     }
 
     @Override
