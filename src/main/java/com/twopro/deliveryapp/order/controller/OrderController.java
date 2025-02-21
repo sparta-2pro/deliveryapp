@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class OrderController {
 
     // 주문하러 가기 클릭 상황
     @PostMapping
-    public ResponseEntity createOrder(@RequestBody OrderRequestDto requestDto, @RequestParam Long userId) {
+    public ResponseEntity createOrder(@RequestBody OrderRequestDto requestDto, @AuthenticationPrincipal Long userId) {
         log.debug("REQUSET :: {}", requestDto);
         orderService.createOrder(requestDto, userId);
         return ResponseEntity.status(HttpStatus.CREATED).build();

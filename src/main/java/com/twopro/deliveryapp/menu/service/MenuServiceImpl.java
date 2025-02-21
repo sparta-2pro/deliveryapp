@@ -1,13 +1,11 @@
 package com.twopro.deliveryapp.menu.service;
 
-import com.twopro.deliveryapp.common.dto.SingleResponse;
 import com.twopro.deliveryapp.menu.dto.AddMenuRequestDto;
 import com.twopro.deliveryapp.menu.dto.MenuResponseDto;
 import com.twopro.deliveryapp.menu.dto.UpdateMenuRequestDto;
 import com.twopro.deliveryapp.menu.entity.Menu;
 import com.twopro.deliveryapp.menu.exception.MenuNotFoundException;
 import com.twopro.deliveryapp.menu.repository.MenuRepository;
-import com.twopro.deliveryapp.store.entity.Store;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +35,11 @@ public class MenuServiceImpl implements MenuService {
     private Menu findMenuByIdForServer(UUID menuId) {
         return menuRepository.findMenuById(menuId)
                 .orElseThrow(() -> new MenuNotFoundException("해당 Id 를 가진 메뉴를 찾을 수 없어요!"));
+    }
+
+    @Override
+    public List<Menu> findByMenuIdIn(List<UUID> menuIds) {
+        return menuRepository.findByMenuIdIn(menuIds);
     }
 
     @Override
