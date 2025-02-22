@@ -36,9 +36,8 @@ public class StoreController {
     // 해당 가게 조회
     @GetMapping("/{id}")
     public ResponseEntity<SingleResponse<Store>> getStoreById(@PathVariable UUID id) {
-        return storeService.getStoreById(id)
-                .map(store -> ResponseEntity.ok(SingleResponse.success(store)))
-                .orElseGet(() -> ResponseEntity.ok(SingleResponse.error("Store not found", "404")));
+        Store store = storeService.getStoreById(id);
+        return ResponseEntity.ok(SingleResponse.success(store));
     }
 
     // 가게 정보 수정
