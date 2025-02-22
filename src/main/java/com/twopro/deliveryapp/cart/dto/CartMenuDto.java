@@ -16,13 +16,13 @@ public class CartMenuDto {
     private UUID cartMenuId;
     private UUID menuId;
     private int quantity;
-    private int totalPrice;
+    //private int totalPrice;
 
     public CartMenuDto(CartMenu cartMenu) {
         this.cartMenuId = cartMenu.getCartMenuId();
         this.menuId = cartMenu.getMenu().getMenuId();
         this.quantity = cartMenu.getQuantity();
-        this.totalPrice = cartMenu.getTotalPrice();
+        //this.totalPrice = cartMenu.getTotalPrice();
     }
 
     public CartMenu toEntity(Menu menu, Cart cart) {

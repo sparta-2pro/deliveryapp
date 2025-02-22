@@ -54,8 +54,12 @@ public class CartServiceImpl implements CartService {
         // CartMenu 엔티티 생성
         CartMenu cartMenu = cartMenuDto.toEntity(menu, cart);
 
+        cartMenuRepository.save(cartMenu);
+
         // 장바구니에 메뉴 추가
         cart.getCartMenus().add(cartMenu);
+
+        cartRepository.save(cart);
 
     }
 
@@ -115,7 +119,7 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "장바구니를 찾을 수 없습니다."));
 
         int totalPrice = cart.getCartMenus().stream()
-                .mapToInt(cartMenu -> cartMenu.getQuantity() * cartMenu.getMenu().getPrice()).sum();
+                .mapToInt(CartMenu::getTotalPrice).sum();
         return totalPrice;
     }
 }

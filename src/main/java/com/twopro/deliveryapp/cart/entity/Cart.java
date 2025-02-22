@@ -29,10 +29,12 @@ public class Cart {
 
     @PrePersist
     public void generateId() {
-        this.cartId = UUID.randomUUID();
+        if (this.cartId == null) {
+            this.cartId = UUID.randomUUID();
+        }
     }
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CartMenu> cartMenus = new ArrayList<>();  // CartMenu 리스트
 
 }

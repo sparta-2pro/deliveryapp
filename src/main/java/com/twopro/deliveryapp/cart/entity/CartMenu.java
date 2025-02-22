@@ -21,14 +21,14 @@ public class CartMenu {
     @UuidGenerator
     private UUID cartMenuId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
     private int quantity;
-    private int totalPrice;
+    private int totalPrice; // 각 메뉴의 총 가격
 }
