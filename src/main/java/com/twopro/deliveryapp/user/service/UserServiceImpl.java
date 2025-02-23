@@ -11,6 +11,7 @@ import com.twopro.deliveryapp.user.jwt.JwtUtil;
 import com.twopro.deliveryapp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,11 @@ public class UserServiceImpl implements UserService {
         // 로그인 로직 구현
         User user = userRepository.findByEmail(loginRequestDto.getEmail())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디 또는 비밀번호가 틀렸습니다."));
+
+        // 비활성화된 계정 확인
+        if (user.getDeleted_at() != null) {
+            throw new DisabledException("비활성화된 계정입니다. 관리자에게 문의하세요.");
+        }
 
         // 비밀번호 체크
         if (passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {

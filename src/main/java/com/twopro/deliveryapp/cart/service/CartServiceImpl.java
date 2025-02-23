@@ -27,17 +27,12 @@ public class CartServiceImpl implements CartService {
     private final UserRepository userRepository;
     private final CartMenuRepository cartMenuRepository;
 
-    // user_id로 장바구니 조회
+    // 내 장바구니 조회
     @Override
     public Cart getCartByUserId(Long userId) {
-        Cart cart = cartRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "장바구니가 존재하지 않습니다."));
-
-        if (cart.getCartMenus().isEmpty()) {
-            throw new CustomException(HttpStatus.NO_CONTENT, "장바구니가 비어 있습니다.");
-        }
-
-        return cart;
+        // 장바구니가 없으면 빈 Cart 객체를 반환
+        return cartRepository.findByUser_UserId(userId)
+                .orElse(new Cart());
     }
 
     // 장바구니에 메뉴 추가
@@ -48,19 +43,29 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findByCartId(cartId)
                 .orElseThrow(() -> new RuntimeException("장바구니를 찾을 수 없습니다."));
         // 메뉴 조회
-        Menu menu = menuRepository.findMenuById(cartMenuDto.getCartMenuId())
+        Menu menu = menuRepository.findMenuById(cartMenuDto.getMenuId())
                 .orElseThrow(() -> new RuntimeException("메뉴를 찾을 수 없습니다."));
 
-        // CartMenu 엔티티 생성
-        CartMenu cartMenu = cartMenuDto.toEntity(menu, cart);
+        // 장바구니에서 해당 메뉴가 이미 있는지 확인
+        CartMenu existingCartMenu = cart.findExistingCartMenuByMenuId(menu.getMenuId());
 
-        // 장바구니에 메뉴 추가
-        cart.getCartMenus().add(cartMenu);
+        if (existingCartMenu != null) {
+            // 이미 장바구니에 있으면 수량만 증가시킴
+            existingCartMenu.setQuantity(existingCartMenu.getQuantity() + cartMenuDto.getQuantity());
+            existingCartMenu.setTotalPrice(existingCartMenu.getQuantity() * menu.getPrice()); // 총 가격 갱신
+        } else {
+            // 없으면 새로 CartMenu 추가
+            CartMenu cartMenu = cartMenuDto.toEntity(menu, cart);
+            // 장바구니에 메뉴 추가
+            cart.getCartMenus().add(cartMenu);
+            cartMenuRepository.save(cartMenu);
+        }
+        cartRepository.save(cart);
 
     }
 
     @Override
-    public Cart getOrCreatecart(Long userId) {
+    public Cart getOrCreateCart(Long userId) {
         // 현재 사용자에 해당하는 장바구니를 찾거나 새로 생성
         Cart cart = cartRepository.findByUser_UserId(userId).orElse(null);
         if (cart == null) {
@@ -80,11 +85,15 @@ public class CartServiceImpl implements CartService {
     // 메뉴 수량 변경
     @Override
     public void updateMenuQuantity(UUID cartId, UUID menuId, int quantity) {
+        System.out.println("Updating menu quantity..."); // 디버깅용 로그
         CartMenu cartMenu = cartMenuRepository.findByCart_CartIdAndMenu_MenuId(cartId, menuId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 메뉴가 장바구니에 없습니다."));
+        System.out.println("Found cartMenu: " + cartMenu); // cartMenu가 제대로 조회됐는지 확인
 
         cartMenu.setQuantity(quantity);
         cartMenuRepository.save(cartMenu);
+        System.out.println("Updated quantity: " + cartMenu.getQuantity()); // 업데이트된 quantity 확인
+
     }
 
     // 장바구니에 메뉴 제거
@@ -102,20 +111,23 @@ public class CartServiceImpl implements CartService {
 
     // 장바구니 비우기
     @Override
-    public void clearCart(UUID cartId) {
-        Cart cart = cartRepository.findByCartId(cartId)
+    public void clearCartByUser(Long userId) {
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "장바구니를 찾을 수 없습니다."));
-        cartMenuRepository.deleteAllByCart_CartId(cartId);
+        cart.getCartMenus().clear();
+        cartRepository.save(cart);
     }
 
-    // 총 수량
+    // 총 가격
     @Override
-    public int calculateTotalPrice(UUID cartId) {
-        Cart cart = cartRepository.findByCartId(cartId)
+    public int calculateTotalPrice(Long userId) {
+        // userId로 장바구니 찾기
+        Cart cart = cartRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "장바구니를 찾을 수 없습니다."));
 
+        // 장바구니 메뉴들의 총 가격 계산
         int totalPrice = cart.getCartMenus().stream()
-                .mapToInt(cartMenu -> cartMenu.getQuantity() * cartMenu.getMenu().getPrice()).sum();
+                .mapToInt(CartMenu::getTotalPrice).sum();
         return totalPrice;
     }
 }

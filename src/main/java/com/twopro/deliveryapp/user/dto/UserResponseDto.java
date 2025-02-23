@@ -20,7 +20,7 @@ public class UserResponseDto extends UserDto {
     public UserResponseDto(User user) {
         super(user);
         this.role = user.getRole();
-        this.address = new AddressDto();
+        this.address = user.getAddress() != null ? AddressDto.of(user.getAddress()) : null;
     }
 
 }

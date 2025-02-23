@@ -5,6 +5,7 @@ import com.twopro.deliveryapp.user.dto.*;
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.exception.CustomException;
 import com.twopro.deliveryapp.user.jwt.JwtUtil;
+import com.twopro.deliveryapp.user.security.UserDetailsImpl;
 import com.twopro.deliveryapp.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 @Slf4j
@@ -66,41 +69,68 @@ public class UserController {
 
     // 로그아웃
     @PostMapping("/auth/logout")
-    public ResponseEntity<SingleResponse<String>> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public ResponseEntity<SingleResponse<String>> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            jwtUtil.validateToken(token);  // 토큰 유효성 검사
-            // 여기에 토큰 만료 처리 로직 추가 고민
+            String username = userDetails.getUsername();
+            // 여기에 토큰 만료 처리 로직 추가 고민 -> 클라이언트에서
             return ResponseEntity.ok(new SingleResponse<>("로그아웃 성공"));
         } catch (CustomException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(new SingleResponse<>(e.getMessage()));
         }
     }
 
-    // 회원 정보 조회
-    @GetMapping("/auth/{email}")
-    public ResponseEntity<SingleResponse<UserResponseDto>> getUserByEmail(@PathVariable String email) {
+    // 내 정보 조회
+    @GetMapping("/auth/my-info")
+    public ResponseEntity<SingleResponse<UserResponseDto>> getUserByEmail(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        String email = userDetails.getUsername();
         User user = userService.getUserByEmail(email);
         if (user == null) {
             throw new CustomException(HttpStatus.NOT_FOUND, "해당 사용자가 존재하지 않습니다.");
         }
+        if (userDetails.getUser().getDeleted_at() != null) {
+            throw new CustomException(HttpStatus.FORBIDDEN, "이미 비활성화된 계정입니다.");
+        }
+
         UserResponseDto responseDto = new UserResponseDto(user);
         return ResponseEntity.ok(new SingleResponse<>(responseDto));
     }
 
     // 회원 정보 수정
-    @PatchMapping("/auth/{user_id}/update")
+    @PatchMapping("/auth/update")
     public ResponseEntity<SingleResponse<UserResponseDto>> updateUser(
-            @PathVariable Long user_id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody @Valid UserUpdateRequestDto updateDto) {
-        UserResponseDto updatedUser = userService.updateUser(user_id, updateDto);
+        Long userId = userDetails.getUser().getUserId();
+        UserResponseDto updatedUser = userService.updateUser(userId, updateDto);
         return ResponseEntity.ok(new SingleResponse<>(updatedUser));
     }
 
     // 회원 탈퇴 비활성화
-    @PatchMapping("/auth/{user_id}/delete")
-    public ResponseEntity<SingleResponse<String>> deleteUser(@PathVariable Long user_id) {
-        userService.deleteUser(user_id);
+    @PatchMapping("/auth/delete")
+    public ResponseEntity<SingleResponse<String>> deleteUser(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails.getUser().getDeleted_at() != null) {
+            throw new CustomException(HttpStatus.FORBIDDEN, "이미 비활성화된 계정입니다.");
+        }
+        Long userId = userDetails.getUser().getUserId();
+        userService.deleteUser(userId);
         return ResponseEntity.ok(new SingleResponse<>("회원 비활성화 성공!"));
     }
 
+    /* test code
+    @GetMapping("/auth/me")
+    public ResponseEntity<String> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println("현재 로그인된 사용자: " + userDetails.getUsername());
+        System.out.println("현재 사용자 권한: " + userDetails.getAuthorities());
+
+        return ResponseEntity.ok("현재 권한: " + userDetails.getAuthorities());
+    }
+
+    @GetMapping("/owner-only")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
+    public ResponseEntity<String> ownerOnlyAccess(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok("OWNER 권한이 있습니다.");
+    }
+    */
 }
