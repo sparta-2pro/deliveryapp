@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.store.entity;
 
+import com.twopro.deliveryapp.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @Table(name = "p_delivery_area")
-public class DeliveryArea {
+public class DeliveryArea extends BaseEntity {
 
     @Id
     @GeneratedValue

@@ -3,6 +3,7 @@ package com.twopro.deliveryapp.store.controller;
 import com.twopro.deliveryapp.common.dto.SingleResponse;
 import com.twopro.deliveryapp.common.dto.MultiResponse;
 import com.twopro.deliveryapp.store.entity.DeliveryArea;
+import com.twopro.deliveryapp.store.entity.StoreDeliveryArea;
 import com.twopro.deliveryapp.store.service.StoreDeliveryAreaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

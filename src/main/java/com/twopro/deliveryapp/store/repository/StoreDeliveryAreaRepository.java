@@ -4,6 +4,7 @@ import com.twopro.deliveryapp.store.entity.DeliveryArea;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.entity.StoreDeliveryArea;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,5 +18,9 @@ public interface StoreDeliveryAreaRepository extends JpaRepository<StoreDelivery
 
     List<StoreDeliveryArea> findByStore(Store store);
 
-    List<StoreDeliveryArea> findByDeliveryAreaId(UUID deliveryAreaId);
+    @Query("SELECT s FROM StoreDeliveryArea s WHERE s.store = :store AND s.deleted_at IS NULL")
+    List<StoreDeliveryArea> findByStoreAndDeletedAtIsNull(Store store);
+
+    @Query("SELECT s FROM StoreDeliveryArea s WHERE s.deliveryArea.id = :deliveryAreaId AND s.deleted_at IS NULL")
+    List<StoreDeliveryArea> findByDeliveryAreaIdAndDeletedAtIsNull(UUID deliveryAreaId);
 }
