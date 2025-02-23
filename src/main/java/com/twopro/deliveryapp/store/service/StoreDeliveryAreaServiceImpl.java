@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.store.service;
 
+import com.twopro.deliveryapp.store.dto.StoreDeliveryAreaDto;
 import com.twopro.deliveryapp.store.entity.DeliveryArea;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.entity.StoreDeliveryArea;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,14 +54,22 @@ public class StoreDeliveryAreaServiceImpl implements StoreDeliveryAreaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DeliveryArea> getDeliveryAreasByStore(UUID storeId) {
+    public List<StoreDeliveryAreaDto> getDeliveryAreasByStore(UUID storeId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 가게를 찾을 수 없습니다."));
 
         return storeDeliveryAreaRepository.findByStoreAndDeletedAtIsNull(store)
                 .stream()
-                .map(StoreDeliveryArea::getDeliveryArea)
-                .toList();
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public StoreDeliveryAreaDto convertToDto(StoreDeliveryArea storeDeliveryArea) {
+        StoreDeliveryAreaDto dto = new StoreDeliveryAreaDto();
+        dto.setId(storeDeliveryArea.getId());
+        dto.setStoreName(storeDeliveryArea.getStore().getName());
+        dto.setDeliveryAreaName(storeDeliveryArea.getDeliveryArea().getName());
+        return dto;
     }
 
     @Override

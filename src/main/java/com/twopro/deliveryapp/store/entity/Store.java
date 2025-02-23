@@ -99,10 +99,6 @@ public class Store extends BaseEntity {
         if (address != null) this.address = address;
     }
 
-    public void deleteStore() {
-        this.status = StoreStatus.DELETED;
-    }
-
     public UUID getCategoryId() {
         return this.category != null ? this.category.getId() : null;
     }

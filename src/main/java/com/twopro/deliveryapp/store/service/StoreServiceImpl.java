@@ -59,14 +59,14 @@ public class StoreServiceImpl implements StoreService {
     @Override
     @Transactional(readOnly = true)
     public List<StoreResponseDto> getAllStores() {
-        List<Store> stores = storeRepository.findByStatusNot(StoreStatus.DELETED);
+        List<Store> stores = storeRepository.findAllNotDeleted();
         return stores.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
     public StoreResponseDto getStoreById(UUID id) {
-        Store store = storeRepository.findByStoreIdAndStatusNot(id, StoreStatus.DELETED)
+        Store store = storeRepository.findByStoreIdAndNotDeleted(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 가게를 찾을 수 없거나 삭제되었습니다."));
         return convertToDto(store);
     }
@@ -115,13 +115,12 @@ public class StoreServiceImpl implements StoreService {
     @Transactional
     public void deleteStore(UUID id) {
         Store store = storeRepository.findById(id).orElseThrow();
-        store.deleteStore();
         store.delete();
         storeRepository.save(store);
     }
 
     private void validateStoreStatus(StoreStatus status) {
-        if (status == null || !(status == StoreStatus.OPEN || status == StoreStatus.CLOSED || status == StoreStatus.DELETED)) {
+        if (status == null || !(status == StoreStatus.OPEN || status == StoreStatus.CLOSED)) {
             throw new IllegalArgumentException("유효하지 않은 상태 값입니다.");
         }
     }

@@ -1,6 +1,6 @@
 package com.twopro.deliveryapp.store.service;
 
-import com.twopro.deliveryapp.store.entity.DeliveryArea;
+import com.twopro.deliveryapp.store.dto.StoreDeliveryAreaDto;
 import com.twopro.deliveryapp.store.entity.StoreDeliveryArea;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface StoreDeliveryAreaService {
 
     void addStoreDeliveryAreas(UUID storeId, List<UUID> deliveryAreaIds);
 
-    List<DeliveryArea> getDeliveryAreasByStore(UUID storeId);
+    List<StoreDeliveryAreaDto> getDeliveryAreasByStore(UUID storeId);
 
     void deleteStoreDeliveryArea(UUID storeId, UUID deliveryAreaId);
 

@@ -1,7 +1,7 @@
 package com.twopro.deliveryapp.store.controller;
 
-import com.twopro.deliveryapp.common.dto.SingleResponse;
 import com.twopro.deliveryapp.common.dto.MultiResponse;
+import com.twopro.deliveryapp.common.dto.SingleResponse;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
 import com.twopro.deliveryapp.store.dto.StoreResponseDto;
 import com.twopro.deliveryapp.store.entity.Store;

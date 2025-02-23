@@ -1,9 +1,8 @@
 package com.twopro.deliveryapp.store.controller;
 
-import com.twopro.deliveryapp.common.dto.SingleResponse;
 import com.twopro.deliveryapp.common.dto.MultiResponse;
-import com.twopro.deliveryapp.store.entity.DeliveryArea;
-import com.twopro.deliveryapp.store.entity.StoreDeliveryArea;
+import com.twopro.deliveryapp.common.dto.SingleResponse;
+import com.twopro.deliveryapp.store.dto.StoreDeliveryAreaDto;
 import com.twopro.deliveryapp.store.service.StoreDeliveryAreaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +27,8 @@ public class StoreDeliveryAreaController {
 
     // 가게의 배달 가능 지역 조회
     @GetMapping("/{storeId}")
-    public ResponseEntity<MultiResponse<DeliveryArea>> getDeliveryAreasByStore(@PathVariable UUID storeId) {
-        List<DeliveryArea> deliveryAreas = storeDeliveryAreaService.getDeliveryAreasByStore(storeId);
+    public ResponseEntity<MultiResponse<StoreDeliveryAreaDto>> getDeliveryAreasByStore(@PathVariable UUID storeId) {
+        List<StoreDeliveryAreaDto> deliveryAreas = storeDeliveryAreaService.getDeliveryAreasByStore(storeId);
         return ResponseEntity.ok(MultiResponse.success(deliveryAreas));
     }
 
