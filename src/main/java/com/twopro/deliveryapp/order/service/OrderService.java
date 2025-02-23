@@ -4,6 +4,7 @@ import com.twopro.deliveryapp.order.dto.FindOrderResponseDto;
 import com.twopro.deliveryapp.order.dto.OrderRequestDto;
 import com.twopro.deliveryapp.order.dto.OrderStatusRequestDto;
 import com.twopro.deliveryapp.order.dto.PaymentRequestDto;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +16,7 @@ public interface OrderService {
 
     FindOrderResponseDto findOrder(UUID orderId, Long userId);
 
-    List<FindOrderResponseDto> findOrders(Long userId, int page, Integer size, String sortBy, Boolean isAsc);
+    Page<FindOrderResponseDto> findOrders(Long userId, int page, Integer size, String sortBy, Boolean isAsc);
 
     void deleteOrder(UUID orderId, Long userId);
 

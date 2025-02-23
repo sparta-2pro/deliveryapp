@@ -75,8 +75,6 @@ public class OrderServiceImpl implements OrderService {
         }
 
         //최소주문금액 확인 로직
-        System.out.println(findStore.getMinimumOrderPrice());
-        System.out.println(totalPrice);
         if (findStore.getMinimumOrderPrice() > totalPrice) {
             throw new OrderStoreMinPriceException("최소 주문 금액을 맞춰주세요", totalPrice, userId);
         }
@@ -98,6 +96,10 @@ public class OrderServiceImpl implements OrderService {
             throw new StoreNoOpenException("영업중인 가게가 아닙니다.");
         }
 
+        //======================================================================================================================
+        //배달가능 지역 로직 넣어야 됌
+        //======================================================================================================================
+
         List<Menu> findMenus = menuService.findByMenuIdIn(requestDto.getMenus().stream().map(CreateOrderMenuDto::getMenuId).toList());
         Address address = Address.of(requestDto.getAddress());
 
@@ -117,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
         // 결제 처리
         Payment payment = paymentService.createPayment(totalPrice, requestDto.getPaymentProvider(), userId);
         // 주문 생성
-        Order order = Order.createOrder(user, orderItems, requestDto.getOrderType(), address, requestDto.getMessage(), payment);
+        Order order = Order.createOrder(user, orderItems, requestDto.getOrderType(), address, requestDto.getMessage(), payment, findStore);
         orderRepository.save(order);
 
     }
@@ -156,26 +158,25 @@ public class OrderServiceImpl implements OrderService {
      */
 
     @Override
-    public List<FindOrderResponseDto> findOrders(Long userId, int page, Integer size, String sortBy, Boolean isAsc) {
+    public Page<FindOrderResponseDto> findOrders(Long userId, int page, Integer size, String sortBy, Boolean isAsc) {
         Pageable pageable = createPageable(page, size, sortBy, isAsc);
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("유저Id와 일치하는 유저 정보가 없습니다.", userId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("유저Id와 일치하는 유저 정보가 없습니다.", userId));
 
         Page<Order> findOrders = orderRepository.findAllByUser(user, pageable);
 
-        return findOrders.stream()
-                .peek(order -> validateOrderOwnership(userId, order)) // 주문자 확인
-                .map(order -> new FindOrderResponseDto(
-                        order.getId(),
-                        AddressDto.of(order.getAddress()),
-                        order.getMessage(),
-                        order.getOrderType(),
-                        order.getTotalPrice(),
-                        order.getOrderItems().stream()
-                                .map(oi -> new OrderMenuResponseDto(oi.getMenu().getName(), oi.getOrderPrice(), oi.getCount()))
-                                .toList()
-                ))
-                .toList();
+        return findOrders.map(order -> new FindOrderResponseDto(
+                order.getId(),
+                AddressDto.of(order.getAddress()),
+                order.getMessage(),
+                order.getOrderType(),
+                order.getTotalPrice(),
+                order.getOrderItems().stream()
+                        .map(oi -> new OrderMenuResponseDto(oi.getMenu().getName(), oi.getOrderPrice(), oi.getCount()))
+                        .toList()
+        ));
     }
+
 
     /**
      * 주문삭제
@@ -241,9 +242,13 @@ public class OrderServiceImpl implements OrderService {
      * Pageable 객체 생성 메서드
      */
     private Pageable createPageable(int page, Integer size, String sortBy, Boolean isAsc) {
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return pageable;
+        Sort.Direction direction = (isAsc != null && isAsc) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        String defaultSortBy = "created_at";
+        Sort sort = (sortBy == null || sortBy.trim().isEmpty())
+                ? Sort.by(direction, defaultSortBy)
+                : Sort.by(direction, sortBy);
+
+        return PageRequest.of(page, size, sort);
     }
 }

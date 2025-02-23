@@ -44,7 +44,7 @@ public class Order extends BaseEntity {
     private OrderStatus orderStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "store_id")
     @Setter
     private Store store;
 
@@ -74,12 +74,13 @@ public class Order extends BaseEntity {
         orderItem.setOrder(this);
     }
 
-    public static Order createOrder(User user, List<OrderItem> orderItems, OrderType orderType, Address address, String message, Payment payment) {
+    public static Order createOrder(User user, List<OrderItem> orderItems, OrderType orderType, Address address, String message, Payment payment, Store store) {
         Order order = new Order();
         order.payment = payment;
         order.user = user;
         order.address = address;
         order.message = message;
+        order.store = store;
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
         }
