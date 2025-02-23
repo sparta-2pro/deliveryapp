@@ -15,11 +15,18 @@ import java.util.stream.Collectors;
 public class CartResponseDto {
     private UUID cartId;
     private List<CartMenuDto> cartMenus;
+    private String message;
 
     public CartResponseDto(Cart cart) {
         this.cartId = cart.getCartId();
         this.cartMenus = cart.getCartMenus().stream()
                 .map(CartMenuDto::new)
                 .collect(Collectors.toList());
+
+        if (this.cartMenus.isEmpty()) {
+            this.message = "장바구니가 비어있습니다!";
+        } else {
+            this.message = null; // 장바구니에 아이템이 있을 때는 메시지 없애기
+        }
     }
 }

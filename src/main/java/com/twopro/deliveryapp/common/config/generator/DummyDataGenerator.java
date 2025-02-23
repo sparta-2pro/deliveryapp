@@ -1,5 +1,9 @@
 package com.twopro.deliveryapp.common.config.generator;
 
+import com.twopro.deliveryapp.cart.entity.Cart;
+import com.twopro.deliveryapp.cart.entity.CartMenu;
+import com.twopro.deliveryapp.cart.repository.CartMenuRepository;
+import com.twopro.deliveryapp.cart.repository.CartRepository;
 import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.common.enumType.PaymentProvider;
@@ -41,7 +45,9 @@ public class DummyDataGenerator {
                                              UserRepository userRepository,
                                              OrderRepository orderRepository,
                                              CategoryRepository categoryRepository,
-                                             PaymentRepository paymentRepository) {
+                                             PaymentRepository paymentRepository,
+                                             CartRepository cartRepository,
+                                             CartMenuRepository cartMenuRepository) {
         return args -> {
             Random random = new Random();
 
@@ -94,7 +100,7 @@ public class DummyDataGenerator {
             storeRepository.saveAll(stores);
 
             List<Menu> menus = new ArrayList<>();
-            for (int i = 1; i <= 1000; i++) {
+            for (int i = 1; i <= 10; i++) {
                 Store randomStore = stores.get(random.nextInt(stores.size()));
                 String menuName = String.format("Menu #%03d", i);
                 Menu menu = Menu.builder()
@@ -103,7 +109,7 @@ public class DummyDataGenerator {
                         .status(MenuStatus.AVAILABLE)
                         .imageUrl("http://example.com/menu" + i + ".jpg")
                         .description("Description for " + menuName)
-                        .price(5000 + random.nextInt(25000)) // 5000 ~ 29999
+                        .price(5000 + random.nextInt(9999)) // 5000 ~ 29999
                         .build();
                 menus.add(menu);
             }
@@ -139,6 +145,28 @@ public class DummyDataGenerator {
                 orders.add(order);
             }
             orderRepository.saveAll(orders);
+
+            List<Cart> carts = new ArrayList<>();
+            for (User user : users) {
+                Cart cart = new Cart();
+                cart.setUser(user);
+                carts.add(cartRepository.save(cart));
+            }
+
+            List<CartMenu> cartMenus = new ArrayList<>();
+            for (Cart cart : carts) {
+                for (int i = 0; i < 2; i++) { // 각 장바구니에 2개의 메뉴 추가 (임의로 설정)
+                    Menu randomMenu = menus.get(random.nextInt(menus.size()));
+                    CartMenu cartMenu = new CartMenu();
+                    cartMenu.setCart(cart);
+                    cartMenu.setMenu(randomMenu);
+                    cartMenu.setQuantity(random.nextInt(2) + 1);  // 1 ~ 2개씩 추가
+                    // totalPrice 계산 (메뉴 가격 * 수량)
+                    int totalPrice = cartMenu.getMenu().getPrice() * cartMenu.getQuantity();
+                    cartMenu.setTotalPrice(totalPrice);
+                    cartMenus.add(cartMenuRepository.save(cartMenu));
+                }
+            }
         };
     }
 }

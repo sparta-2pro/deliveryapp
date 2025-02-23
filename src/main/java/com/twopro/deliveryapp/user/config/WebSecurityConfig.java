@@ -52,12 +52,12 @@ public class WebSecurityConfig {
                         // 인증 없이 접근 가능 경로 (회원가입, 로그인)
                         .requestMatchers("/api/v1/users/**").permitAll()
                         // 권한을 가진 사용자만 접근 가능 경로
-                        .requestMatchers("/api/v1/auth/**", "/api/v1/orders/**").hasAnyRole("CUSTOMER", "OWNER", "ADMIN")
+                        .requestMatchers("/api/v1/auth/**").hasAnyRole("CUSTOMER", "OWNER", "ADMIN")
+                        .requestMatchers("/api/v1/carts/**", "/api/v1/orders/**").hasRole("CUSTOMER")
                         .requestMatchers("/api/v1/stores/**").hasAnyRole("OWNER","ADMIN")
-                        .requestMatchers("/api/v1/carts/**").hasRole("CUSTOMER")
-                        .requestMatchers("/api/v1/ai/**").hasRole("OWNER")
+                        .requestMatchers("/api/v1/ai/**", "/api/v1/stores/**","/api/v1/orders/{orderId}/status").hasRole("OWNER")
                         // ADMIN 권한을 가진 사용자만 접근 가능한 경로
-                        //.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
                         //.anyRequest().permitAll());
 
