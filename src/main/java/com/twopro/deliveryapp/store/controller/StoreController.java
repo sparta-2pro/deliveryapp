@@ -3,6 +3,7 @@ package com.twopro.deliveryapp.store.controller;
 import com.twopro.deliveryapp.common.dto.SingleResponse;
 import com.twopro.deliveryapp.common.dto.MultiResponse;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
+import com.twopro.deliveryapp.store.dto.StoreResponseDto;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -28,15 +29,15 @@ public class StoreController {
 
     // 모든 가게 조회
     @GetMapping
-    public ResponseEntity<MultiResponse<Store>> getAllStores() {
-        List<Store> stores = storeService.getAllStores();
+    public ResponseEntity<MultiResponse<StoreResponseDto>> getAllStores() {
+        List<StoreResponseDto> stores = storeService.getAllStores();
         return ResponseEntity.ok(MultiResponse.success(stores));
     }
 
     // 해당 가게 조회
     @GetMapping("/{id}")
-    public ResponseEntity<SingleResponse<Store>> getStoreById(@PathVariable UUID id) {
-        Store store = storeService.getStoreById(id);
+    public ResponseEntity<SingleResponse<StoreResponseDto>> getStoreById(@PathVariable UUID id) {
+        StoreResponseDto store = storeService.getStoreById(id);
         return ResponseEntity.ok(SingleResponse.success(store));
     }
 

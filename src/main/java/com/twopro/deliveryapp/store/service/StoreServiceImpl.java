@@ -1,10 +1,11 @@
 package com.twopro.deliveryapp.store.service;
 
+import com.twopro.deliveryapp.common.dto.AddressDto;
 import com.twopro.deliveryapp.common.entity.Address;
-import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.common.enumType.StoreType;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
+import com.twopro.deliveryapp.store.dto.StoreResponseDto;
 import com.twopro.deliveryapp.store.entity.Category;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.repository.CategoryRepository;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,15 +58,33 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Store> getAllStores() {
-        return storeRepository.findByStatusNot(StoreStatus.DELETED);
+    public List<StoreResponseDto> getAllStores() {
+        List<Store> stores = storeRepository.findByStatusNot(StoreStatus.DELETED);
+        return stores.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Store getStoreById(UUID id) {
-        return storeRepository.findByStoreIdAndStatusNot(id, StoreStatus.DELETED)
+    public StoreResponseDto getStoreById(UUID id) {
+        Store store = storeRepository.findByStoreIdAndStatusNot(id, StoreStatus.DELETED)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 가게를 찾을 수 없거나 삭제되었습니다."));
+        return convertToDto(store);
+    }
+
+    private StoreResponseDto convertToDto(Store store) {
+        StoreResponseDto dto = new StoreResponseDto();
+        dto.setId(store.getStoreId());
+        dto.setName(store.getName());
+        dto.setPictureUrl(store.getPictureUrl());
+        dto.setPhone(store.getPhone());
+        dto.setAddress(AddressDto.of(store.getAddress()));
+        dto.setOperatingHours(store.getOperatingHours());
+        dto.setClosedDays(store.getClosedDays());
+        dto.setStatus(store.getStatus().name());
+        dto.setDeliveryType(store.getDeliveryType());
+        dto.setMinimumOrderPrice(store.getMinimumOrderPrice());
+        dto.setDeliveryTip(store.getDeliveryTip());
+        return dto;
     }
 
     @Override

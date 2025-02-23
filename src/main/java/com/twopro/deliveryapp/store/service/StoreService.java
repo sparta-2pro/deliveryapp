@@ -1,6 +1,7 @@
 package com.twopro.deliveryapp.store.service;
 
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
+import com.twopro.deliveryapp.store.dto.StoreResponseDto;
 import com.twopro.deliveryapp.store.entity.Store;
 
 import java.util.List;
@@ -13,9 +14,9 @@ public interface StoreService {
 
     Store createStore(StoreRequestDto dto);
 
-    List<Store> getAllStores();
+    List<StoreResponseDto> getAllStores();
 
-    Store getStoreById(UUID id);
+    StoreResponseDto getStoreById(UUID id);
 
     void updateStore(UUID id, StoreRequestDto dto);
 
