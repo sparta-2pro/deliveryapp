@@ -28,7 +28,9 @@ public class Payment extends BaseEntity {
     private UUID id;
 
     private int totalPrice;
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+    @Enumerated(EnumType.STRING)
     private PaymentProvider paymentProvider;
 
     public static Payment createPayment(int totalPrice, PaymentStatus paymentStatus, PaymentProvider paymentProvider) {
