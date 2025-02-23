@@ -47,11 +47,11 @@ public class AiRepositoryImpl implements AiRepository {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (startDate != null) {
-            builder.and(ai.created_at.goe(startDate.atStartOfDay()));
+            builder.and(ai.createdAt.goe(startDate.atStartOfDay()));
         }
 
         if (endDate != null) {
-            builder.and(ai.created_at.loe(endDate.atTime(23, 59, 59)));
+            builder.and(ai.createdAt.loe(endDate.atTime(23, 59, 59)));
         }
 
         if (menuName != null) {
@@ -65,13 +65,13 @@ public class AiRepositoryImpl implements AiRepository {
                                 AiResponseDto.class,
                                 ai.question,
                                 ai.aiAnswer,
-                                ai.created_at
+                                ai.createdAt
                         )
                 )
                 .from(ai)
                 .leftJoin(ai.menu, menu)
                 .where(builder)
-                .orderBy(ai.created_at.desc())
+                .orderBy(ai.createdAt.desc())
                 .fetch();
     }
 }

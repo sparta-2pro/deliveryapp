@@ -11,7 +11,7 @@ public record AiResponseDto (
 ) {
 
     public static AiResponseDto from(Ai ai) {
-        // created_at 왜 스네이크 케이스지..?
-        return new AiResponseDto(ai.getQuestion(), ai.getAiAnswer(), ai.getCreated_at());
+        // createdAt 왜 스네이크 케이스지..?
+        return new AiResponseDto(ai.getQuestion(), ai.getAiAnswer(), ai.getCreatedAt());
     }
 }
