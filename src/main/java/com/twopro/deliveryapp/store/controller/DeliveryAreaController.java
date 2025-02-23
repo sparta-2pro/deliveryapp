@@ -81,7 +81,7 @@ public class DeliveryAreaController {
             dto.setOperatingHours(store.getOperatingHours());
             dto.setClosedDays(store.getClosedDays());
             dto.setStatus(store.getStatus().toString());
-            dto.setDeliveryType(store.getDeliveryType().toString());
+            dto.setDeliveryType(store.getDeliveryType());
             dto.setMinimumOrderPrice(store.getMinimumOrderPrice());
             dto.setDeliveryTip(store.getDeliveryTip());
             return dto;

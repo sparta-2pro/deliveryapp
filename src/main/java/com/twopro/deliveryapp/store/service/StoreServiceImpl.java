@@ -3,6 +3,7 @@ package com.twopro.deliveryapp.store.service;
 import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.common.enumType.StoreStatus;
+import com.twopro.deliveryapp.common.enumType.StoreType;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
 import com.twopro.deliveryapp.store.entity.Category;
 import com.twopro.deliveryapp.store.entity.Store;
@@ -94,6 +95,7 @@ public class StoreServiceImpl implements StoreService {
     @Transactional
     public void deleteStore(UUID id) {
         Store store = storeRepository.findById(id).orElseThrow();
+        store.deleteStore();
         store.delete();
         storeRepository.save(store);
     }
@@ -104,8 +106,8 @@ public class StoreServiceImpl implements StoreService {
         }
     }
 
-    private void validateDeliveryType(OrderType deliveryType) {
-        if (deliveryType == null || !(deliveryType == OrderType.DELIVERY || deliveryType == OrderType.PICKUP)) {
+    private void validateDeliveryType(StoreType deliveryType) {
+        if (deliveryType == null || !(deliveryType == StoreType.DELIVERY || deliveryType == StoreType.PICKUP || deliveryType == StoreType.DELIVERY_AND_PICKUP)) {
             throw new IllegalArgumentException("유효하지 않은 배달 타입입니다.");
         }
     }

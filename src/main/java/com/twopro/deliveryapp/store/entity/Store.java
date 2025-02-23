@@ -2,8 +2,8 @@ package com.twopro.deliveryapp.store.entity;
 
 import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.entity.BaseEntity;
-import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.common.enumType.StoreStatus;
+import com.twopro.deliveryapp.common.enumType.StoreType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,7 +57,7 @@ public class Store extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 255, nullable = false)
-    private OrderType deliveryType;
+    private StoreType deliveryType;
 
     @Column(nullable = true)
     private Integer minimumOrderPrice;
@@ -69,7 +69,7 @@ public class Store extends BaseEntity {
     private Address address;
 
     @Builder
-    public Store(Category category, String name, String pictureUrl, String phone, String operatingHours, String closedDays, int rating, int reviewCount, StoreStatus status, OrderType deliveryType, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
+    public Store(Category category, String name, String pictureUrl, String phone, String operatingHours, String closedDays, int rating, int reviewCount, StoreStatus status, StoreType deliveryType, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
         this.category = category;
         this.name = name;
         this.pictureUrl = pictureUrl;
@@ -85,7 +85,7 @@ public class Store extends BaseEntity {
         this.address = address;
     }
 
-    public void updateStoreDetails(String name, String phone, String operatingHours, String closedDays, String pictureUrl, Category category, StoreStatus status, OrderType deliveryType, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
+    public void updateStoreDetails(String name, String phone, String operatingHours, String closedDays, String pictureUrl, Category category, StoreStatus status, StoreType deliveryType, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
         if (name != null) this.name = name;
         if (phone != null) this.phone = phone;
         if (operatingHours != null) this.operatingHours = operatingHours;
@@ -97,6 +97,10 @@ public class Store extends BaseEntity {
         if (minimumOrderPrice != null) this.minimumOrderPrice = minimumOrderPrice;
         if (deliveryTip != null) this.deliveryTip = deliveryTip;
         if (address != null) this.address = address;
+    }
+
+    public void deleteStore() {
+        this.status = StoreStatus.DELETED;
     }
 
     public UUID getCategoryId() {
