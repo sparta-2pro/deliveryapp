@@ -8,33 +8,45 @@ import com.twopro.deliveryapp.common.dto.SingleResponse;
 import com.twopro.deliveryapp.menu.dto.MenuResponseDto;
 import com.twopro.deliveryapp.menu.entity.Menu;
 import com.twopro.deliveryapp.menu.service.MenuService;
+import com.twopro.deliveryapp.user.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/carts")
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
-    private final MenuService menuService;
 
     // 장바구니 조회
-    @GetMapping("/{user_id}")
-    public ResponseEntity<SingleResponse<CartResponseDto>> getCartByUserId(@PathVariable("user_id") Long userId) {
-        Cart cart = cartService.getCartByUserId(userId);
-        return ResponseEntity.ok(new SingleResponse<>(new CartResponseDto(cart)));
+    @GetMapping("/my-cart")
+    public ResponseEntity<SingleResponse<CartResponseDto>> getCartByUser(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Cart cart = cartService.getCartByUserId(userDetails.getUser().getUserId());
+
+        // 장바구니가 비었을 때
+        if (cart == null || cart.getCartMenus().isEmpty()) {
+            return ResponseEntity.ok(new SingleResponse<>(new CartResponseDto(cart)));  // 비어있는 장바구니 메시지를 포함한 DTO 반환
+        }
+
+        CartResponseDto cartResponseDto = new CartResponseDto(cart);
+        // 로그로 확인
+        System.out.println("CartResponseDto: " + cartResponseDto.getMessage());
+        return ResponseEntity.ok(new SingleResponse<>(cartResponseDto));
     }
 
     // 장바구니에 메뉴추가
-    @PostMapping("/{user_id}/menu")
+    @PostMapping("/menus")
     public ResponseEntity<?> addMenuToCart(@RequestBody CartMenuDto cartMenuDto,
-                                           @PathVariable("user_id") Long userId) {
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         // Cart를 가져오거나 새로 생성
-        Cart cart = cartService.getOrCreatecart(userId);
+        Cart cart = cartService.getOrCreateCart(userDetails.getUser().getUserId());
         System.out.println("cartId: " + cart.getCartId());  // 디버깅용 로그 추가
 
         // 장바구니에 메뉴 추가
@@ -44,18 +56,14 @@ public class CartController {
     }
 
     // 장바구니에 메뉴 수량 변경
-    @PutMapping("/{user_id}/menu/{menu_id}")
-    public ResponseEntity<?> updateMenuQuantity(@PathVariable("user_id") Long userId,
-                                                @PathVariable("menu_id") UUID menuId,
-                                                @RequestParam int quantity){
-        Cart cart = cartService.getCartByUserId(userId);
+    @PatchMapping("/menu/{menu_id}")
+    public ResponseEntity<?> updateMenuQuantity(@PathVariable("menu_id") UUID menuId,
+                                                @RequestParam(name="quantity") int quantity,
+                                                @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        Cart cart = cartService.getCartByUserId(userDetails.getUser().getUserId());
         if (cart == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("장바구니를 찾을 수 없습니다.");
-        }
-
-        MenuResponseDto menuResponseDto = menuService.findMenuById(menuId);
-        if (menuResponseDto  == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("메뉴를 찾을 수 없습니다.");
         }
 
         cartService.updateMenuQuantity(cart.getCartId(), menuId, quantity);
@@ -74,16 +82,21 @@ public class CartController {
     }
 
     // 장바구니 비우기
-    @DeleteMapping("/{cart_id}/menu")
-    public ResponseEntity<SingleResponse<String>> clearCart(@PathVariable("cart_id") UUID cartId) {
-        cartService.clearCart(cartId);
+    @DeleteMapping("/menus")
+    public ResponseEntity<SingleResponse<String>> clearCart(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        cartService.clearCartByUser(userDetails.getUser().getUserId());
         return ResponseEntity.ok(new SingleResponse<>("장바구니가 비워졌습니다!"));
     }
 
-    // 장바구니 총 가격
-    @GetMapping("/{cart_id}/total-price")
-    public ResponseEntity<SingleResponse<Integer>> getTotalPrice(@PathVariable("cart_id") UUID cartId) {
-        int totalPrice = cartService.calculateTotalPrice(cartId);
-        return ResponseEntity.ok(new SingleResponse<>(totalPrice));
+    // 장바구니 총 가격 -> ex) 메뉴1 * 2개 + 메뉴2 * 1개 합
+    @GetMapping("/total-price")
+    public ResponseEntity<SingleResponse<String>> getTotalPrice(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // userDetails에서 userId 가져와서 calculateTotalPrice로 전달
+        int totalPrice = cartService.calculateTotalPrice(userDetails.getUser().getUserId());
+
+        // 가격 메시지 반환
+        String message = totalPrice > 0 ? totalPrice + " 원입니다. 결제하시겠습니까?" : "장바구니가 비어있습니다.";
+        return ResponseEntity.ok(new SingleResponse<>(message));
     }
 }

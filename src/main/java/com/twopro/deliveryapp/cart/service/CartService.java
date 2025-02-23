@@ -12,11 +12,12 @@ public interface CartService {
 
     void removeMenuFromCart(UUID cartId, UUID menuId);
 
-    Cart getOrCreatecart(Long userId);
+    Cart getOrCreateCart(Long userId);
 
     void updateMenuQuantity(UUID cartId, UUID menuId, int quantity);
 
-    void clearCart(UUID cartId);
+    void clearCartByUser(Long userId);
 
-    int calculateTotalPrice(UUID cartId);
+    int calculateTotalPrice(Long userId);
+
 }
