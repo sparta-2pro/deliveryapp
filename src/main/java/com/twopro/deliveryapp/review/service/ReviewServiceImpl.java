@@ -61,7 +61,7 @@ public class ReviewServiceImpl implements ReviewService {
         List<ReviewMenuDto> reviewMenuDtoList = findReview.getOrder().getOrderItems().
                 stream().map(oi -> new ReviewMenuDto(oi.getMenu().getMenuId(), oi.getMenu().getName(), oi.getOrderPrice(), oi.getCount())).toList();
         return new ReviewFindResponseDto(findReview.getId(), findReview.getUser().getNickname(), findReview.getUser().getUserId(),
-                findReview.getRating(), findReview.getContents(), reviewMenuDtoList, findReview.getCreated_at(),
+                findReview.getRating(), findReview.getContents(), reviewMenuDtoList, findReview.getCreatedAt(),
                 findReview.getOrder().getStore().getStoreId(), findReview.getOrder().getStore().getName(), findReview.getOrder().getId());
     }
 
@@ -83,7 +83,7 @@ public class ReviewServiceImpl implements ReviewService {
                     findReview.getRating(),
                     findReview.getContents(),
                     reviewMenuDtoList,
-                    findReview.getCreated_at(),
+                    findReview.getCreatedAt(),
                     findReview.getOrder().getStore().getStoreId(),
                     findReview.getOrder().getStore().getName(),
                     findReview.getOrder().getId()
@@ -131,7 +131,7 @@ public class ReviewServiceImpl implements ReviewService {
     private Pageable createPageable(int page, Integer size, String sortBy, Boolean isAsc) {
         Sort.Direction direction = (isAsc != null && isAsc) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-        String defaultSortBy = "created_at";
+        String defaultSortBy = "createdAt";
         Sort sort = (sortBy == null || sortBy.trim().isEmpty())
                 ? Sort.by(direction, defaultSortBy)
                 : Sort.by(direction, sortBy);

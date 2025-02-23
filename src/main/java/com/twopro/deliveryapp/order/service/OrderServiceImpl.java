@@ -244,7 +244,7 @@ public class OrderServiceImpl implements OrderService {
     private Pageable createPageable(int page, Integer size, String sortBy, Boolean isAsc) {
         Sort.Direction direction = (isAsc != null && isAsc) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-        String defaultSortBy = "created_at";
+        String defaultSortBy = "createdAt";
         Sort sort = (sortBy == null || sortBy.trim().isEmpty())
                 ? Sort.by(direction, defaultSortBy)
                 : Sort.by(direction, sortBy);

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Configuration
+//@Configuration
 public class DummyDataGenerator {
 
     @Bean
@@ -128,9 +128,8 @@ public class DummyDataGenerator {
                 Payment payment = Payment.createPayment(30000, PaymentStatus.SUCCESS, PaymentProvider.NH);
                 Order order = Order.createOrder(randomUser, orderItems,
                         OrderType.DELIVERY, orderAddress,
-                        "Dummy order " + i, paymentRepository.save(payment));
+                        "Dummy order " + i, paymentRepository.save(payment), randomStore);
 
-                order.setStore(randomStore);
                 orders.add(order);
             }
             orderRepository.saveAll(orders);

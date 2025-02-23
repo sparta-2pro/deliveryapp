@@ -6,7 +6,6 @@ import com.twopro.deliveryapp.common.enumType.OrderStatus;
 import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.orderItem.Entity.OrderItem;
 import com.twopro.deliveryapp.payment.entity.Payment;
-import com.twopro.deliveryapp.review.entity.Review;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.user.entity.User;
 import jakarta.persistence.*;
@@ -14,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
+@Where(clause = "deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "P_ORDERS")
 public class Order extends BaseEntity {

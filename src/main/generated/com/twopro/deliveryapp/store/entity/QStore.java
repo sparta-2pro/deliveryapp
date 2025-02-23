@@ -31,16 +31,16 @@ public class QStore extends EntityPathBase<Store> {
     public final StringPath closedDays = createString("closedDays");
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> created_at = _super.created_at;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     //inherited
-    public final StringPath created_by = _super.created_by;
+    public final StringPath createdBy = _super.createdBy;
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> deleted_at = _super.deleted_at;
+    public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
 
     //inherited
-    public final StringPath deleted_by = _super.deleted_by;
+    public final StringPath deletedBy = _super.deletedBy;
 
     public final NumberPath<Integer> deliveryTip = createNumber("deliveryTip", Integer.class);
 
@@ -67,10 +67,10 @@ public class QStore extends EntityPathBase<Store> {
     public final ComparablePath<java.util.UUID> storeId = createComparable("storeId", java.util.UUID.class);
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> updated_at = _super.updated_at;
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     //inherited
-    public final StringPath updated_by = _super.updated_by;
+    public final StringPath updatedBy = _super.updatedBy;
 
     public QStore(String variable) {
         this(Store.class, forVariable(variable), INITS);

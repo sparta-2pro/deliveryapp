@@ -27,16 +27,16 @@ public class QOrderItem extends EntityPathBase<OrderItem> {
     public final NumberPath<Integer> count = createNumber("count", Integer.class);
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> created_at = _super.created_at;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     //inherited
-    public final StringPath created_by = _super.created_by;
+    public final StringPath createdBy = _super.createdBy;
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> deleted_at = _super.deleted_at;
+    public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
 
     //inherited
-    public final StringPath deleted_by = _super.deleted_by;
+    public final StringPath deletedBy = _super.deletedBy;
 
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
@@ -47,10 +47,10 @@ public class QOrderItem extends EntityPathBase<OrderItem> {
     public final NumberPath<Integer> orderPrice = createNumber("orderPrice", Integer.class);
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> updated_at = _super.updated_at;
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     //inherited
-    public final StringPath updated_by = _super.updated_by;
+    public final StringPath updatedBy = _super.updatedBy;
 
     public QOrderItem(String variable) {
         this(OrderItem.class, forVariable(variable), INITS);
