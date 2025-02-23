@@ -102,4 +102,10 @@ public class Store extends BaseEntity {
     public UUID getCategoryId() {
         return this.category != null ? this.category.getId() : null;
     }
+
+    //가게 리뷰평점, 갯수 변경을 위한 메서드
+    public void updateRating(Double rating, int reviewCount) {
+        this.rating = rating;
+        this.reviewCount = reviewCount;
+    }
 }
