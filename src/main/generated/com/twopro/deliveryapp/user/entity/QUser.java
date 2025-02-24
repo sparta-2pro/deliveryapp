@@ -26,8 +26,6 @@ public class QUser extends EntityPathBase<User> {
 
     public final com.twopro.deliveryapp.common.entity.QAddress address;
 
-    public final com.twopro.deliveryapp.cart.entity.QCart cart;
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -77,7 +75,6 @@ public class QUser extends EntityPathBase<User> {
     public QUser(Class<? extends User> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.address = inits.isInitialized("address") ? new com.twopro.deliveryapp.common.entity.QAddress(forProperty("address")) : null;
-        this.cart = inits.isInitialized("cart") ? new com.twopro.deliveryapp.cart.entity.QCart(forProperty("cart"), inits.get("cart")) : null;
     }
 
 }

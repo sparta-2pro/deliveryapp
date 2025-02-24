@@ -4,9 +4,14 @@ import com.twopro.deliveryapp.common.dto.SingleResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice // 모든 컨트롤러에서 발생한 예외를 처리할 수 있는 전역 예외 처리 클래스
 public class GlobalExceptionHandler {
@@ -32,4 +37,19 @@ public class GlobalExceptionHandler {
         SingleResponse<String> errorResponse = SingleResponse.error(ex.getMessage(), HttpStatus.FORBIDDEN.toString());
         return new ResponseEntity<>(errorResponse,HttpStatus.FORBIDDEN);
     }
+
+    // @Valid 관련 예외 처리 추가
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<SingleResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        StringBuilder errorMessages = new StringBuilder();
+
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errorMessages.append(fieldName).append(": ").append(errorMessage).append("\n");
+        });
+
+        return new ResponseEntity<>(SingleResponse.error(errorMessages.toString(), HttpStatus.BAD_REQUEST.toString()), HttpStatus.BAD_REQUEST);
+    }
+
 }
