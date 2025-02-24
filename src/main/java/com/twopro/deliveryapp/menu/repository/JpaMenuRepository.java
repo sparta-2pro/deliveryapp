@@ -31,14 +31,13 @@ public interface JpaMenuRepository extends JpaRepository<Menu, UUID> {
 
     List<Menu> findMenusByMenuIdIn(Collection<UUID> menuIds);
 
-    // 단순 UUID 로 정렬 중이기 때문에 snowflake 같은 걸로 리팩토링 필요
-    // 성능 최적화 고려해야 함
+    // TODO 단순 UUID 로 정렬 중이기 때문에 snowflake 같은 걸로 리팩토링 필요
     @Query(
             "SELECT m " +
             "FROM Menu m " +
             "JOIN FETCH m.store s " +
             "JOIN FETCH s.storeDeliveryAreas sd " +
-            "WHERE sd.deliveryArea = :receiveLocation " +
+            "WHERE sd.deliveryArea.name = :receiveLocation " +
             "AND m.name LIKE %:name% " +
             "AND m.deletedAt IS NULL " +
             "ORDER BY m.menuId DESC"
@@ -48,14 +47,13 @@ public interface JpaMenuRepository extends JpaRepository<Menu, UUID> {
             @Param("name") String name,
             Pageable pageable);
 
-    // 단순 UUID 로 정렬 중이기 때문에 snowflake 같은 걸로 리팩토링 필요
-    // 성능 최적화 고려해야 함
+    // TODO 단순 UUID 로 정렬 중이기 때문에 snowflake 같은 걸로 리팩토링 필요
     @Query(
             "SELECT m " +
             "FROM Menu m " +
             "JOIN FETCH m.store s " +
             "JOIN FETCH s.storeDeliveryAreas sd " +
-            "WHERE sd.deliveryArea = :receiveLocation " +
+            "WHERE sd.deliveryArea.name = :receiveLocation " +
             "AND m.name LIKE %:name% " +
             "AND m.deletedAt IS NULL " +
             "AND m.menuId < :lastMenuId " +

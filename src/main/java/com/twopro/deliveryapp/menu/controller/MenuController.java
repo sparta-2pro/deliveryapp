@@ -49,7 +49,6 @@ public class MenuController {
     ) {
         // TODO get chain 좋지 않음. 주요 비즈니스 규칙이라 메서드로 밸 수 있도록 담당자에게 전달해야 함
         String receiveLocation = userDetails.getUser().getAddress().getEupMyeonDong();
-        log.info("receive location: {}", receiveLocation);
         List<MenuResponseDto> findMenuResponseDtoList =
                 menuService.findAllMenuByName(receiveLocation, name, lastMenuId, size);
 
