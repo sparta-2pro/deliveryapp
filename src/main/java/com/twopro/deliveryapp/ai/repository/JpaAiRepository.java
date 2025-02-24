@@ -11,12 +11,36 @@ import java.util.UUID;
 public interface JpaAiRepository extends JpaRepository<Ai, UUID> {
 
     @Query(
-            "SELECT DISTINCT a " +
-            "FROM Ai a " +
-            "JOIN FETCH a.menu m " +
-            "JOIN FETCH m.store s " +
-            "WHERE s.storeId = :storeId " +
-            "ORDER BY a.createdAt DESC"
+            value =
+                    "SELECT DISTINCT * " +
+                            "FROM Ai AS a " +
+                            "JOIN FETCH a.menu AS m " +
+                            "JOIN FETCH m.store AS s " +
+                            "WHERE s.store_id = :storeId " +
+                            "ORDER BY a.created_at DESC " +
+                            "LIMIT :limit",
+
+            nativeQuery = true
     )
-    List<Ai> findAllAiServiceByStoreId(@Param("storeId") UUID storeId);
+    List<Ai> findAllAiServiceByStoreId(@Param("storeId") UUID storeId, @Param("limit") Long size);
+
+
+    @Query(
+            value =
+                    "SELECT DISTINCT a " +
+                    "FROM Ai a " +
+                    "JOIN FETCH a.menu m " +
+                    "JOIN FETCH m.store s " +
+                    "WHERE s.store_id = :storeId " +
+                    "AND a.ai_id < :lastAiId " +
+                    "ORDER BY a.created_at DESC " +
+                    "LIMIT :limit",
+
+            nativeQuery = true
+    )
+    List<Ai> findAllAiServiceByStoreId(
+            @Param("storeId") UUID storeId,
+            @Param("limit") Long size,
+            @Param("lastAiId") UUID lastAiId
+    );
 }

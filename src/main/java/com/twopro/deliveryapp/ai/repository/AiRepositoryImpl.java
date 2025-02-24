@@ -34,8 +34,13 @@ public class AiRepositoryImpl implements AiRepository {
     }
 
     @Override
-    public List<Ai> findAllAiServicesByStoreId(UUID storeId) {
-        return jpaAiRepository.findAllAiServiceByStoreId(storeId);
+    public List<Ai> findAllAiServicesByStoreId(UUID storeId, Long size) {
+        return jpaAiRepository.findAllAiServiceByStoreId(storeId, size);
+    }
+
+    @Override
+    public List<Ai> findAllAiServicesByStoreId(UUID storeId, Long size, UUID lastAiId) {
+        return jpaAiRepository.findAllAiServiceByStoreId(storeId, size, lastAiId);
     }
 
     @Override

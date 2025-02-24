@@ -32,8 +32,12 @@ public class AiController {
     }
 
     @GetMapping
-    public SingleResponse<List<AiResponseDto>> findAllAiServices(@RequestParam UUID storeId) {
-        return SingleResponse.success(aiService.findAllAiServicesByStoreId(storeId));
+    public SingleResponse<List<AiResponseDto>> findAllAiServicesByStoreId(
+            @RequestParam UUID storeId,
+            @RequestParam Long size,
+            @RequestParam(required = false) UUID lastAiId
+    ) {
+        return SingleResponse.success(aiService.findAllAiServicesByStoreId(storeId, size, lastAiId));
     }
 
     @PatchMapping("/{aiId}")

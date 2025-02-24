@@ -58,9 +58,10 @@ public class AiServiceImpl implements AiService {
     }
 
     @Override
-    // TODO 유저별(가게별) 조회가 가능하도록 해야 함
-    public List<AiResponseDto> findAllAiServicesByStoreId(UUID storeId) {
-        List<Ai> aiServices = aiRepository.findAllAiServicesByStoreId(storeId);
+    public List<AiResponseDto> findAllAiServicesByStoreId(UUID storeId, Long size, UUID lastAiId) {
+        List<Ai> aiServices = lastAiId == null
+                ? aiRepository.findAllAiServicesByStoreId(storeId, size)
+                : aiRepository.findAllAiServicesByStoreId(storeId, size, lastAiId);
 
         return aiServices.stream().map(AiResponseDto::from).toList();
     }
