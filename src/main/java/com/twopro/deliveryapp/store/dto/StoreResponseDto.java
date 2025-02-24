@@ -1,6 +1,7 @@
 package com.twopro.deliveryapp.store.dto;
 
 import com.twopro.deliveryapp.common.dto.AddressDto;
+import com.twopro.deliveryapp.common.enumType.StoreType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +20,7 @@ public class StoreResponseDto {
     private String operatingHours;
     private String closedDays;
     private String status;
-    private String deliveryType;
+    private StoreType deliveryType;
     private Integer minimumOrderPrice;
     private Integer deliveryTip;
 }

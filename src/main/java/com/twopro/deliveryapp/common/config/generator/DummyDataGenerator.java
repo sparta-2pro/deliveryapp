@@ -5,10 +5,7 @@ import com.twopro.deliveryapp.cart.entity.CartMenu;
 import com.twopro.deliveryapp.cart.repository.CartMenuRepository;
 import com.twopro.deliveryapp.cart.repository.CartRepository;
 import com.twopro.deliveryapp.common.entity.Address;
-import com.twopro.deliveryapp.common.enumType.OrderType;
-import com.twopro.deliveryapp.common.enumType.PaymentProvider;
-import com.twopro.deliveryapp.common.enumType.PaymentStatus;
-import com.twopro.deliveryapp.common.enumType.StoreStatus;
+import com.twopro.deliveryapp.common.enumType.*;
 import com.twopro.deliveryapp.menu.entity.Menu;
 import com.twopro.deliveryapp.menu.entity.MenuStatus;
 import com.twopro.deliveryapp.menu.repository.MenuRepository;
@@ -89,7 +86,7 @@ public class DummyDataGenerator {
                         .rating(random.nextInt(5) + 1)          // 1 ~ 5
                         .reviewCount(random.nextInt(100))         // 0 ~ 99
                         .status(StoreStatus.OPEN)
-                        .deliveryType(OrderType.DELIVERY)
+                        .deliveryType(StoreType.DELIVERY)
                         .minimumOrderPrice(10000 + random.nextInt(10000))  // 10000 ~ 19999
                         .deliveryTip(1000 + random.nextInt(4000))           // 1000 ~ 4999
                         .address(new Address("Seoul", "Gangnam-gu", "Yeoksam-dong", "123-45", "서울특별시 강남구 삼성동 123-45", "101동 1203호"))
