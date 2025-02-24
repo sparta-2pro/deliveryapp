@@ -17,9 +17,11 @@ public interface AiService {
 
     AiResponseDto findAiServiceById(UUID aiId);
 
-    List<AiResponseDto> findAllAiServices();
+    List<AiResponseDto> findAllAiServicesByStoreId(UUID storeId, Long size, UUID lastAiId);
 
     List<AiResponseDto> findAllAiServiceByFilter(LocalDate startDate, LocalDate endDate, String menuName);
+
+    void updateDescriptionToAiAnswer(UUID aiId);
 
     void deleteAiServiceById(UUID aiId);
 }

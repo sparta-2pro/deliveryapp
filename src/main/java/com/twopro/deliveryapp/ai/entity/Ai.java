@@ -4,10 +4,7 @@ import com.twopro.deliveryapp.ai.dto.SaveAiServiceRequestDto;
 import com.twopro.deliveryapp.common.entity.BaseEntity;
 import com.twopro.deliveryapp.menu.entity.Menu;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
@@ -31,6 +28,7 @@ public class Ai extends BaseEntity {
     @Column(length = 255, nullable = false)
     private String question;
 
+    @Setter
     @Column(length = 255, nullable = false)
     private String aiAnswer;
 
