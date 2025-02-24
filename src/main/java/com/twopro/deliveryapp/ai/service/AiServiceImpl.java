@@ -7,6 +7,7 @@ import com.twopro.deliveryapp.ai.dto.SaveAiServiceRequestDto;
 import com.twopro.deliveryapp.ai.entity.Ai;
 import com.twopro.deliveryapp.ai.exception.AiServiceNotFoundException;
 import com.twopro.deliveryapp.ai.repository.AiRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class AiServiceImpl implements AiService {
     private final ChatGptClient chatGptClient;
 
     @Override
+    @Transactional
     public CreateDescriptionResponseDto generateDescription(CreateDescriptionRequestDto requestDto) {
         String prompt = generatePrompt(requestDto);
 
@@ -74,6 +76,7 @@ public class AiServiceImpl implements AiService {
     }
 
     @Override
+    @Transactional
     public void updateDescriptionToAiAnswer(UUID aiId) {
         Ai findAi = findAiServiceByIdForServer(aiId);
         String answer = findAi.getAiAnswer();
@@ -82,6 +85,7 @@ public class AiServiceImpl implements AiService {
     }
 
     @Override
+    @Transactional
     public void deleteAiServiceById(UUID aiId) {
         Ai aiService = findAiServiceByIdForServer(aiId);
         aiService.delete();
