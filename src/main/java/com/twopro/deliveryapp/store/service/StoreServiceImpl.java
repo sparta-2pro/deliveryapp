@@ -6,12 +6,17 @@ import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.common.enumType.StoreType;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
 import com.twopro.deliveryapp.store.dto.StoreResponseDto;
+import com.twopro.deliveryapp.store.dto.StoreSearchRequestDto;
 import com.twopro.deliveryapp.store.entity.Category;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.repository.CategoryRepository;
 import com.twopro.deliveryapp.store.repository.StoreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,5 +139,23 @@ public class StoreServiceImpl implements StoreService {
     private Category getCategoryById(UUID categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리를 찾을 수 없습니다."));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<StoreResponseDto> searchStores(StoreSearchRequestDto searchDto) {
+        int size = searchDto.getSize();
+        int page = searchDto.getPage();
+        Pageable pageable = createPageableFromSearchDto(searchDto);
+
+        Page<Store> storePage = storeRepository.searchStores(searchDto.getCategoryId(), searchDto.getStoreName(), pageable);
+        return storePage.map(this::convertToDto);
+    }
+
+    private Pageable createPageableFromSearchDto(StoreSearchRequestDto searchDto) {
+        String sortField = searchDto.getSortBy() != null ? searchDto.getSortBy() : "created_at";
+        Sort.Direction sortDirection = Sort.Direction.fromString(searchDto.getDirection());
+
+        return PageRequest.of(searchDto.getPage(), searchDto.getSize(), sortDirection, sortField);
     }
 }

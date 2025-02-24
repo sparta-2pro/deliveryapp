@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface StoreRepository extends JpaRepository<Store, UUID> {
+public interface StoreRepository extends JpaRepository<Store, UUID>, StoreRepositoryCustom {
 
     @Query("SELECT s FROM Store s WHERE s.deleted_at IS NULL")
     List<Store> findAllNotDeleted();

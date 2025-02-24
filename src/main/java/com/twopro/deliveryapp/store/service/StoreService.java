@@ -2,7 +2,9 @@ package com.twopro.deliveryapp.store.service;
 
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
 import com.twopro.deliveryapp.store.dto.StoreResponseDto;
+import com.twopro.deliveryapp.store.dto.StoreSearchRequestDto;
 import com.twopro.deliveryapp.store.entity.Store;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +23,6 @@ public interface StoreService {
     void updateStore(UUID id, StoreRequestDto dto);
 
     void deleteStore(UUID id);
+
+    Page<StoreResponseDto> searchStores(StoreSearchRequestDto searchDto);
 }

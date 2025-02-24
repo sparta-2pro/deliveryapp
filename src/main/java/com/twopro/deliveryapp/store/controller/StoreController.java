@@ -4,9 +4,11 @@ import com.twopro.deliveryapp.common.dto.MultiResponse;
 import com.twopro.deliveryapp.common.dto.SingleResponse;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
 import com.twopro.deliveryapp.store.dto.StoreResponseDto;
+import com.twopro.deliveryapp.store.dto.StoreSearchRequestDto;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,5 +55,12 @@ public class StoreController {
     public ResponseEntity<SingleResponse<Void>> deleteStore(@PathVariable UUID id) {
         storeService.deleteStore(id);
         return ResponseEntity.ok(SingleResponse.success(null));
+    }
+
+    // 가게 검색 및 정렬
+    @GetMapping("/search")
+    public ResponseEntity<MultiResponse<StoreResponseDto>> searchStores(@ModelAttribute StoreSearchRequestDto searchDto) {
+        Page<StoreResponseDto> storePage = storeService.searchStores(searchDto);
+        return ResponseEntity.ok(MultiResponse.success(storePage));
     }
 }
