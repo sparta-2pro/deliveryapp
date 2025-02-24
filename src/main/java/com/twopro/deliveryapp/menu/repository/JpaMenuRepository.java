@@ -23,7 +23,7 @@ public interface JpaMenuRepository extends JpaRepository<Menu, UUID> {
     @Query(
             "SELECT m " +
             "FROM Menu m " +
-            "WHERE m.store.id = :storeId " +
+            "WHERE m.store.storeId = :storeId " +
             "AND m.deletedAt IS NULL"
     )
     Optional<List<Menu>> findAllMenuByStoreId(@Param("storeId") UUID storeId);
