@@ -1,9 +1,7 @@
 package com.twopro.deliveryapp.store.service;
 
-import com.querydsl.core.types.OrderSpecifier;
 import com.twopro.deliveryapp.common.dto.AddressDto;
 import com.twopro.deliveryapp.common.entity.Address;
-import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.common.enumType.StoreType;
 import com.twopro.deliveryapp.store.dto.StoreRequestDto;
 import com.twopro.deliveryapp.store.dto.StoreResponseDto;
@@ -22,12 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static com.twopro.deliveryapp.store.entity.QStore.store;
 
 @Service
 @RequiredArgsConstructor
@@ -44,9 +39,12 @@ public class StoreServiceImpl implements StoreService {
     @Override
     @Transactional
     public Store createStore(StoreRequestDto dto) {
-        validateStoreStatus(dto.getStatus());
-        validateDeliveryType(dto.getDeliveryType());
-        Category category = getCategoryById(dto.getCategoryId());
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
+
+        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("가게 이름은 필수입니다.");
+        }
 
         Store store = Store.builder()
                 .category(category)
@@ -128,12 +126,6 @@ public class StoreServiceImpl implements StoreService {
         storeRepository.save(store);
     }
 
-    private void validateStoreStatus(StoreStatus status) {
-        if (status == null || !(status == StoreStatus.OPEN || status == StoreStatus.CLOSED)) {
-            throw new IllegalArgumentException("유효하지 않은 상태 값입니다.");
-        }
-    }
-
     private void validateDeliveryType(StoreType deliveryType) {
         if (deliveryType == null || !(deliveryType == StoreType.DELIVERY || deliveryType == StoreType.PICKUP || deliveryType == StoreType.DELIVERY_AND_PICKUP)) {
             throw new IllegalArgumentException("유효하지 않은 배달 타입입니다.");
@@ -157,14 +149,12 @@ public class StoreServiceImpl implements StoreService {
     }
 
     private Sort.Direction parseSortDirection(String directionStr) {
-        Sort.Direction direction = Sort.Direction.ASC; // 초기 방향은 ASC로 설정
         if ("desc".equalsIgnoreCase(directionStr)) {
-            direction = Sort.Direction.DESC; // 명시적으로 DESC로 설정
+            return Sort.Direction.DESC;
         } else if ("asc".equalsIgnoreCase(directionStr)) {
-            direction = Sort.Direction.ASC; // 명시적으로 ASC로 설정
+            return Sort.Direction.ASC;
         }
-        System.out.println("Input direction string: " + directionStr + " parsed as: " + direction);
-        return direction;
+        throw new IllegalArgumentException("정렬 방향이 유효하지 않습니다: " + directionStr);
     }
 
     private Pageable createPageableFromSearchDto(StoreSearchRequestDto searchDto) {
@@ -172,12 +162,6 @@ public class StoreServiceImpl implements StoreService {
         Sort.Direction sortDirection = parseSortDirection(searchDto.getDirection());
         Sort sort = Sort.by(sortDirection, sortField);
 
-        // 정렬 정보와 사용된 매개변수 출력
-        System.out.println("Sort Field: " + sortField);
-        System.out.println("Sort Direction in Sort Object: " + sortDirection);
-        System.out.println("Sort Object Details: " + sort);
-
         return PageRequest.of(searchDto.getPage(), searchDto.getSize(), sort);
     }
-
 }
