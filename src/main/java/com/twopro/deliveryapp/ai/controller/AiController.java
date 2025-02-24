@@ -28,7 +28,7 @@ public class AiController {
     }
 
     @GetMapping("/{aiId}")
-    public SingleResponse<AiResponseDto> findAiServiceById(@PathVariable("aiId") UUID aiId) {
+    public SingleResponse<AiResponseDto> findAiServiceById(@PathVariable UUID aiId) {
         return SingleResponse.success(aiService.findAiServiceById(aiId));
     }
 
@@ -38,9 +38,13 @@ public class AiController {
         return SingleResponse.success(aiService.findAllAiServices());
     }
 
-    @PatchMapping("{aiId}")
-    public void deleteAiServiceById(@PathVariable("aiId") UUID aiId) {
-        aiService.deleteAiServiceById(aiId);
+    @PatchMapping("/{aiId}")
+    public void updateDescriptionToAiAnswer(@PathVariable UUID aiId) {
+        aiService.updateDescriptionToAiAnswer(aiId);
     }
 
+    @PatchMapping("/delete/{aiId}")
+    public void deleteAiServiceById(@PathVariable UUID aiId) {
+        aiService.deleteAiServiceById(aiId);
+    }
 }

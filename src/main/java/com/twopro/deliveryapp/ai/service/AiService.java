@@ -21,5 +21,7 @@ public interface AiService {
 
     List<AiResponseDto> findAllAiServiceByFilter(LocalDate startDate, LocalDate endDate, String menuName);
 
+    void updateDescriptionToAiAnswer(UUID aiId);
+
     void deleteAiServiceById(UUID aiId);
 }

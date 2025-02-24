@@ -52,9 +52,7 @@ public class AiServiceImpl implements AiService {
 
     @Override
     public AiResponseDto findAiServiceById(UUID aiId) {
-        Ai aiService = findAiServiceByIdForServer(aiId);
-
-        return AiResponseDto.from(aiService);
+        return AiResponseDto.from(findAiServiceByIdForServer(aiId));
     }
 
     @Override
@@ -70,14 +68,22 @@ public class AiServiceImpl implements AiService {
         return aiRepository.findAllAiServiceByFilter(startDate, endDate, menuName);
     }
 
+    private Ai findAiServiceByIdForServer(UUID aiId) {
+        return aiRepository.findAiServiceById(aiId)
+                .orElseThrow(() -> new AiServiceNotFoundException("해당 AI 서비스를 찾을 수 없습니다!"));
+    }
+
+    @Override
+    public void updateDescriptionToAiAnswer(UUID aiId) {
+        Ai findAi = findAiServiceByIdForServer(aiId);
+        String answer = findAi.getAiAnswer();
+
+        findAi.setAiAnswer(answer);
+    }
+
     @Override
     public void deleteAiServiceById(UUID aiId) {
         Ai aiService = findAiServiceByIdForServer(aiId);
         aiService.delete();
-    }
-
-    private Ai findAiServiceByIdForServer(UUID aiId) {
-        return aiRepository.findAiServiceById(aiId)
-                .orElseThrow(() -> new AiServiceNotFoundException("해당 AI 서비스를 찾을 수 없습니다!"));
     }
 }
