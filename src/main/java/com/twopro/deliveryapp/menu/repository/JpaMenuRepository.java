@@ -23,20 +23,41 @@ public interface JpaMenuRepository extends JpaRepository<Menu, UUID> {
     @Query(
             "SELECT m " +
             "FROM Menu m " +
-            "WHERE m.store.id = :storeId " +
+            "WHERE m.store.storeId = :storeId " +
             "AND m.deletedAt IS NULL"
     )
-    Optional<List<Menu>> findAllMenuByStoreId(@Param("storeId") UUID storeId);
+    List<Menu> findAllMenuByStoreId(@Param("storeId") UUID storeId);
 
     List<Menu> findMenusByMenuIdIn(Collection<UUID> menuIds);
 
-    // 조회시 풀스캔될 위험 있음
+    // 단순 UUID 로 정렬 중이기 때문에 snowflake 같은 걸로 리팩토링 필요
     @Query(
-            "SELECT m " +
-            "FROM Menu m " +
-            "WHERE m.name " +
-            "LIKE %:name% " +
-            "AND m.deletedAt IS NULL "
+            value =
+                "SELECT * " +
+                "FROM P_MENU AS m " +
+                "WHERE m.name LIKE %:name% " +
+                "AND m.deleted_at IS NULL " +
+                "ORDER BY m.menu_id DESC " +
+                "LIMIT :limit",
+            nativeQuery = true
     )
-    Optional<List<Menu>> findMenuEntitiesByName(@Param("name") String name);
+    List<Menu> findMenuEntitiesByName(@Param("name") String name, @Param("limit") Long limit);
+
+    // 단순 UUID 로 정렬 중이기 때문에 snowflake 같은 걸로 리팩토링 필요
+    @Query(
+            value =
+                    "SELECT * " +
+                    "FROM P_MENU AS m" +
+                    "WHERE m.name " +
+                    "LIKE %:name% " +
+                    "AND m.menu_id < :lastMenuId" +
+                    "AND m.deleted_at IS NULL " +
+                    "ORDER BY m.menu_id DESC " +
+                    "LIMIT :limit",
+            nativeQuery = true
+    )
+    List<Menu> findMenuEntitiesByName(
+            @Param("name") String name,
+            @Param("limit") Long limit,
+            @Param("lastMenuId") UUID menuId);
 }
