@@ -88,7 +88,7 @@ public class UserController {
         if (user == null) {
             throw new CustomException(HttpStatus.NOT_FOUND, "해당 사용자가 존재하지 않습니다.");
         }
-        if (userDetails.getUser().getDeleted_at() != null) {
+        if (userDetails.getUser().getDeletedAt() != null) {
             throw new CustomException(HttpStatus.FORBIDDEN, "이미 비활성화된 계정입니다.");
         }
 
@@ -110,7 +110,7 @@ public class UserController {
     @PatchMapping("/auth/delete")
     public ResponseEntity<SingleResponse<String>> deleteUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if (userDetails.getUser().getDeleted_at() != null) {
+        if (userDetails.getUser().getDeletedAt() != null) {
             throw new CustomException(HttpStatus.FORBIDDEN, "이미 비활성화된 계정입니다.");
         }
         Long userId = userDetails.getUser().getUserId();

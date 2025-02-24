@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "아이디 또는 비밀번호가 틀렸습니다."));
 
         // 비활성화된 계정 확인
-        if (user.getDeleted_at() != null) {
+        if (user.getDeletedAt() != null) {
             throw new DisabledException("비활성화된 계정입니다. 관리자에게 문의하세요.");
         }
 

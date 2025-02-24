@@ -50,6 +50,8 @@ public class QReview extends EntityPathBase<Review> {
     //inherited
     public final StringPath updatedBy = _super.updatedBy;
 
+    public final com.twopro.deliveryapp.user.entity.QUser user;
+
     public QReview(String variable) {
         this(Review.class, forVariable(variable), INITS);
     }
@@ -69,6 +71,7 @@ public class QReview extends EntityPathBase<Review> {
     public QReview(Class<? extends Review> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.order = inits.isInitialized("order") ? new com.twopro.deliveryapp.order.entity.QOrder(forProperty("order"), inits.get("order")) : null;
+        this.user = inits.isInitialized("user") ? new com.twopro.deliveryapp.user.entity.QUser(forProperty("user"), inits.get("user")) : null;
     }
 
 }
