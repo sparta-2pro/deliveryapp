@@ -25,7 +25,7 @@ public class MenuRepositoryImpl implements MenuRepository {
     }
 
     @Override
-    public Optional<List<Menu>> findAllMenuByStoreId(UUID storeId) {
+    public List<Menu> findAllMenuByStoreId(UUID storeId) {
         return jpaMenuRepository.findAllMenuByStoreId(storeId);
     }
 
@@ -35,7 +35,12 @@ public class MenuRepositoryImpl implements MenuRepository {
     }
 
     @Override
-    public Optional<List<Menu>> findAllMenuByName(String name) {
-        return jpaMenuRepository.findMenuEntitiesByName(name);
+    public List<Menu> findAllMenuByName(String name, Long limit) {
+        return jpaMenuRepository.findMenuEntitiesByName(name, limit);
+    }
+
+    @Override
+    public List<Menu> findAllMenuByName(String name, Long limit, UUID lastMenuId) {
+        return jpaMenuRepository.findMenuEntitiesByName(name, limit, lastMenuId);
     }
 }

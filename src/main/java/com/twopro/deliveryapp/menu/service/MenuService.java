@@ -20,7 +20,7 @@ public interface MenuService {
 
     List<MenuResponseDto> findAllMenuByStoreId(UUID storeId);
 
-    List<MenuResponseDto> findAllMenuByName(String name);
+    List<MenuResponseDto> findAllMenuByName(String name, Long size, UUID lastMenuId);
 
     MenuResponseDto updateMenu(UUID menuId, UpdateMenuRequestDto updateMenuRequestDto);
 

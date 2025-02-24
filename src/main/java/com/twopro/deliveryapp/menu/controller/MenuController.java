@@ -37,8 +37,12 @@ public class MenuController {
     }
 
     @GetMapping("/name")
-    public SingleResponse<List<MenuResponseDto>> findAllMenuByName(@RequestParam String name) {
-        List<MenuResponseDto> findMenuResponseDtoList = menuService.findAllMenuByName(name);
+    public SingleResponse<List<MenuResponseDto>> findAllMenuByName(
+            @RequestParam String name,
+            @RequestParam Long size,
+            @RequestParam(required = false) UUID lastMenuId
+    ) {
+        List<MenuResponseDto> findMenuResponseDtoList = menuService.findAllMenuByName(name, size, lastMenuId);
 
         return SingleResponse.success(findMenuResponseDtoList);
     }

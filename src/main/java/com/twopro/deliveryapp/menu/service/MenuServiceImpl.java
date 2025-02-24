@@ -55,28 +55,18 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuResponseDto> findAllMenuByStoreId(UUID storeId) {
-        List<Menu> menus = findAllMenuByStoreIdForServer(storeId);
+        List<Menu> menus = menuRepository.findAllMenuByStoreId(storeId);
 
         return getMenuResponseDtoList(menus);
     }
 
     @Override
-    public List<MenuResponseDto> findAllMenuByName(String name) {
-        List<Menu> menus = findAllMenuByNameForServer(name);
+    public List<MenuResponseDto> findAllMenuByName(String name, Long size, UUID lastMenuId) {
+        List<Menu> menus = lastMenuId == null
+                ? menuRepository.findAllMenuByName(name, size)
+                : menuRepository.findAllMenuByName(name, size, lastMenuId);
 
         return getMenuResponseDtoList(menus);
-    }
-
-    // TODO 빈 리스트를 반환하는 게 좋아보임
-    private List<Menu> findAllMenuByStoreIdForServer(UUID storeId) {
-        return menuRepository.findAllMenuByStoreId(storeId)
-                .orElseThrow(() -> new MenuNotFoundException("현재 가게에 등록된 메뉴가 없어요!"));
-    }
-
-    // TODO 빈 리스트를 반환하는 게 좋아보임
-    private List<Menu> findAllMenuByNameForServer(String name) {
-        return menuRepository.findAllMenuByName(name)
-                .orElseThrow(() -> new MenuNotFoundException("해당 이름을 가진 메뉴가 없어요!"));
     }
 
     private static List<MenuResponseDto> getMenuResponseDtoList(List<Menu> menus) {
