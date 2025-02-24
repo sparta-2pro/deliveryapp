@@ -105,12 +105,15 @@ public class ReviewServiceImpl implements ReviewService {
 
     //가게 리뷰 평점 가져오기
     @Override
+    @Transactional
     public ReviewFindStoreRatingResponse findStoreRating(UUID storeId) {
         Store store = storeService.findByID(storeId).orElseThrow();
         if(store.getReviewCount() < 1000){ // 리뷰 갯수가 1000개 이하면 바로 계산해서 보여주기
-            return reviewRepository.findAverageRatingByStoreId(storeId);
+            ReviewFindStoreRatingResponse response = reviewRepository.findAverageRatingByStoreId(storeId);
+            store.updateRating(response.getRating(), Math.toIntExact(response.getRatingCount()));
+            return response;
         }
-        //1000개 이상이라면 스케쥴러로 새벽 2시에 계산해서 store 가게에 넣어놓은 값 보여주기
+        //1000개 이상이라면 스케쥴러로 새벽 1시에 계산해서 store 가게에 넣어놓은 값 보여주기
         return new ReviewFindStoreRatingResponse(store.getStoreId(), store.getRating(), (long) store.getReviewCount());
     }
 
@@ -121,8 +124,7 @@ public class ReviewServiceImpl implements ReviewService {
     //다른 서비스에서 필요할 수 있어서 생성
     @Override
     public Review findById(UUID reviewId) {
-        Review findReview = reviewRepository.findById(reviewId).orElseThrow(() -> new ReviewNotFoundException("리뷰가 존재하지 않습니다.", reviewId));
-        return reviewRepository.findById(reviewId).orElseThrow();
+        return reviewRepository.findById(reviewId).orElseThrow(() -> new ReviewNotFoundException("리뷰가 존재하지 않습니다.", reviewId));
     }
 
     /**
