@@ -7,6 +7,7 @@ import com.twopro.deliveryapp.ai.dto.SaveAiServiceRequestDto;
 import com.twopro.deliveryapp.ai.entity.Ai;
 import com.twopro.deliveryapp.ai.exception.AiServiceNotFoundException;
 import com.twopro.deliveryapp.ai.repository.AiRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class AiServiceImpl implements AiService {
     private final ChatGptClient chatGptClient;
 
     @Override
+    @Transactional
     public CreateDescriptionResponseDto generateDescription(CreateDescriptionRequestDto requestDto) {
         String prompt = generatePrompt(requestDto);
 
@@ -52,15 +54,14 @@ public class AiServiceImpl implements AiService {
 
     @Override
     public AiResponseDto findAiServiceById(UUID aiId) {
-        Ai aiService = findAiServiceByIdForServer(aiId);
-
-        return AiResponseDto.from(aiService);
+        return AiResponseDto.from(findAiServiceByIdForServer(aiId));
     }
 
     @Override
-    // TODO 유저별(가게별) 조회가 가능하도록 해야 함
-    public List<AiResponseDto> findAllAiServices() {
-        List<Ai> aiServices = aiRepository.findAllAiService();
+    public List<AiResponseDto> findAllAiServicesByStoreId(UUID storeId, Long size, UUID lastAiId) {
+        List<Ai> aiServices = lastAiId == null
+                ? aiRepository.findAllAiServicesByStoreId(storeId, size)
+                : aiRepository.findAllAiServicesByStoreId(storeId, size, lastAiId);
 
         return aiServices.stream().map(AiResponseDto::from).toList();
     }
@@ -70,14 +71,24 @@ public class AiServiceImpl implements AiService {
         return aiRepository.findAllAiServiceByFilter(startDate, endDate, menuName);
     }
 
-    @Override
-    public void deleteAiServiceById(UUID aiId) {
-        Ai aiService = findAiServiceByIdForServer(aiId);
-        aiService.delete();
-    }
-
     private Ai findAiServiceByIdForServer(UUID aiId) {
         return aiRepository.findAiServiceById(aiId)
                 .orElseThrow(() -> new AiServiceNotFoundException("해당 AI 서비스를 찾을 수 없습니다!"));
+    }
+
+    @Override
+    @Transactional
+    public void updateDescriptionToAiAnswer(UUID aiId) {
+        Ai findAi = findAiServiceByIdForServer(aiId);
+        String answer = findAi.getAiAnswer();
+
+        findAi.setAiAnswer(answer);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAiServiceById(UUID aiId) {
+        Ai aiService = findAiServiceByIdForServer(aiId);
+        aiService.delete();
     }
 }

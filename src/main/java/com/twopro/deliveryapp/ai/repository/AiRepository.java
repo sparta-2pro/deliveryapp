@@ -14,7 +14,9 @@ public interface AiRepository {
 
     Optional<Ai> findAiServiceById(UUID aiId);
 
-    List<Ai> findAllAiService();
+    List<Ai> findAllAiServicesByStoreId(UUID storeId, Long size);
+
+    List<Ai> findAllAiServicesByStoreId(UUID storeId, Long size, UUID lastAiId);
 
     List<AiResponseDto> findAllAiServiceByFilter(LocalDate startDate, LocalDate endDate, String menuName);
 }

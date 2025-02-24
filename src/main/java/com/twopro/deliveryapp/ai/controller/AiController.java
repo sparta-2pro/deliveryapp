@@ -6,7 +6,6 @@ import com.twopro.deliveryapp.ai.dto.CreateDescriptionResponseDto;
 import com.twopro.deliveryapp.ai.service.AiService;
 import com.twopro.deliveryapp.common.dto.SingleResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,19 +27,26 @@ public class AiController {
     }
 
     @GetMapping("/{aiId}")
-    public SingleResponse<AiResponseDto> findAiServiceById(@PathVariable("aiId") UUID aiId) {
+    public SingleResponse<AiResponseDto> findAiServiceById(@PathVariable UUID aiId) {
         return SingleResponse.success(aiService.findAiServiceById(aiId));
     }
 
     @GetMapping
-    // TODO 유저별로 전체 조회하도록 수정해야 함
-    public SingleResponse<List<AiResponseDto>> findAllAiServices() {
-        return SingleResponse.success(aiService.findAllAiServices());
+    public SingleResponse<List<AiResponseDto>> findAllAiServicesByStoreId(
+            @RequestParam UUID storeId,
+            @RequestParam Long size,
+            @RequestParam(required = false) UUID lastAiId
+    ) {
+        return SingleResponse.success(aiService.findAllAiServicesByStoreId(storeId, size, lastAiId));
     }
 
-    @PatchMapping("{aiId}")
-    public void deleteAiServiceById(@PathVariable("aiId") UUID aiId) {
+    @PatchMapping("/{aiId}")
+    public void updateDescriptionToAiAnswer(@PathVariable UUID aiId) {
+        aiService.updateDescriptionToAiAnswer(aiId);
+    }
+
+    @PatchMapping("/delete/{aiId}")
+    public void deleteAiServiceById(@PathVariable UUID aiId) {
         aiService.deleteAiServiceById(aiId);
     }
-
 }
