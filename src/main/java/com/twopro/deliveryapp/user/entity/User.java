@@ -1,10 +1,8 @@
 package com.twopro.deliveryapp.user.entity;
 
-import com.twopro.deliveryapp.cart.entity.Cart;
 import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.entity.BaseEntity;
 import com.twopro.deliveryapp.order.entity.Order;
-import com.twopro.deliveryapp.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
 
