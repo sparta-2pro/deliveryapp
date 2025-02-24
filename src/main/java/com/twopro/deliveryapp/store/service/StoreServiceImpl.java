@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.store.service;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.twopro.deliveryapp.common.dto.AddressDto;
 import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.enumType.StoreStatus;
@@ -21,9 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.twopro.deliveryapp.store.entity.QStore.store;
 
 @Service
 @RequiredArgsConstructor
@@ -152,10 +156,28 @@ public class StoreServiceImpl implements StoreService {
         return storePage.map(this::convertToDto);
     }
 
+    private Sort.Direction parseSortDirection(String directionStr) {
+        Sort.Direction direction = Sort.Direction.ASC; // 초기 방향은 ASC로 설정
+        if ("desc".equalsIgnoreCase(directionStr)) {
+            direction = Sort.Direction.DESC; // 명시적으로 DESC로 설정
+        } else if ("asc".equalsIgnoreCase(directionStr)) {
+            direction = Sort.Direction.ASC; // 명시적으로 ASC로 설정
+        }
+        System.out.println("Input direction string: " + directionStr + " parsed as: " + direction);
+        return direction;
+    }
+
     private Pageable createPageableFromSearchDto(StoreSearchRequestDto searchDto) {
         String sortField = searchDto.getSortBy() != null ? searchDto.getSortBy() : "created_at";
-        Sort.Direction sortDirection = Sort.Direction.fromString(searchDto.getDirection());
+        Sort.Direction sortDirection = parseSortDirection(searchDto.getDirection());
+        Sort sort = Sort.by(sortDirection, sortField);
 
-        return PageRequest.of(searchDto.getPage(), searchDto.getSize(), sortDirection, sortField);
+        // 정렬 정보와 사용된 매개변수 출력
+        System.out.println("Sort Field: " + sortField);
+        System.out.println("Sort Direction in Sort Object: " + sortDirection);
+        System.out.println("Sort Object Details: " + sort);
+
+        return PageRequest.of(searchDto.getPage(), searchDto.getSize(), sort);
     }
+
 }

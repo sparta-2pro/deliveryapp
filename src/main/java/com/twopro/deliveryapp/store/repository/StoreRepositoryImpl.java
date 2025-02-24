@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.store.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twopro.deliveryapp.store.entity.QStore;
@@ -9,8 +10,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import jakarta.persistence.EntityManager;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+
+import static com.twopro.deliveryapp.store.entity.QStore.store;
 
 public class StoreRepositoryImpl implements StoreRepositoryCustom {
 
@@ -32,9 +38,14 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
             predicate = predicate.and(store.name.containsIgnoreCase(storeName));
         }
 
+        OrderSpecifier<?>[] orderSpecifiers = getSortedColumn(pageable);
+
+        // 쿼리 로그 출력
+        System.out.println("Order Specifiers: " + Arrays.toString(orderSpecifiers));
+
         List<Store> stores = queryFactory.selectFrom(store)
                 .where(predicate)
-                .orderBy(store.created_at.desc())
+                .orderBy(orderSpecifiers) // 사용
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -44,5 +55,21 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
                 .fetchCount();
 
         return new PageImpl<>(stores, pageable, total);
+    }
+
+    private OrderSpecifier<?>[] getSortedColumn(Pageable pageable) {
+        return pageable.getSort().stream()
+                .map(order -> {
+                    switch (order.getProperty()) {
+                        case "created_at":
+                            return order.isAscending() ? store.created_at.asc() : store.created_at.desc();
+                        case "name":
+                            return order.isAscending() ? store.name.asc() : store.name.desc();
+                        default:
+                            return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toArray(OrderSpecifier[]::new);
     }
 }
