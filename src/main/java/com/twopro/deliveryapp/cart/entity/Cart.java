@@ -24,7 +24,7 @@ public class Cart {
     private UUID cartId;
 
     @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @PrePersist
