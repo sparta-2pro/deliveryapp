@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twopro.deliveryapp.store.entity.QStore;
 import com.twopro.deliveryapp.store.entity.Store;
+import com.twopro.deliveryapp.store.exception.InvalidSortPropertyException;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -61,7 +62,7 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
                         case "name":
                             return order.isAscending() ? store.name.asc() : store.name.desc();
                         default:
-                            throw new IllegalArgumentException("정렬이 지원되지 않는 속성입니다: " + order.getProperty());
+                            throw new InvalidSortPropertyException(order.getProperty());
                     }
                 })
                 .filter(Objects::nonNull)

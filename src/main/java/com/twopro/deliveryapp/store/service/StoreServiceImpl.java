@@ -8,6 +8,10 @@ import com.twopro.deliveryapp.store.dto.StoreResponseDto;
 import com.twopro.deliveryapp.store.dto.StoreSearchRequestDto;
 import com.twopro.deliveryapp.store.entity.Category;
 import com.twopro.deliveryapp.store.entity.Store;
+import com.twopro.deliveryapp.store.exception.InvalidDeliveryTypeException;
+import com.twopro.deliveryapp.store.exception.InvalidSortDirectionException;
+import com.twopro.deliveryapp.store.exception.StoreNotFoundException;
+import com.twopro.deliveryapp.store.exception.StoreValidationException;
 import com.twopro.deliveryapp.store.repository.CategoryRepository;
 import com.twopro.deliveryapp.store.repository.StoreRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -40,10 +44,10 @@ public class StoreServiceImpl implements StoreService {
     @Transactional
     public Store createStore(StoreRequestDto dto) {
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreValidationException("카테고리가 존재하지 않습니다.", "categoryId", dto.getCategoryId().toString()));
 
         if (dto.getName() == null || dto.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("가게 이름은 필수입니다.");
+            throw new StoreValidationException("가게 이름은 필수 입력 필드입니다.", "name", "입력되지 않음");
         }
 
         Store store = Store.builder()
@@ -74,7 +78,7 @@ public class StoreServiceImpl implements StoreService {
     @Transactional(readOnly = true)
     public StoreResponseDto getStoreById(UUID id) {
         Store store = storeRepository.findByStoreIdAndNotDeleted(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 가게를 찾을 수 없거나 삭제되었습니다."));
+                .orElseThrow(() -> new StoreNotFoundException("해당 ID의 가게를 찾을 수 없거나 삭제되었습니다.", id));
         return convertToDto(store);
     }
 
@@ -97,7 +101,9 @@ public class StoreServiceImpl implements StoreService {
     @Override
     @Transactional
     public void updateStore(UUID id, StoreRequestDto dto) {
-        Store store = storeRepository.findById(id).orElseThrow();
+        Store store = storeRepository.findById(id)
+                .orElseThrow(() -> new StoreNotFoundException("해당 ID의 가게를 찾을 수 없습니다.", id));
+
         validateDeliveryType(dto.getDeliveryType());
         Category category = getCategoryById(dto.getCategoryId());
 
@@ -128,13 +134,13 @@ public class StoreServiceImpl implements StoreService {
 
     private void validateDeliveryType(StoreType deliveryType) {
         if (deliveryType == null || !(deliveryType == StoreType.DELIVERY || deliveryType == StoreType.PICKUP || deliveryType == StoreType.DELIVERY_AND_PICKUP)) {
-            throw new IllegalArgumentException("유효하지 않은 배달 타입입니다.");
+            throw new InvalidDeliveryTypeException("유효하지 않은 배달 타입입니다.", deliveryType.name());
         }
     }
 
     private Category getCategoryById(UUID categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreValidationException("해당 카테고리를 찾을 수 없습니다.", "categoryId", categoryId.toString()));
     }
 
     @Override
@@ -154,7 +160,7 @@ public class StoreServiceImpl implements StoreService {
         } else if ("asc".equalsIgnoreCase(directionStr)) {
             return Sort.Direction.ASC;
         }
-        throw new IllegalArgumentException("정렬 방향이 유효하지 않습니다: " + directionStr);
+        throw new InvalidSortDirectionException(directionStr);
     }
 
     private Pageable createPageableFromSearchDto(StoreSearchRequestDto searchDto) {

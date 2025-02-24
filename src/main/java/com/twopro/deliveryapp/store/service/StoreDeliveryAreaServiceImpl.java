@@ -4,6 +4,9 @@ import com.twopro.deliveryapp.store.dto.StoreDeliveryAreaDto;
 import com.twopro.deliveryapp.store.entity.DeliveryArea;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.entity.StoreDeliveryArea;
+import com.twopro.deliveryapp.store.exception.DeliveryAreaNotFoundException;
+import com.twopro.deliveryapp.store.exception.DuplicateDeliveryAreaException;
+import com.twopro.deliveryapp.store.exception.StoreNotFoundException;
 import com.twopro.deliveryapp.store.repository.DeliveryAreaRepository;
 import com.twopro.deliveryapp.store.repository.StoreDeliveryAreaRepository;
 import com.twopro.deliveryapp.store.repository.StoreRepository;
@@ -33,16 +36,16 @@ public class StoreDeliveryAreaServiceImpl implements StoreDeliveryAreaService {
     @Transactional
     public void addStoreDeliveryAreas(UUID storeId, List<UUID> deliveryAreaIds) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException("해당 ID의 가게를 찾을 수 없습니다.", storeId));
 
         List<StoreDeliveryArea> newDeliveryAreas = deliveryAreaIds.stream()
                 .map(areaId -> {
                     DeliveryArea deliveryArea = deliveryAreaRepository.findById(areaId)
-                            .orElseThrow(() -> new IllegalArgumentException("해당 ID의 배달 가능 지역을 찾을 수 없습니다."));
+                            .orElseThrow(() -> new DeliveryAreaNotFoundException("해당 ID의 배달 가능 지역을 찾을 수 없습니다.", areaId));
 
                     boolean exists = storeDeliveryAreaRepository.existsByStoreAndDeliveryArea(store, deliveryArea);
                     if (exists) {
-                        throw new IllegalStateException("이미 등록된 배달 가능 지역입니다: " + deliveryArea.getName());
+                        throw new DuplicateDeliveryAreaException("이미 등록된 배달 가능 지역입니다.", storeId, areaId);
                     }
 
                     return new StoreDeliveryArea(store, deliveryArea);
@@ -56,7 +59,7 @@ public class StoreDeliveryAreaServiceImpl implements StoreDeliveryAreaService {
     @Transactional(readOnly = true)
     public List<StoreDeliveryAreaDto> getDeliveryAreasByStore(UUID storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException("해당 ID의 가게를 찾을 수 없습니다.", storeId));
 
         return storeDeliveryAreaRepository.findByStoreAndDeletedAtIsNull(store)
                 .stream()
@@ -76,12 +79,12 @@ public class StoreDeliveryAreaServiceImpl implements StoreDeliveryAreaService {
     @Transactional
     public void deleteStoreDeliveryArea(UUID storeId, UUID deliveryAreaId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException("해당 ID의 가게를 찾을 수 없습니다.", storeId));
         DeliveryArea deliveryArea = deliveryAreaRepository.findById(deliveryAreaId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 배달 가능 지역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new DeliveryAreaNotFoundException("해당 ID의 배달 가능 지역을 찾을 수 없습니다.", deliveryAreaId));
 
         StoreDeliveryArea storeDeliveryArea = storeDeliveryAreaRepository.findByStoreAndDeliveryArea(store, deliveryArea)
-                .orElseThrow(() -> new IllegalArgumentException("해당 가게에 등록된 배달 가능 지역이 아닙니다."));
+                .orElseThrow(() -> new DeliveryAreaNotFoundException("해당 가게에 등록된 배달 가능 지역이 아닙니다: ", deliveryAreaId));
 
         storeDeliveryArea.delete();
         storeDeliveryAreaRepository.save(storeDeliveryArea);

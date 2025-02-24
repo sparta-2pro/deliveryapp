@@ -67,7 +67,7 @@ public class DummyDataGenerator {
                     .rating(5)          // 1 ~ 5
                     .reviewCount(100)         // 0 ~ 99
                     .status(StoreStatus.OPEN)
-                    .deliveryType(OrderType.DELIVERY)
+                    .deliveryType(StoreType.DELIVERY)
                     .minimumOrderPrice(20000)  // 10000 ~ 19999
                     .deliveryTip(3000)           // 1000 ~ 4999
                     .address(new Address("Seoul", "Yongsan-gu", "hankangrodong", "hankangro", "서울특별시 용산구 한강로 2가", "102동 102호"))
