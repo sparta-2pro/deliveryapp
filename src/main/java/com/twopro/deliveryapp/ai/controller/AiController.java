@@ -8,6 +8,7 @@ import com.twopro.deliveryapp.common.dto.SingleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +39,20 @@ public class AiController {
             @RequestParam(required = false) UUID lastAiId
     ) {
         return SingleResponse.success(aiService.findAllAiServicesByStoreId(storeId, size, lastAiId));
+    }
+
+    @GetMapping("/filter")
+    public SingleResponse<List<AiResponseDto>> findAllAiServiceByFilter(
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate,
+            @RequestParam(required = false) String menuName,
+            @RequestParam UUID storeId,
+            @RequestParam int size,
+            @RequestParam(required = false) UUID lastAiId
+            ) {
+        return SingleResponse.success(
+                aiService.findAllAiServiceByFilter(startDate, endDate, menuName, storeId, size, lastAiId)
+        );
     }
 
     @PatchMapping("/{aiId}")
