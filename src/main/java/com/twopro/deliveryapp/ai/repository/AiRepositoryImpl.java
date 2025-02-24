@@ -33,10 +33,9 @@ public class AiRepositoryImpl implements AiRepository {
         return jpaAiRepository.findById(aiId);
     }
 
-    // TODO 유저별(OWNER) 검색되도록 수정해야 함
     @Override
-    public List<Ai> findAllAiService() {
-        return jpaAiRepository.findAll();
+    public List<Ai> findAllAiServicesByStoreId(UUID storeId) {
+        return jpaAiRepository.findAllAiServiceByStoreId(storeId);
     }
 
     @Override

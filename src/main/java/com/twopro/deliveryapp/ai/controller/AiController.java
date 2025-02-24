@@ -6,7 +6,6 @@ import com.twopro.deliveryapp.ai.dto.CreateDescriptionResponseDto;
 import com.twopro.deliveryapp.ai.service.AiService;
 import com.twopro.deliveryapp.common.dto.SingleResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,9 +32,8 @@ public class AiController {
     }
 
     @GetMapping
-    // TODO 유저별로 전체 조회하도록 수정해야 함
-    public SingleResponse<List<AiResponseDto>> findAllAiServices() {
-        return SingleResponse.success(aiService.findAllAiServices());
+    public SingleResponse<List<AiResponseDto>> findAllAiServices(@RequestParam UUID storeId) {
+        return SingleResponse.success(aiService.findAllAiServicesByStoreId(storeId));
     }
 
     @PatchMapping("/{aiId}")
