@@ -8,9 +8,11 @@ import com.twopro.deliveryapp.order.dto.OrderRequestDto;
 import com.twopro.deliveryapp.order.dto.OrderStatusRequestDto;
 import com.twopro.deliveryapp.order.dto.PaymentRequestDto;
 import com.twopro.deliveryapp.order.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,14 +28,13 @@ import java.util.UUID;
 @RequestMapping("/api/v1/orders")
 public class OrderController {
     private final OrderService orderService;
-    private final ObjectMapper objectMapper;
 
     // 주문하러 가기 클릭 상황
     @PostMapping
-    public ResponseEntity createOrder(@RequestBody OrderRequestDto requestDto, @AuthenticationPrincipal Long userId) {
+    public ResponseEntity createOrder(@RequestBody @Valid OrderRequestDto requestDto, @RequestParam Long userId) {
         log.debug("REQUSET :: {}", requestDto);
         orderService.createOrder(requestDto, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(SingleResponse.success("success"));
     }
 
     // 결제 요청
@@ -41,7 +42,7 @@ public class OrderController {
     public ResponseEntity requestPayment(@RequestBody PaymentRequestDto requestDto, @RequestParam Long userId) {
         log.debug("REQUSET :: {}", requestDto);
         orderService.paymentRequest(requestDto, userId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok(SingleResponse.success("success"));
     }
 
     // 사용자 주문 취소
@@ -49,7 +50,7 @@ public class OrderController {
     public ResponseEntity cancelOrder(@PathVariable UUID orderId, @RequestParam Long userId) {
         log.debug("orderId :: {}, userId :: {}", orderId, userId);
         orderService.deleteOrder(orderId, userId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok(SingleResponse.success("success"));
     }
 
     // 주문 단일 조회
@@ -68,8 +69,7 @@ public class OrderController {
                                               @RequestParam(required = false) String sortBy,
                                               @RequestParam(required = false) Boolean isAsc) {
         log.debug("userId :: {}, page :: {}, size :: {}, sortBy :: {}, isAsc :: {}", userId, size, page, sortBy, isAsc);
-        List<FindOrderResponseDto> orders = orderService.findOrders(userId, page - 1, size, sortBy, isAsc);
-        MultiResponse.success(orders);
+        Page<FindOrderResponseDto> orders = orderService.findOrders(userId, page - 1, size, sortBy, isAsc);
         return ResponseEntity.ok(MultiResponse.success(orders));
     }
 
@@ -78,7 +78,7 @@ public class OrderController {
     public ResponseEntity updateOrderStatus(@RequestParam Long userId, @RequestBody OrderStatusRequestDto requestDto) {
         log.debug("userId :: {}, requestDto :: {}", userId, requestDto);
         orderService.updateStatus(requestDto, userId);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(SingleResponse.success("success"));
     }
 }
 

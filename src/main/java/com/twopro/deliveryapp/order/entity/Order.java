@@ -6,7 +6,6 @@ import com.twopro.deliveryapp.common.enumType.OrderStatus;
 import com.twopro.deliveryapp.common.enumType.OrderType;
 import com.twopro.deliveryapp.orderItem.Entity.OrderItem;
 import com.twopro.deliveryapp.payment.entity.Payment;
-import com.twopro.deliveryapp.review.entity.Review;
 import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.user.entity.User;
 import jakarta.persistence.*;
@@ -14,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
+@Where(clause = "deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "P_ORDERS")
 public class Order extends BaseEntity {
@@ -44,7 +45,7 @@ public class Order extends BaseEntity {
     private OrderStatus orderStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "store_id")
     @Setter
     private Store store;
 
@@ -74,12 +75,13 @@ public class Order extends BaseEntity {
         orderItem.setOrder(this);
     }
 
-    public static Order createOrder(User user, List<OrderItem> orderItems, OrderType orderType, Address address, String message, Payment payment) {
+    public static Order createOrder(User user, List<OrderItem> orderItems, OrderType orderType, Address address, String message, Payment payment, Store store) {
         Order order = new Order();
         order.payment = payment;
         order.user = user;
         order.address = address;
         order.message = message;
+        order.store = store;
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
         }

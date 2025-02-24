@@ -14,9 +14,11 @@ public interface MenuRepository {
 
     Optional<Menu> findMenuById(UUID menuId);
 
-    Optional<List<Menu>> findAllMenuByStoreId(UUID storeId);
+    List<Menu> findAllMenuByStoreId(UUID storeId);
 
     List<Menu> findByMenuIdIn(List<UUID> menuIds);
 
-    Optional<List<Menu>> findAllMenuByName(String name);
+    List<Menu> findAllMenuByName(String name, Long limit);
+
+    List<Menu> findAllMenuByName(String name, Long limit, UUID lastMenuId);
 }

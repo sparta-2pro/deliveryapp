@@ -2,6 +2,7 @@ package com.twopro.deliveryapp.user.jwt;
 
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.repository.UserRepository;
+import com.twopro.deliveryapp.user.security.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -84,11 +86,13 @@ public class JwtUtil {
 
             System.out.println("Role from token: " + role);
 
+            UserDetails userDetails = new UserDetailsImpl(user.get());
+
             // 권한을 GrantedAuthority로 변환
             GrantedAuthority authority = new SimpleGrantedAuthority(role);
 
             // 인증 객체 생성
-            return new UsernamePasswordAuthenticationToken(user.get(), null, List.of(authority));
+            return new UsernamePasswordAuthenticationToken(userDetails, null, List.of(authority));
         }
         return null;
     }

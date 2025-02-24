@@ -13,6 +13,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "p_payment")
 @Getter
+@Where(clause = "delete_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment extends BaseEntity {
     @Id
@@ -28,7 +30,9 @@ public class Payment extends BaseEntity {
     private UUID id;
 
     private int totalPrice;
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+    @Enumerated(EnumType.STRING)
     private PaymentProvider paymentProvider;
 
     public static Payment createPayment(int totalPrice, PaymentStatus paymentStatus, PaymentProvider paymentProvider) {

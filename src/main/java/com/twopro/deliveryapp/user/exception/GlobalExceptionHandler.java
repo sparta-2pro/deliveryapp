@@ -3,6 +3,8 @@ package com.twopro.deliveryapp.user.exception;
 import com.twopro.deliveryapp.common.dto.SingleResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -23,5 +25,11 @@ public class GlobalExceptionHandler {
         // 서버 오류에 대한 실패 응답
         SingleResponse<String> errorResponse = SingleResponse.error("서버 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR.toString());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<SingleResponse<String>> handleDisabledAccount(DisabledException ex) {
+        SingleResponse<String> errorResponse = SingleResponse.error(ex.getMessage(), HttpStatus.FORBIDDEN.toString());
+        return new ResponseEntity<>(errorResponse,HttpStatus.FORBIDDEN);
     }
 }

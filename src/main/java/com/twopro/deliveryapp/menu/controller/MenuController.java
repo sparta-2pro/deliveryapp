@@ -24,7 +24,10 @@ public class MenuController {
         return SingleResponse.success(addMenuResponse);
     }
 
-    // TODO 관리자를 위한 단순 메뉴 전체 조회 필요할지 고민
+    @GetMapping("/{menuId}")
+    public SingleResponse<MenuResponseDto> findMenuById(@PathVariable UUID menuId) {
+        return SingleResponse.success(menuService.findMenuById(menuId));
+    }
 
     @GetMapping("/store")
     public SingleResponse<List<MenuResponseDto>> findAllMenuByStoreId(@RequestParam UUID storeId) {
@@ -34,8 +37,12 @@ public class MenuController {
     }
 
     @GetMapping("/name")
-    public SingleResponse<List<MenuResponseDto>> findAllMenuByName(@RequestParam String name) {
-        List<MenuResponseDto> findMenuResponseDtoList = menuService.findAllMenuByName(name);
+    public SingleResponse<List<MenuResponseDto>> findAllMenuByName(
+            @RequestParam String name,
+            @RequestParam Long size,
+            @RequestParam(required = false) UUID lastMenuId
+    ) {
+        List<MenuResponseDto> findMenuResponseDtoList = menuService.findAllMenuByName(name, size, lastMenuId);
 
         return SingleResponse.success(findMenuResponseDtoList);
     }

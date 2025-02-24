@@ -27,16 +27,16 @@ public class QReview extends EntityPathBase<Review> {
     public final StringPath contents = createString("contents");
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> created_at = _super.created_at;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     //inherited
-    public final StringPath created_by = _super.created_by;
+    public final StringPath createdBy = _super.createdBy;
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> deleted_at = _super.deleted_at;
+    public final DateTimePath<java.time.LocalDateTime> deletedAt = _super.deletedAt;
 
     //inherited
-    public final StringPath deleted_by = _super.deleted_by;
+    public final StringPath deletedBy = _super.deletedBy;
 
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
@@ -45,10 +45,12 @@ public class QReview extends EntityPathBase<Review> {
     public final NumberPath<Integer> rating = createNumber("rating", Integer.class);
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> updated_at = _super.updated_at;
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     //inherited
-    public final StringPath updated_by = _super.updated_by;
+    public final StringPath updatedBy = _super.updatedBy;
+
+    public final com.twopro.deliveryapp.user.entity.QUser user;
 
     public QReview(String variable) {
         this(Review.class, forVariable(variable), INITS);
@@ -69,6 +71,7 @@ public class QReview extends EntityPathBase<Review> {
     public QReview(Class<? extends Review> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.order = inits.isInitialized("order") ? new com.twopro.deliveryapp.order.entity.QOrder(forProperty("order"), inits.get("order")) : null;
+        this.user = inits.isInitialized("user") ? new com.twopro.deliveryapp.user.entity.QUser(forProperty("user"), inits.get("user")) : null;
     }
 
 }

@@ -20,25 +20,25 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
     @CreatedBy
-    private String created_by;
+    private String createdBy;
 
     @LastModifiedBy
-    private String updated_by;
+    private String updatedBy;
 
-    private LocalDateTime deleted_at;
-    private String deleted_by;
+    private LocalDateTime deletedAt;
+    private String deletedBy;
 
     /**
      * 엔티티 삭제할 경우 호출하기
      */
     public void delete() {
-        if (this.deleted_at != null) {
+        if (this.deletedAt != null) {
             throw new IllegalStateException("이미 삭제된 엔티티입니다.");
         }
 
@@ -47,7 +47,7 @@ public abstract class BaseEntity {
 //            throw new RuntimeException("삭제 권한이 없습니다."); // security 설정 전에는 예외 터지므로 주석
         }
 
-        this.deleted_at = LocalDateTime.now();
-        this.deleted_by = authentication.getName();
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = authentication.getName();
     }
 }

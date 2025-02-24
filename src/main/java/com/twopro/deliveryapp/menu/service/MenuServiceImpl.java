@@ -6,6 +6,8 @@ import com.twopro.deliveryapp.menu.dto.UpdateMenuRequestDto;
 import com.twopro.deliveryapp.menu.entity.Menu;
 import com.twopro.deliveryapp.menu.exception.MenuNotFoundException;
 import com.twopro.deliveryapp.menu.repository.MenuRepository;
+import com.twopro.deliveryapp.store.entity.Store;
+import com.twopro.deliveryapp.store.service.StoreService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,12 +21,21 @@ public class MenuServiceImpl implements MenuService {
 
     private final MenuRepository menuRepository;
 
+    private final StoreService storeService;
+
     @Override
     @Transactional
     public MenuResponseDto addMenu(AddMenuRequestDto addMenuRequestDto) {
         Menu menu = menuRepository.addMenu(Menu.of(addMenuRequestDto));
+        menu.setStore(getStore(addMenuRequestDto.storeId()));
 
         return MenuResponseDto.from(menu);
+    }
+
+    // TODO store 담당자가 서비스 레이어에서 optional 처리해줘야 함
+    private Store getStore(UUID storeId) {
+        return storeService.findByID(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("가게 없음"));
     }
 
     @Override
@@ -44,28 +55,18 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuResponseDto> findAllMenuByStoreId(UUID storeId) {
-        List<Menu> menus = findAllMenuByStoreIdForServer(storeId);
+        List<Menu> menus = menuRepository.findAllMenuByStoreId(storeId);
 
         return getMenuResponseDtoList(menus);
     }
 
     @Override
-    public List<MenuResponseDto> findAllMenuByName(String name) {
-        List<Menu> menus = findAllMenuByNameForServer(name);
+    public List<MenuResponseDto> findAllMenuByName(String name, Long size, UUID lastMenuId) {
+        List<Menu> menus = lastMenuId == null
+                ? menuRepository.findAllMenuByName(name, size)
+                : menuRepository.findAllMenuByName(name, size, lastMenuId);
 
         return getMenuResponseDtoList(menus);
-    }
-
-    // TODO 빈 리스트를 반환하는 게 좋아보임
-    private List<Menu> findAllMenuByStoreIdForServer(UUID storeId) {
-        return menuRepository.findAllMenuByStoreId(storeId)
-                .orElseThrow(() -> new MenuNotFoundException("현재 가게에 등록된 메뉴가 없어요!"));
-    }
-
-    // TODO 빈 리스트를 반환하는 게 좋아보임
-    private List<Menu> findAllMenuByNameForServer(String name) {
-        return menuRepository.findAllMenuByName(name)
-                .orElseThrow(() -> new MenuNotFoundException("해당 이름을 가진 메뉴가 없어요!"));
     }
 
     private static List<MenuResponseDto> getMenuResponseDtoList(List<Menu> menus) {

@@ -6,13 +6,9 @@ import com.twopro.deliveryapp.menu.dto.AddMenuRequestDto;
 import com.twopro.deliveryapp.menu.dto.UpdateMenuRequestDto;
 import com.twopro.deliveryapp.store.entity.Store;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +24,8 @@ public class Menu extends BaseEntity {
     @UuidGenerator
     private UUID menuId;
 
-    @ManyToOne
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private Store store;
 
@@ -51,7 +48,6 @@ public class Menu extends BaseEntity {
 
     public static Menu of(AddMenuRequestDto addMenuRequestDto) {
         return Menu.builder()
-                .store(addMenuRequestDto.store())
                 .name(addMenuRequestDto.name())
                 .status(addMenuRequestDto.status())
                 .imageUrl(addMenuRequestDto.imageUrl())
