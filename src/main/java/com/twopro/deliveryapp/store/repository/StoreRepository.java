@@ -11,9 +11,9 @@ import java.util.UUID;
 
 public interface StoreRepository extends JpaRepository<Store, UUID>, StoreRepositoryCustom {
 
-    @Query("SELECT s FROM Store s WHERE s.deleted_at IS NULL")
+    @Query("SELECT s FROM Store s WHERE s.deletedAt IS NULL")
     List<Store> findAllNotDeleted();
 
-    @Query("SELECT s FROM Store s WHERE s.storeId = :id AND s.deleted_at IS NULL")
+    @Query("SELECT s FROM Store s WHERE s.storeId = :id AND s.deletedAt IS NULL")
     Optional<Store> findByStoreIdAndNotDeleted(@Param("id") UUID id);
 }

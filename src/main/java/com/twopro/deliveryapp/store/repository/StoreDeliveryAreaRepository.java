@@ -18,9 +18,9 @@ public interface StoreDeliveryAreaRepository extends JpaRepository<StoreDelivery
 
     List<StoreDeliveryArea> findByStore(Store store);
 
-    @Query("SELECT s FROM StoreDeliveryArea s WHERE s.store = :store AND s.deleted_at IS NULL")
+    @Query("SELECT s FROM StoreDeliveryArea s WHERE s.store = :store AND s.deletedAt IS NULL")
     List<StoreDeliveryArea> findByStoreAndDeletedAtIsNull(Store store);
 
-    @Query("SELECT s FROM StoreDeliveryArea s WHERE s.deliveryArea.id = :deliveryAreaId AND s.deleted_at IS NULL")
+    @Query("SELECT s FROM StoreDeliveryArea s WHERE s.deliveryArea.id = :deliveryAreaId AND s.deletedAt IS NULL")
     List<StoreDeliveryArea> findByDeliveryAreaIdAndDeletedAtIsNull(UUID deliveryAreaId);
 }

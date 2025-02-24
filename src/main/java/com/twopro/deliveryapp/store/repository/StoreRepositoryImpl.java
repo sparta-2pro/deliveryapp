@@ -62,7 +62,7 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
                 .map(order -> {
                     switch (order.getProperty()) {
                         case "created_at":
-                            return order.isAscending() ? store.created_at.asc() : store.created_at.desc();
+                            return order.isAscending() ? store.createdAt.asc() : store.createdAt.desc();
                         case "name":
                             return order.isAscending() ? store.name.asc() : store.name.desc();
                         default:

@@ -11,6 +11,6 @@ public interface DeliveryAreaRepository extends JpaRepository<DeliveryArea, UUID
 
     boolean existsByName(String name);
 
-    @Query("SELECT d FROM DeliveryArea d WHERE d.deleted_at IS NULL")
+    @Query("SELECT d FROM DeliveryArea d WHERE d.deletedAt IS NULL")
     List<DeliveryArea> findAllByDeletedAtIsNull();
 }
