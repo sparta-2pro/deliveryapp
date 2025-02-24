@@ -25,7 +25,7 @@ public class Menu extends BaseEntity {
     private UUID menuId;
 
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private Store store;
 
