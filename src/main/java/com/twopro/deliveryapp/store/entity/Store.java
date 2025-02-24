@@ -4,6 +4,7 @@ import com.twopro.deliveryapp.common.entity.Address;
 import com.twopro.deliveryapp.common.entity.BaseEntity;
 import com.twopro.deliveryapp.common.enumType.StoreStatus;
 import com.twopro.deliveryapp.common.enumType.StoreType;
+import com.twopro.deliveryapp.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -67,6 +68,13 @@ public class Store extends BaseEntity {
 
     @Embedded
     private Address address;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(nullable = true)
+    private Long orderCount;
 
     @Builder
     public Store(Category category, String name, String pictureUrl, String phone, String operatingHours, String closedDays, int rating, int reviewCount, StoreStatus status, StoreType deliveryType, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
