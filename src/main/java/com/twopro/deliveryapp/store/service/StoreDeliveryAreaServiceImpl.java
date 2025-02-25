@@ -96,10 +96,8 @@ public class StoreDeliveryAreaServiceImpl implements StoreDeliveryAreaService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException("해당 ID의 가게를 찾을 수 없습니다.", storeId));
 
-        // 기존 연결을 삭제
         storeDeliveryAreaRepository.deleteAll(storeDeliveryAreaRepository.findByStore(store));
 
-        // 새 연결 생성
         List<StoreDeliveryArea> newAreas = storeDeliveryAreaDtos.stream()
                 .map(dto -> {
                     DeliveryArea deliveryArea = deliveryAreaRepository.findById(dto.getId())

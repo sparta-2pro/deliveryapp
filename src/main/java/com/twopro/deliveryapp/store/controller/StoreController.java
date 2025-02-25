@@ -10,6 +10,7 @@ import com.twopro.deliveryapp.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,23 +38,28 @@ public class StoreController {
     }
 
     // 해당 가게 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<SingleResponse<StoreResponseDto>> getStoreById(@PathVariable UUID id) {
-        StoreResponseDto store = storeService.getStoreById(id);
+    @GetMapping("/{storeId}")
+    public ResponseEntity<SingleResponse<StoreResponseDto>> getStoreById(@PathVariable UUID storeId) {
+        StoreResponseDto store = storeService.getStoreById(storeId);
         return ResponseEntity.ok(SingleResponse.success(store));
     }
 
     // 가게 정보 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<SingleResponse<Void>> updateStore(@PathVariable UUID id, @RequestBody StoreRequestDto storeRequestDto) {
-        storeService.updateStore(id, storeRequestDto);
+    @PutMapping("/{storeId}")
+    @PreAuthorize("@storeService.isStoreOwner(#storeId)")
+    public ResponseEntity<SingleResponse<Void>> updateStore(
+            @PathVariable UUID storeId,
+            @RequestBody StoreRequestDto storeRequestDto) {
+
+        storeService.updateStore(storeId, storeRequestDto);
         return ResponseEntity.ok(SingleResponse.success(null));
     }
 
     // 가게 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<SingleResponse<Void>> deleteStore(@PathVariable UUID id) {
-        storeService.deleteStore(id);
+    @DeleteMapping("/{storeId}")
+    @PreAuthorize("@storeService.isStoreOwner(#storeId)")
+    public ResponseEntity<SingleResponse<Void>> deleteStore(@PathVariable UUID storeId) {
+        storeService.deleteStore(storeId);
         return ResponseEntity.ok(SingleResponse.success(null));
     }
 
@@ -66,7 +72,10 @@ public class StoreController {
 
     // 카테고리별 특정 배달 가능 지역의 가게 조회
     @GetMapping("/delivery-areas/{deliveryAreaId}/categories/{categoryId}")
-    public ResponseEntity<MultiResponse<StoreResponseDto>> getStoresByDeliveryAreaAndCategory(@PathVariable UUID deliveryAreaId, @PathVariable UUID categoryId) {
+    public ResponseEntity<MultiResponse<StoreResponseDto>> getStoresByDeliveryAreaAndCategory(
+            @PathVariable UUID deliveryAreaId,
+            @PathVariable UUID categoryId) {
+
         List<StoreResponseDto> stores = storeService.getStoresByDeliveryAreaAndCategory(deliveryAreaId, categoryId);
         return ResponseEntity.ok(MultiResponse.success(stores));
     }
