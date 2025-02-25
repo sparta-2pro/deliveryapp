@@ -8,11 +8,13 @@ import com.twopro.deliveryapp.store.dto.StoreResponseDto;
 import com.twopro.deliveryapp.store.dto.StoreSearchRequestDto;
 import com.twopro.deliveryapp.store.entity.Category;
 import com.twopro.deliveryapp.store.entity.Store;
+import com.twopro.deliveryapp.store.entity.StoreDeliveryArea;
 import com.twopro.deliveryapp.store.exception.InvalidDeliveryTypeException;
 import com.twopro.deliveryapp.store.exception.InvalidSortDirectionException;
 import com.twopro.deliveryapp.store.exception.StoreNotFoundException;
 import com.twopro.deliveryapp.store.exception.StoreValidationException;
 import com.twopro.deliveryapp.store.repository.CategoryRepository;
+import com.twopro.deliveryapp.store.repository.StoreDeliveryAreaRepository;
 import com.twopro.deliveryapp.store.repository.StoreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
+    private final StoreDeliveryAreaRepository storeDeliveryAreaRepository;
 
     @Override
     public Optional<Store> findByID(UUID id) {
@@ -63,6 +66,8 @@ public class StoreServiceImpl implements StoreService {
                 .minimumOrderPrice(dto.getMinimumOrderPrice())
                 .deliveryTip(dto.getDeliveryTip())
                 .build();
+
+        System.out.println("Created Store with Category ID: " + store.getCategory().getId());  // 로그 추가
 
         return storeRepository.save(store);
     }
@@ -169,5 +174,18 @@ public class StoreServiceImpl implements StoreService {
         Sort sort = Sort.by(sortDirection, sortField);
 
         return PageRequest.of(searchDto.getPage(), searchDto.getSize(), sort);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StoreResponseDto> getStoresByDeliveryAreaAndCategory(UUID deliveryAreaId, UUID categoryId) {
+        List<Store> stores = storeDeliveryAreaRepository.findByDeliveryAreaId(deliveryAreaId).stream()
+                .map(StoreDeliveryArea::getStore)
+                .filter(store -> store.getCategory() != null && store.getCategory().getId().equals(categoryId) && store.getDeletedAt() == null)
+                .collect(Collectors.toList());
+
+        // 로깅 추가
+        System.out.println("Filtered stores count: " + stores.size());
+
+        return stores.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 }

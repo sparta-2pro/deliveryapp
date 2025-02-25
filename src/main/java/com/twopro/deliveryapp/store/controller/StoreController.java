@@ -63,4 +63,11 @@ public class StoreController {
         Page<StoreResponseDto> storePage = storeService.searchStores(searchDto);
         return ResponseEntity.ok(MultiResponse.success(storePage));
     }
+
+    // 카테고리별 특정 배달 가능 지역의 가게 조회
+    @GetMapping("/delivery-areas/{deliveryAreaId}/categories/{categoryId}")
+    public ResponseEntity<MultiResponse<StoreResponseDto>> getStoresByDeliveryAreaAndCategory(@PathVariable UUID deliveryAreaId, @PathVariable UUID categoryId) {
+        List<StoreResponseDto> stores = storeService.getStoresByDeliveryAreaAndCategory(deliveryAreaId, categoryId);
+        return ResponseEntity.ok(MultiResponse.success(stores));
+    }
 }

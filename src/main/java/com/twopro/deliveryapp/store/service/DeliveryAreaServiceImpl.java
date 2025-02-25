@@ -45,15 +45,6 @@ public class DeliveryAreaServiceImpl implements DeliveryAreaService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Store> getStoresByDeliveryArea(UUID deliveryAreaId) {
-        return storeDeliveryAreaRepository.findByDeliveryAreaIdAndDeletedAtIsNull(deliveryAreaId)
-                .stream()
-                .map(StoreDeliveryArea::getStore)
-                .toList();
-    }
-
-    @Override
     @Transactional
     public void updateDeliveryArea(UUID deliveryAreaId, String newName) {
         DeliveryArea deliveryArea = deliveryAreaRepository.findById(deliveryAreaId)

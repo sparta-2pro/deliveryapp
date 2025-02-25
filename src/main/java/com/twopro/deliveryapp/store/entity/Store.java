@@ -69,9 +69,9 @@ public class Store extends BaseEntity {
     @Embedded
     private Address address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User user;
 
     @Column(nullable = true)
     private Long orderCount;
