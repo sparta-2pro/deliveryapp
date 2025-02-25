@@ -18,6 +18,9 @@ public class FindOrderResponseDto {
     private OrderType orderType;
     private int totalPrice;
     private List<OrderMenuResponseDto> menus;
+    private UUID storeId;
+    private String storeName;
+    private int deliveryTip;
 
     public FindOrderResponseDto(Order o) {
         orderId = o.getId();
@@ -25,5 +28,6 @@ public class FindOrderResponseDto {
         message = o.getMessage();
         orderType = o.getOrderType();
         totalPrice = o.getTotalPrice();
+        deliveryTip = o.getStore().getMinimumOrderPrice();
     }
 }

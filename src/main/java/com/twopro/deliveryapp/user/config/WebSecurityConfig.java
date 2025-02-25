@@ -51,7 +51,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/users/**").permitAll()
                         // 권한을 가진 사용자만 접근 가능 경로
                         .requestMatchers("/api/v1/auth/**").hasAnyRole("CUSTOMER", "OWNER", "ADMIN")
-                        .requestMatchers("/api/v1/carts/**", "/api/v1/orders/**").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/carts/**", "/api/v1/orders/**", "/api/v1/reviews/**").hasAnyRole("CUSTOMER", "OWNER", "ADMIN")
                         .requestMatchers("/api/v1/stores/**").hasAnyRole("OWNER","ADMIN")
                         .requestMatchers("/api/v1/ai/**", "/api/v1/stores/**","/api/v1/orders/{orderId}/status").hasRole("OWNER")
                         // ADMIN 권한을 가진 사용자만 접근 가능한 경로

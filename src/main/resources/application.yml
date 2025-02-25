@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         #        show_sql: true
@@ -27,5 +27,5 @@ logging.level:
 ai:
   openai:
     api:
-      key: ${OPENAI_API_KEY}
+      key: 1234
       url: https://api.openai.com/v1/chat/completions

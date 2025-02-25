@@ -70,6 +70,9 @@ public class ReviewServiceImpl implements ReviewService {
     public Page<ReviewFindResponseDto> findReviews(Long userId, Integer page, Integer size, String sortBy, Boolean isAsc) {
         Pageable pageable = createPageable(page, size, sortBy, isAsc);
         Page<Review> findReviews = reviewRepository.findFetchByUserId(userId, pageable);
+        if(findReviews.isEmpty()){
+            throw new ReviewNotFoundException("리뷰가 존재하지 않습니다.", userId, null);
+        }
 
         return findReviews.map(findReview -> {
             List<ReviewMenuDto> reviewMenuDtoList = findReview.getOrder().getOrderItems().stream()
@@ -131,12 +134,8 @@ public class ReviewServiceImpl implements ReviewService {
      * Pageable 객체 생성 메서드
      */
     private Pageable createPageable(int page, Integer size, String sortBy, Boolean isAsc) {
-        Sort.Direction direction = (isAsc != null && isAsc) ? Sort.Direction.ASC : Sort.Direction.DESC;
-
-        String defaultSortBy = "createdAt";
-        Sort sort = (sortBy == null || sortBy.trim().isEmpty())
-                ? Sort.by(direction, defaultSortBy)
-                : Sort.by(direction, sortBy);
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
 
         return PageRequest.of(page, size, sort);
     }

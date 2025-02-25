@@ -14,7 +14,9 @@ import com.twopro.deliveryapp.order.repository.OrderRepository;
 import com.twopro.deliveryapp.orderItem.Entity.OrderItem;
 import com.twopro.deliveryapp.payment.entity.Payment;
 import com.twopro.deliveryapp.payment.service.PaymentServiceImpl;
+import com.twopro.deliveryapp.store.dto.StoreDeliveryAreaDto;
 import com.twopro.deliveryapp.store.entity.Store;
+import com.twopro.deliveryapp.store.service.StoreDeliveryAreaService;
 import com.twopro.deliveryapp.store.service.StoreService;
 import com.twopro.deliveryapp.user.entity.User;
 import com.twopro.deliveryapp.user.repository.UserRepository;
@@ -45,6 +47,7 @@ public class OrderServiceImpl implements OrderService {
     private final MenuService menuService;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final StoreDeliveryAreaService storeDeliveryAreaService;
 
     /**
      * 사용자가 음식을 선택하고 결제페이지로 넘어가는 로직
@@ -87,18 +90,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void paymentRequest(PaymentRequestDto requestDto, Long userId) {
+    public PaymentResponseDto paymentRequest(PaymentRequestDto requestDto, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("유저Id와 일치하는 유저 정보가 없습니다.", userId));
         Store findStore = storeService.findByID(requestDto.getStoreId()).orElseThrow();
 
         // 영업중인지 확인 로직
-        if (!findStore.getStatus().equals(StoreStatus.OPEN)) { // 추후 N은 변경 예정
+        if (!findStore.getStatus().equals(StoreStatus.OPEN)) {
             throw new StoreNoOpenException("영업중인 가게가 아닙니다.");
         }
 
-        //======================================================================================================================
-        //배달가능 지역 로직 넣어야 됌
-        //======================================================================================================================
+        List<StoreDeliveryAreaDto> deliveryAreasByStore = storeDeliveryAreaService.getDeliveryAreasByStore(findStore.getStoreId());
+        boolean isDeliverable = deliveryAreasByStore.stream()
+                .anyMatch(area -> area.getDeliveryAreaName().equals(requestDto.getAddress().getEupMyeonDong()));
+
+        if (!isDeliverable) {
+            throw new DeliveryNotAvailableException("해당 지역은 배달이 불가능합니다.", userId, user.getAddress().getEupMyeonDong(), findStore.getStoreId());
+        }
 
         List<Menu> findMenus = menuService.findByMenuIdIn(requestDto.getMenus().stream().map(CreateOrderMenuDto::getMenuId).toList());
         Address address = Address.of(requestDto.getAddress());
@@ -115,13 +122,14 @@ public class OrderServiceImpl implements OrderService {
             orderItems.add(OrderItem.createOrderItem(menu, menu.getPrice(), menuDto.getQuantity()));
             // totalPrice 계산
             totalPrice += menu.getPrice() * menuDto.getQuantity();
+            totalPrice += findStore.getMinimumOrderPrice();
         }
         // 결제 처리
         Payment payment = paymentService.createPayment(totalPrice, requestDto.getPaymentProvider(), userId);
         // 주문 생성
         Order order = Order.createOrder(user, orderItems, requestDto.getOrderType(), address, requestDto.getMessage(), payment, findStore);
         orderRepository.save(order);
-
+        return new PaymentResponseDto(order.getId(), order.getTotalPrice());
     }
 
 
@@ -149,7 +157,10 @@ public class OrderServiceImpl implements OrderService {
                 order.getMessage(),
                 order.getOrderType(),
                 order.getTotalPrice(),
-                orderMenuResponseDto
+                orderMenuResponseDto,
+                order.getStore().getStoreId(),
+                order.getStore().getName(),
+                order.getStore().getDeliveryTip()
         );
     }
 
@@ -163,7 +174,7 @@ public class OrderServiceImpl implements OrderService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("유저Id와 일치하는 유저 정보가 없습니다.", userId));
 
-        Page<Order> findOrders = orderRepository.findAllByUser(user, pageable);
+        Page<Order> findOrders = orderRepository.findAllByUser(user.getUserId(), pageable);
 
         return findOrders.map(order -> new FindOrderResponseDto(
                 order.getId(),
@@ -173,7 +184,10 @@ public class OrderServiceImpl implements OrderService {
                 order.getTotalPrice(),
                 order.getOrderItems().stream()
                         .map(oi -> new OrderMenuResponseDto(oi.getMenu().getName(), oi.getOrderPrice(), oi.getCount()))
-                        .toList()
+                        .toList(),
+                order.getStore().getStoreId(),
+                order.getStore().getName(),
+                order.getStore().getDeliveryTip()
         ));
     }
 
@@ -191,13 +205,14 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrder(UUID orderId, Long userId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다.", userId, orderId));
         validateOrderOwnership(userId, order);
+        paymentService.orderCancel(orderId, order);
 
         if (order.getOrderStatus().equals(OrderStatus.CUSTOMER_REQUESTED)) { // 아직 가게주가 주문확인을 안했을 경우만 취소
             order.updateStatus(OrderStatus.CUSTOMER_CANCELLED);
             order.getOrderItems().forEach(BaseEntity::delete);
             order.delete();
         } else {
-            throw new CustomOrderCancelException("이미 가게주가 음식을 만드는 중입니다.", userId, orderId, order.getOrderStatus());
+            throw new CustomOrderCancelException("이미 주문이 들어가서 취소할 수 없습니다.", userId, orderId, order.getOrderStatus());
         }
     }
 
@@ -209,19 +224,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void updateStatus(OrderStatusRequestDto requestDto, Long userId) {
-        Order findOrder = orderRepository.findById(requestDto.getOrderId()).orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다.", userId, requestDto.getOrderId()));
+        Order findOrder = orderRepository.findStatusById(requestDto.getOrderId()).orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다.", userId, requestDto.getOrderId()));
+//        findOrder.getStore().get
         if (requestDto.getOrderStatus().equals(OrderStatus.OWNER_ACCEPTED)) { //가게주 주문 확인
             findOrder.updateStatus(requestDto.getOrderStatus());
         } else if (requestDto.getOrderStatus().equals(OrderStatus.OWNER_CANCELLED)) {//가게주 주문 취소
             findOrder.updateStatus(requestDto.getOrderStatus());
             findOrder.delete();
-        } else if (requestDto.getOrderStatus().equals(OrderStatus.DELIVERING)) {
+        } else if (requestDto.getOrderStatus().equals(OrderStatus.DELIVERING)) { //가게주의 배달 출발
             findOrder.updateStatus(requestDto.getOrderStatus());
         } else {
             throw new OrderUpdateStatusException("잘못된 오더 상태 변경값입니다.", userId, requestDto.getOrderId(), requestDto.getOrderStatus());
         }
     }
 
+    @Override
     public Order findById(UUID orderId) {
         return orderRepository.findById(orderId).orElseThrow(()->new OrderNotFoundException("주문을 찾을 수 없습니다"));
     }
@@ -234,7 +251,7 @@ public class OrderServiceImpl implements OrderService {
      */
     private void validateOrderOwnership(Long userId, Order order) {
         if (!Objects.equals(order.getUser().getUserId(), userId)) {
-            throw new OrderAccessDeniedException("주문자와 주문 조회자가 일치하지 않습니다.");
+            throw new OrderAccessDeniedException("주문자와 주문 조회자가 일치하지 않습니다.", userId, order.getUser().getUserId());
         }
     }
 
@@ -242,12 +259,8 @@ public class OrderServiceImpl implements OrderService {
      * Pageable 객체 생성 메서드
      */
     private Pageable createPageable(int page, Integer size, String sortBy, Boolean isAsc) {
-        Sort.Direction direction = (isAsc != null && isAsc) ? Sort.Direction.ASC : Sort.Direction.DESC;
-
-        String defaultSortBy = "createdAt";
-        Sort sort = (sortBy == null || sortBy.trim().isEmpty())
-                ? Sort.by(direction, defaultSortBy)
-                : Sort.by(direction, sortBy);
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
 
         return PageRequest.of(page, size, sort);
     }
