@@ -1,5 +1,6 @@
 # delivery app 
-<br>
+
+---
 
 
 ## 1. 팀 소개 
@@ -10,7 +11,95 @@
 
 ---
 
-## 2. 서비스 구성 
+## 2. 프로젝트 목적
+> 본 프로젝트는 팀 프로젝트로서 협업 활동을 바탕으로 배달 서비스 플랫폼을 개발하는 목적으로, </br>
+개발 명세서의 요구 사항을 충실히 반영하면서도 유연하고 확장성 있는 서비스를 목표로 합니다. </br>
+이를 위해 모듈화된 아키텍처와 도메인별 명확한 역할 분리, 확장 가능한 설계 원칙을 적용하여 </br>
+지속적으로 유지보수 및 개선이 가능한 구조를 갖추고자 노력했니다.
+
+---
+
+## 3. 프로젝트 구조
+```plaintext
+ai
+├── controller
+├── dto
+├── entity
+├── exception
+├── repository
+└── service
+
+cart
+├── controller
+├── dto
+├── entity
+├── repository
+└── service
+
+common
+├── config
+├── dto
+├── entity
+├── enumType
+├── exceptionHandler
+└── scheduler
+
+menu
+├── controller
+├── dto
+├── entity
+├── exception
+├── repository
+└── service
+
+order
+├── controller
+├── dto
+├── entity
+├── exception
+├── repository
+└── service
+
+payment
+├── entity
+├── repository
+└── service
+
+review
+├── controller
+├── dto
+├── entity
+├── exception
+├── repository
+└── service
+
+store
+├── controller
+├── dto
+├── entity
+├── repository
+└── service
+
+user
+├── config
+├── controller
+├── dto
+├── entity
+├── exception
+├── jwt
+├── repository
+├── security
+└── service
+```
+
+---
+
+## 4. 프로젝트 실행 방법
+- 도메인 주소:
+
+---
+
+## 5. 서비스 구성 
 ### 1) ai
 -	OpenAI API 사용
 -	메뉴 설명 텍스트 자동 생성 및 저장, 동적 조회, 삭제
@@ -63,19 +152,17 @@
 
 ---
 
-## 3. 프로젝트 실행 방법
-- 도메인 주소:
 
----
-
-## 4. ERD 및 API 문서
+## 6. ERD 및 API 문서
 ![ERD](https://github.com/sparta-2pro/deliveryapp/blob/dev/erd_0225.png)
 
 
 ![API DOCS](https://github.com/sparta-2pro/deliveryapp/blob/dev/api_docs_0225.png)
 
 ---
-## 5. 기술 스택
+
+
+## 7. 기술 스택
 ![기술스택](https://github.com/sparta-2pro/deliveryapp/blob/dev/stack_0225.png)
 
 ---
