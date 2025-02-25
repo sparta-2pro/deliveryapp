@@ -7,14 +7,13 @@ import com.twopro.deliveryapp.menu.dto.UpdateMenuRequestDto;
 import com.twopro.deliveryapp.menu.service.MenuService;
 import com.twopro.deliveryapp.user.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/menus")
@@ -23,6 +22,7 @@ public class MenuController {
     private final MenuService menuService;
 
     @PostMapping
+    @PreAuthorize("hasRole('OWNER')")
     public SingleResponse<MenuResponseDto> addMenu(@RequestBody AddMenuRequestDto addMenuRequestDto) {
         MenuResponseDto addMenuResponse = menuService.addMenu(addMenuRequestDto);
         return SingleResponse.success(addMenuResponse);
@@ -56,6 +56,7 @@ public class MenuController {
     }
 
     @PatchMapping("/{menuId}")
+    @PreAuthorize("hasRole('OWNER')")
     public SingleResponse<MenuResponseDto> updateMenu(
             @PathVariable UUID menuId,
             @RequestBody UpdateMenuRequestDto updateMenuRequestDto
@@ -66,6 +67,7 @@ public class MenuController {
     }
 
     @PatchMapping("/delete/{menuId}")
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     public void deleteMenu(@PathVariable UUID menuId) {
         menuService.deleteMenu(menuId);
     }

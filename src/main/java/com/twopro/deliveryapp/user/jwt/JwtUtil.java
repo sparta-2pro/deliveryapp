@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JwtUtil {
     private final String SECRET_KEY = "afjskjfklsajrljsdifjsalirjaslirsjarsaijklqerfad";
-    private final long EXPIRATION_TIME = 3600 * 1000;
+    private final long EXPIRATION_TIME = 3600 * 48 * 1000;
     private final UserRepository userRepository;
 
     private Key getSigningKey() {
