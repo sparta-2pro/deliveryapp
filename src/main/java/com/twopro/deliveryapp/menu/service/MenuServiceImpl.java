@@ -10,6 +10,9 @@ import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.service.StoreService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -61,10 +64,12 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuResponseDto> findAllMenuByName(String name, Long size, UUID lastMenuId) {
+    public List<MenuResponseDto> findAllMenuByName(String receiveLocation, String name, UUID lastMenuId, int size) {
+        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "menuId"));
+
         List<Menu> menus = lastMenuId == null
-                ? menuRepository.findAllMenuByName(name, size)
-                : menuRepository.findAllMenuByName(name, size, lastMenuId);
+                ? menuRepository.findAllMenuByName(receiveLocation, name, pageable)
+                : menuRepository.findAllMenuByName(receiveLocation, name, lastMenuId, pageable);
 
         return getMenuResponseDtoList(menus);
     }

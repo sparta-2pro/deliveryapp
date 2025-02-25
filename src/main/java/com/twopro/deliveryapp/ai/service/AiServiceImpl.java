@@ -67,8 +67,10 @@ public class AiServiceImpl implements AiService {
     }
 
     @Override
-    public List<AiResponseDto> findAllAiServiceByFilter(LocalDate startDate, LocalDate endDate, String menuName) {
-        return aiRepository.findAllAiServiceByFilter(startDate, endDate, menuName);
+    public List<AiResponseDto> findAllAiServiceByFilter(
+            LocalDate startDate, LocalDate endDate, String menuName, UUID storeId, int size, UUID lastAiId
+    ) {
+        return aiRepository.findAllAiServiceByFilter(startDate, endDate, menuName, storeId, size, lastAiId);
     }
 
     private Ai findAiServiceByIdForServer(UUID aiId) {

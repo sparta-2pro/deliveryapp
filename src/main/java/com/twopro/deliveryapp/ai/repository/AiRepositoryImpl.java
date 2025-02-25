@@ -44,7 +44,9 @@ public class AiRepositoryImpl implements AiRepository {
     }
 
     @Override
-    public List<AiResponseDto> findAllAiServiceByFilter(LocalDate startDate, LocalDate endDate, String menuName) {
+    public List<AiResponseDto> findAllAiServiceByFilter(
+            LocalDate startDate, LocalDate endDate, String menuName, UUID storeId, int size, UUID lastAiId
+    ) {
         QAi ai = QAi.ai;
         QMenu menu = QMenu.menu;
 
@@ -63,6 +65,12 @@ public class AiRepositoryImpl implements AiRepository {
             builder.and(ai.menu.name.eq(menuName));
         }
 
+        if (lastAiId != null) {
+            builder.and((ai.aiId.loe(lastAiId)));
+        }
+
+        builder.and(ai.menu.store.storeId.eq(storeId));
+
         return queryFactory
                 .select(
                         Projections.constructor(
@@ -76,6 +84,7 @@ public class AiRepositoryImpl implements AiRepository {
                 .leftJoin(ai.menu, menu)
                 .where(builder)
                 .orderBy(ai.createdAt.desc())
+                .limit(size)
                 .fetch();
     }
 }

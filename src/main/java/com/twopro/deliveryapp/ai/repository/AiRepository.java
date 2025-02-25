@@ -18,5 +18,7 @@ public interface AiRepository {
 
     List<Ai> findAllAiServicesByStoreId(UUID storeId, Long size, UUID lastAiId);
 
-    List<AiResponseDto> findAllAiServiceByFilter(LocalDate startDate, LocalDate endDate, String menuName);
+    List<AiResponseDto> findAllAiServiceByFilter(
+            LocalDate startDate, LocalDate endDate, String menuName, UUID storeId, int size, UUID lastAiId
+    );
 }

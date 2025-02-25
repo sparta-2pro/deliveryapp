@@ -19,7 +19,9 @@ public interface AiService {
 
     List<AiResponseDto> findAllAiServicesByStoreId(UUID storeId, Long size, UUID lastAiId);
 
-    List<AiResponseDto> findAllAiServiceByFilter(LocalDate startDate, LocalDate endDate, String menuName);
+    List<AiResponseDto> findAllAiServiceByFilter(
+            LocalDate startDate, LocalDate endDate, String menuName, UUID storeId, int size, UUID lastAiId
+    );
 
     void updateDescriptionToAiAnswer(UUID aiId);
 

@@ -5,12 +5,16 @@ import com.twopro.deliveryapp.menu.dto.AddMenuRequestDto;
 import com.twopro.deliveryapp.menu.dto.MenuResponseDto;
 import com.twopro.deliveryapp.menu.dto.UpdateMenuRequestDto;
 import com.twopro.deliveryapp.menu.service.MenuService;
+import com.twopro.deliveryapp.user.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/menus")
@@ -38,11 +42,15 @@ public class MenuController {
 
     @GetMapping("/name")
     public SingleResponse<List<MenuResponseDto>> findAllMenuByName(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam String name,
-            @RequestParam Long size,
-            @RequestParam(required = false) UUID lastMenuId
+            @RequestParam(required = false) UUID lastMenuId,
+            @RequestParam int size
     ) {
-        List<MenuResponseDto> findMenuResponseDtoList = menuService.findAllMenuByName(name, size, lastMenuId);
+        // TODO get chain 좋지 않음. 주요 비즈니스 규칙이라 메서드로 밸 수 있도록 담당자에게 전달해야 함
+        String receiveLocation = userDetails.getUser().getAddress().getEupMyeonDong();
+        List<MenuResponseDto> findMenuResponseDtoList =
+                menuService.findAllMenuByName(receiveLocation, name, lastMenuId, size);
 
         return SingleResponse.success(findMenuResponseDtoList);
     }

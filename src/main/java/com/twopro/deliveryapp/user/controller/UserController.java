@@ -28,7 +28,7 @@ public class UserController {
 
     // 회원 가입
     @PostMapping("/users/signup")
-    public ResponseEntity<SingleResponse<UserDto>> signUp(@RequestBody UserSignupRequestDto requestDto) {
+    public ResponseEntity<SingleResponse<UserDto>> signUp(@RequestBody @Valid UserSignupRequestDto requestDto) {
         User user = requestDto.toEntity();
         User signUpUser = userService.signUp(user);
         UserDto responseDto = new UserDto(signUpUser);
@@ -38,7 +38,7 @@ public class UserController {
 
     // 이메일 중복 확인
     @PostMapping("/users/email-check")
-    public ResponseEntity<SingleResponse<String>> checkEmailDuplication(@RequestBody CheckRequestDto requestDto) {
+    public ResponseEntity<SingleResponse<String>> checkEmailDuplication(@RequestBody @Valid CheckRequestDto requestDto) {
         if (userService.isEmailDuplication(requestDto.getEmail())) {
             throw new CustomException(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다. 다른 이메일을 사용해주세요.");
         }
@@ -47,7 +47,7 @@ public class UserController {
 
     // 닉네임 중복 확인
     @PostMapping("/users/nickname-check")
-    public ResponseEntity<SingleResponse<String>> checkNicknameDuplication(@RequestBody CheckRequestDto requestDto) {
+    public ResponseEntity<SingleResponse<String>> checkNicknameDuplication(@RequestBody @Valid CheckRequestDto requestDto) {
         if (userService.isNicknameDuplication(requestDto.getNickname())) {
             throw new CustomException(HttpStatus.CONFLICT, "이미 존재하는 닉네임입니다. 다른 닉네임을 사용해주세요.");
         }
@@ -118,19 +118,4 @@ public class UserController {
         return ResponseEntity.ok(new SingleResponse<>("회원 비활성화 성공!"));
     }
 
-    /* test code
-    @GetMapping("/auth/me")
-    public ResponseEntity<String> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        System.out.println("현재 로그인된 사용자: " + userDetails.getUsername());
-        System.out.println("현재 사용자 권한: " + userDetails.getAuthorities());
-
-        return ResponseEntity.ok("현재 권한: " + userDetails.getAuthorities());
-    }
-
-    @GetMapping("/owner-only")
-    @PreAuthorize("hasRole('ROLE_OWNER')")
-    public ResponseEntity<String> ownerOnlyAccess(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok("OWNER 권한이 있습니다.");
-    }
-    */
 }

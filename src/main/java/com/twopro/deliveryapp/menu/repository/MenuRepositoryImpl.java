@@ -2,6 +2,7 @@ package com.twopro.deliveryapp.menu.repository;
 
 import com.twopro.deliveryapp.menu.entity.Menu;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,12 +36,12 @@ public class MenuRepositoryImpl implements MenuRepository {
     }
 
     @Override
-    public List<Menu> findAllMenuByName(String name, Long limit) {
-        return jpaMenuRepository.findMenuEntitiesByName(name, limit);
+    public List<Menu> findAllMenuByName(String receiveLocation, String name, Pageable pageable) {
+        return jpaMenuRepository.findMenuEntitiesByName(receiveLocation, name, pageable);
     }
 
     @Override
-    public List<Menu> findAllMenuByName(String name, Long limit, UUID lastMenuId) {
-        return jpaMenuRepository.findMenuEntitiesByName(name, limit, lastMenuId);
+    public List<Menu> findAllMenuByName(String receiveLocation, String name, UUID lastMenuId, Pageable pageable) {
+        return jpaMenuRepository.findMenuEntitiesByName(receiveLocation, name, lastMenuId, pageable);
     }
 }
