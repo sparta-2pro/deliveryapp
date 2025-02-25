@@ -17,5 +17,5 @@ public interface StoreDeliveryAreaService {
 
     void deleteStoreDeliveryArea(UUID storeId, UUID deliveryAreaId);
 
-    void updateDeliveryAreas(UUID storeId, List<UUID> deliveryAreaIds);
+    void updateStoreDeliveryAreas(UUID storeId, List<StoreDeliveryAreaDto> storeDeliveryAreaDtos);
 }

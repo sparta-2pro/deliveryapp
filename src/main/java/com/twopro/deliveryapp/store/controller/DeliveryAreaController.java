@@ -45,10 +45,11 @@ public class DeliveryAreaController {
 
     // 배달 가능 지역 수정
     @PutMapping()
-    public ResponseEntity<SingleResponse<Void>> updateDeliveryArea(@RequestBody DeliveryAreaDto deliveryAreaDto) {
-        deliveryAreaService.updateDeliveryArea(deliveryAreaDto);
+    public ResponseEntity<SingleResponse<Void>> updateMultipleDeliveryAreas(@RequestBody List<DeliveryAreaDto> deliveryAreaDtos) {
+        deliveryAreaService.updateMultipleDeliveryAreas(deliveryAreaDtos);
         return ResponseEntity.ok(SingleResponse.success(null));
     }
+
 
     // 배달 가능 지역 삭제
     @DeleteMapping("/{deliveryAreaId}")
