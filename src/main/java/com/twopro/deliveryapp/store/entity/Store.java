@@ -69,15 +69,15 @@ public class Store extends BaseEntity {
     @Embedded
     private Address address;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = true)
     private Long orderCount;
 
     @Builder
-    public Store(Category category, String name, String pictureUrl, String phone, String operatingHours, String closedDays, int rating, int reviewCount, StoreStatus status, StoreType deliveryType, Integer minimumOrderPrice, Integer deliveryTip, Address address) {
+    public Store(Category category, String name, String pictureUrl, String phone, String operatingHours, String closedDays, int rating, int reviewCount, StoreStatus status, StoreType deliveryType, Integer minimumOrderPrice, Integer deliveryTip, Address address, User user) {
         this.category = category;
         this.name = name;
         this.pictureUrl = pictureUrl;
@@ -91,6 +91,7 @@ public class Store extends BaseEntity {
         this.minimumOrderPrice = minimumOrderPrice;
         this.deliveryTip = deliveryTip;
         this.address = address;
+        this.user = user;
     }
 
     public void updateStoreDetails(String name, String phone, String operatingHours, String closedDays, String pictureUrl, Category category, StoreStatus status, StoreType deliveryType, Integer minimumOrderPrice, Integer deliveryTip, Address address) {

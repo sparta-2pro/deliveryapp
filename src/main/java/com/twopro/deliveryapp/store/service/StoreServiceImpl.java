@@ -16,12 +16,14 @@ import com.twopro.deliveryapp.store.exception.StoreValidationException;
 import com.twopro.deliveryapp.store.repository.CategoryRepository;
 import com.twopro.deliveryapp.store.repository.StoreDeliveryAreaRepository;
 import com.twopro.deliveryapp.store.repository.StoreRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.twopro.deliveryapp.user.entity.User;
+import com.twopro.deliveryapp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,7 @@ public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
     private final StoreDeliveryAreaRepository storeDeliveryAreaRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Optional<Store> findByID(UUID id) {
@@ -53,6 +56,10 @@ public class StoreServiceImpl implements StoreService {
             throw new StoreValidationException("가게 이름은 필수 입력 필드입니다.", "name", "입력되지 않음");
         }
 
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new StoreValidationException("존재하지 않는 유저입니다.", "email", email));
+
         Store store = Store.builder()
                 .category(category)
                 .name(dto.getName())
@@ -65,6 +72,7 @@ public class StoreServiceImpl implements StoreService {
                 .deliveryType(dto.getDeliveryType())
                 .minimumOrderPrice(dto.getMinimumOrderPrice())
                 .deliveryTip(dto.getDeliveryTip())
+                .user(user)  // 영속 상태의 유저 할당
                 .build();
 
         return storeRepository.save(store);
@@ -182,9 +190,6 @@ public class StoreServiceImpl implements StoreService {
                 .map(StoreDeliveryArea::getStore)
                 .filter(store -> store.getCategory() != null && store.getCategory().getId().equals(categoryId) && store.getDeletedAt() == null)
                 .collect(Collectors.toList());
-
-        // 로깅 추가
-        System.out.println("Filtered stores count: " + stores.size());
 
         return stores.stream().map(this::convertToDto).collect(Collectors.toList());
     }

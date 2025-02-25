@@ -1,10 +1,7 @@
 package com.twopro.deliveryapp.store.service;
 
 import com.twopro.deliveryapp.store.entity.DeliveryArea;
-import com.twopro.deliveryapp.store.entity.Store;
-import com.twopro.deliveryapp.store.entity.StoreDeliveryArea;
 import com.twopro.deliveryapp.store.exception.DeliveryAreaNotFoundException;
-import com.twopro.deliveryapp.store.exception.DuplicateDeliveryAreaException;
 import com.twopro.deliveryapp.store.exception.DuplicateDeliveryAreaNameException;
 import com.twopro.deliveryapp.store.repository.DeliveryAreaRepository;
 import com.twopro.deliveryapp.store.repository.StoreDeliveryAreaRepository;
