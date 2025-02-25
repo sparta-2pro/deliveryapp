@@ -67,8 +67,6 @@ public class StoreServiceImpl implements StoreService {
                 .deliveryTip(dto.getDeliveryTip())
                 .build();
 
-        System.out.println("Created Store with Category ID: " + store.getCategory().getId());  // 로그 추가
-
         return storeRepository.save(store);
     }
 
@@ -100,6 +98,8 @@ public class StoreServiceImpl implements StoreService {
         dto.setDeliveryType(store.getDeliveryType());
         dto.setMinimumOrderPrice(store.getMinimumOrderPrice());
         dto.setDeliveryTip(store.getDeliveryTip());
+        dto.setAverageRating(store.getRating());
+        dto.setReviewCount(store.getReviewCount());
         return dto;
     }
 
