@@ -38,7 +38,7 @@ public interface JpaMenuRepository extends JpaRepository<Menu, UUID> {
             "JOIN FETCH m.store s " +
             "JOIN FETCH s.storeDeliveryAreas sd " +
             "WHERE sd.deliveryArea.name = :receiveLocation " +
-            "AND m.name LIKE %:name% " +
+            "AND m.name LIKE '%:name%' " +
             "AND m.deletedAt IS NULL " +
             "ORDER BY m.menuId DESC"
     )
@@ -54,7 +54,7 @@ public interface JpaMenuRepository extends JpaRepository<Menu, UUID> {
             "JOIN FETCH m.store s " +
             "JOIN FETCH s.storeDeliveryAreas sd " +
             "WHERE sd.deliveryArea.name = :receiveLocation " +
-            "AND m.name LIKE %:name% " +
+            "AND m.name LIKE '%:name%' " +
             "AND m.deletedAt IS NULL " +
             "AND m.menuId < :lastMenuId " +
             "ORDER BY m.menuId DESC"
