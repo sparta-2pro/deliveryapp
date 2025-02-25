@@ -1,5 +1,6 @@
 package com.twopro.deliveryapp.store.service;
 
+import com.twopro.deliveryapp.store.dto.DeliveryAreaDto;
 import com.twopro.deliveryapp.store.entity.DeliveryArea;
 import com.twopro.deliveryapp.store.exception.DeliveryAreaNotFoundException;
 import com.twopro.deliveryapp.store.exception.DuplicateDeliveryAreaNameException;
@@ -41,18 +42,19 @@ public class DeliveryAreaServiceImpl implements DeliveryAreaService {
         return deliveryAreaRepository.findAllByDeletedAtIsNull();
     }
 
-    @Override
     @Transactional
-    public void updateDeliveryArea(UUID deliveryAreaId, String newName) {
-        DeliveryArea deliveryArea = deliveryAreaRepository.findById(deliveryAreaId)
-                .orElseThrow(() -> new DeliveryAreaNotFoundException("해당 ID의 배달 가능 지역을 찾을 수 없습니다.", deliveryAreaId));
+    public void updateMultipleDeliveryAreas(List<DeliveryAreaDto> deliveryAreaDtos) {
+        for (DeliveryAreaDto dto : deliveryAreaDtos) {
+            DeliveryArea deliveryArea = deliveryAreaRepository.findById(dto.getId())
+                    .orElseThrow(() -> new DeliveryAreaNotFoundException("해당 ID의 배달 가능 지역을 찾을 수 없습니다.", dto.getId()));
 
-        if (deliveryAreaRepository.existsByName(newName)) {
-            throw new DuplicateDeliveryAreaNameException("이미 존재하는 배달 가능 지역 이름입니다.", newName);
+            if (deliveryAreaRepository.existsByName(dto.getName()) && !dto.getName().equals(deliveryArea.getName())) {
+                throw new DuplicateDeliveryAreaNameException("이미 존재하는 배달 가능 지역 이름입니다.", dto.getName());
+            }
+
+            deliveryArea.updateName(dto.getName());
+            deliveryAreaRepository.save(deliveryArea);
         }
-
-        deliveryArea.updateName(newName);
-        deliveryAreaRepository.save(deliveryArea);
     }
 
     @Override

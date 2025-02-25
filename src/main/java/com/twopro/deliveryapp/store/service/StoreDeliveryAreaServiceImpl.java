@@ -92,15 +92,20 @@ public class StoreDeliveryAreaServiceImpl implements StoreDeliveryAreaService {
 
     @Override
     @Transactional
-    public void updateDeliveryAreas(UUID storeId, List<UUID> deliveryAreaIds) {
-        Store store = storeRepository.findById(storeId).orElseThrow();
+    public void updateStoreDeliveryAreas(UUID storeId, List<StoreDeliveryAreaDto> storeDeliveryAreaDtos) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreNotFoundException("해당 ID의 가게를 찾을 수 없습니다.", storeId));
 
         storeDeliveryAreaRepository.deleteAll(storeDeliveryAreaRepository.findByStore(store));
 
-        List<StoreDeliveryArea> newDeliveryAreas = deliveryAreaIds.stream()
-                .map(areaId -> new StoreDeliveryArea(store, deliveryAreaRepository.findById(areaId).orElseThrow()))
-                .toList();
+        List<StoreDeliveryArea> newAreas = storeDeliveryAreaDtos.stream()
+                .map(dto -> {
+                    DeliveryArea deliveryArea = deliveryAreaRepository.findById(dto.getId())
+                            .orElseThrow(() -> new DeliveryAreaNotFoundException("해당 ID의 배달 가능 지역을 찾을 수 없습니다.", dto.getId()));
+                    return new StoreDeliveryArea(store, deliveryArea);
+                })
+                .collect(Collectors.toList());
 
-        storeDeliveryAreaRepository.saveAll(newDeliveryAreas);
+        storeDeliveryAreaRepository.saveAll(newAreas);
     }
 }
