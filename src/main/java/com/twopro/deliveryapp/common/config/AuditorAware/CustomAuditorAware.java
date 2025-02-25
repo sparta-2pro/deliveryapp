@@ -16,7 +16,7 @@ public class CustomAuditorAware implements AuditorAware<String> {
 
         // 인증되지 않은 사용자일 경우 예외를 던짐
         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getName())) {
-            throw new RuntimeException("인증되지 않은 사용자");// security 설정 전이므로 주석처리
+            return Optional.of("비회원");
         }
 
         return Optional.of(authentication.getName());
