@@ -1,7 +1,9 @@
 package com.twopro.deliveryapp.store.service;
 
+import com.twopro.deliveryapp.store.dto.DeliveryAreaDto;
 import com.twopro.deliveryapp.store.entity.DeliveryArea;
 import com.twopro.deliveryapp.store.entity.Store;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +17,7 @@ public interface DeliveryAreaService {
 
     List<DeliveryArea> getAllDeliveryAreas();
 
-    void updateDeliveryArea(UUID deliveryAreaId, String newName);
+    void updateDeliveryArea(DeliveryAreaDto deliveryAreaDto);
 
     void deleteDeliveryArea(UUID deliveryAreaId);
 }

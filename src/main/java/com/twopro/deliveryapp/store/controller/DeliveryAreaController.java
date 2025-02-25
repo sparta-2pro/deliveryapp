@@ -44,9 +44,9 @@ public class DeliveryAreaController {
     }
 
     // 배달 가능 지역 수정
-    @PutMapping("/{deliveryAreaId}")
-    public ResponseEntity<SingleResponse<Void>> updateDeliveryArea(@PathVariable UUID deliveryAreaId, @RequestBody String newName) {
-        deliveryAreaService.updateDeliveryArea(deliveryAreaId, newName);
+    @PutMapping()
+    public ResponseEntity<SingleResponse<Void>> updateDeliveryArea(@RequestBody DeliveryAreaDto deliveryAreaDto) {
+        deliveryAreaService.updateDeliveryArea(deliveryAreaDto);
         return ResponseEntity.ok(SingleResponse.success(null));
     }
 
