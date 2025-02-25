@@ -24,16 +24,16 @@ import com.twopro.deliveryapp.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-//@Configuration
+// @Component
 public class DummyDataGenerator {
-    @Autowired
+    // @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Bean
