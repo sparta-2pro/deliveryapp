@@ -1,12 +1,12 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/deliveryapp
+    url: jdbc:postgresql://database-1.cxmuk28we1lp.ap-southeast-2.rds.amazonaws.com/deliveryapp
     username: root
-    password: 1234
+    password: 12345678
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         #        show_sql: true
