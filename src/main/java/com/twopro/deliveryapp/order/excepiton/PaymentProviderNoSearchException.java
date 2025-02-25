@@ -14,5 +14,7 @@ public class PaymentProviderNoSearchException extends RuntimeException {
         this.paymentProvider = paymentProvider;
     }
 
-
+    public PaymentProviderNoSearchException(String message) {
+        super(message);
+    }
 }

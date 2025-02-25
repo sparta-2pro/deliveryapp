@@ -42,4 +42,9 @@ public class Payment extends BaseEntity {
         payment.paymentProvider = paymentProvider;
         return payment;
     }
+
+    public void updateStatus(PaymentStatus paymentStatus){
+        this.paymentStatus = paymentStatus;
+    }
+
 }

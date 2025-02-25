@@ -14,10 +14,14 @@ import java.util.UUID;
 public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     //오더id로 주문 단건 조회
-    @Query("select o from Order o join fetch o.orderItems oi join fetch oi.menu m where oi.order.id = :orderId")
+    @Query("select o from Order o join fetch o.orderItems oi join fetch oi.menu m join fetch o.store where oi.order.id = :orderId")
     Optional<Order> findByOrderItemsAndMenu(UUID orderId);
 
     //해당 유저의 모든 주문내용 가져오기
-    @Query("select o from Order o join fetch o.orderItems oi join fetch oi.menu join fetch o.store where o.user = :user")
-    Page<Order> findAllByUser(User user, Pageable pageable);
+    @Query("select o from Order o join fetch o.orderItems oi join fetch oi.menu join fetch o.store where o.user.userId = :userId")
+    Page<Order> findAllByUser(Long userId, Pageable pageable);
+
+    @Query("select o from Order o join fetch o.store where o.id =:orderId")
+    Optional<Order> findStatusById(UUID orderId);
+
 }

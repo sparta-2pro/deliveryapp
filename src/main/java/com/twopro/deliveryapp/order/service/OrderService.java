@@ -1,9 +1,8 @@
 package com.twopro.deliveryapp.order.service;
 
-import com.twopro.deliveryapp.order.dto.FindOrderResponseDto;
-import com.twopro.deliveryapp.order.dto.OrderRequestDto;
-import com.twopro.deliveryapp.order.dto.OrderStatusRequestDto;
-import com.twopro.deliveryapp.order.dto.PaymentRequestDto;
+import com.twopro.deliveryapp.order.dto.*;
+import com.twopro.deliveryapp.order.entity.Order;
+import com.twopro.deliveryapp.payment.entity.Payment;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.UUID;
 public interface OrderService {
     void createOrder(OrderRequestDto requestDto, Long userId);
 
-    void paymentRequest(PaymentRequestDto requestDto, Long userId);
+    PaymentResponseDto paymentRequest(PaymentRequestDto requestDto, Long userId);
 
     FindOrderResponseDto findOrder(UUID orderId, Long userId);
 
@@ -22,4 +21,5 @@ public interface OrderService {
 
     void updateStatus(OrderStatusRequestDto requestDto, Long userId);
 
+    Order findById(UUID orderId);
 }
