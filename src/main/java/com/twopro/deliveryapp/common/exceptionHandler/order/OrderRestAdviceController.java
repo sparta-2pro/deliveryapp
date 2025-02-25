@@ -41,25 +41,38 @@ public class OrderRestAdviceController {
     @ExceptionHandler(CustomOrderCancelException.class)
     public ResponseEntity handleCustomOrderCancelException(CustomOrderCancelException e) {
         log.info("errorMessage : {}, userId: {}, orderId: {}, orderStatus : {}", e.getMessage(), e.getUserId(), e.getOrderId(), e.getOrderStatus());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_3"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_4"));
     }
 
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity handleOrderNotFoundException(OrderNotFoundException e) {
         log.info("errorMessage : {}, userId: {}, orderId: {}", e.getMessage(), e.getUserId(), e.getOrderId());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_3"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_5"));
     }
 
     @ExceptionHandler(NoSuchMenuException.class)
     public ResponseEntity handleNoSuchMenuException(NoSuchMenuException e) {
         List<UUID> menuIds = e.getMenus().stream().map(o -> o.getMenuId()).toList();
         log.info("errorMessage : {}, userId: {}, meIds: {}", e.getMessage(), e.getUserId(), menuIds);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_3"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_6"));
     }
 
     @ExceptionHandler(PaymentProviderNoSearchException.class)
     public ResponseEntity handlePaymentProviderNoSearchException(PaymentProviderNoSearchException e) {
         log.info("errorMessage : {}, userId: {}, meIds: {}", e.getMessage(), e.getUserId(), e.getPaymentProvider());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_3"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "PAYMENT_ERROR_1"));
     }
+
+    @ExceptionHandler(OrderAccessDeniedException.class)
+    public ResponseEntity handleOrderAccessDeniedException(OrderAccessDeniedException e) {
+        log.info("errorMessage : {}, userId: {}, OrderUserId: {}", e.getMessage(), e.getUserId(), e.getOrderUserId());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_7"));
+    }
+
+    @ExceptionHandler(DeliveryNotAvailableException.class)
+    public ResponseEntity handleDeliveryNotAvailableException(DeliveryNotAvailableException e) {
+        log.info("errorMessage : {}, userId: {}, userAddress: {}, storeId: {}", e.getMessage(), e.getUserId(), e.getDong(), e.getStoreId());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SingleResponse.error(e.getMessage(), "ORDER_ERROR_7"));
+    }
+
 }
