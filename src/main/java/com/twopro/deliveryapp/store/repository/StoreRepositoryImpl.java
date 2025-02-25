@@ -5,13 +5,12 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twopro.deliveryapp.store.entity.QStore;
 import com.twopro.deliveryapp.store.entity.Store;
+import com.twopro.deliveryapp.store.exception.InvalidSortPropertyException;
+import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import jakarta.persistence.EntityManager;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -40,9 +39,6 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
 
         OrderSpecifier<?>[] orderSpecifiers = getSortedColumn(pageable);
 
-        // 쿼리 로그 출력
-        System.out.println("Order Specifiers: " + Arrays.toString(orderSpecifiers));
-
         List<Store> stores = queryFactory.selectFrom(store)
                 .where(predicate)
                 .orderBy(orderSpecifiers) // 사용
@@ -66,7 +62,7 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
                         case "name":
                             return order.isAscending() ? store.name.asc() : store.name.desc();
                         default:
-                            return null;
+                            throw new InvalidSortPropertyException(order.getProperty());
                     }
                 })
                 .filter(Objects::nonNull)

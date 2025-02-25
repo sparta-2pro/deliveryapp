@@ -15,8 +15,6 @@ public interface DeliveryAreaService {
 
     List<DeliveryArea> getAllDeliveryAreas();
 
-    List<Store> getStoresByDeliveryArea(UUID deliveryAreaId);
-
     void updateDeliveryArea(UUID deliveryAreaId, String newName);
 
     void deleteDeliveryArea(UUID deliveryAreaId);

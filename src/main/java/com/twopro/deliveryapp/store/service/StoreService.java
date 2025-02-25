@@ -25,4 +25,6 @@ public interface StoreService {
     void deleteStore(UUID id);
 
     Page<StoreResponseDto> searchStores(StoreSearchRequestDto searchDto);
+
+    List<StoreResponseDto> getStoresByDeliveryAreaAndCategory(UUID deliveryAreaId, UUID categoryId);
 }

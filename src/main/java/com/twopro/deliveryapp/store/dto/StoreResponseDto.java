@@ -23,4 +23,6 @@ public class StoreResponseDto {
     private StoreType deliveryType;
     private Integer minimumOrderPrice;
     private Integer deliveryTip;
+    private double averageRating;
+    private int reviewCount;
 }
