@@ -72,7 +72,7 @@ public class StoreServiceImpl implements StoreService {
                 .deliveryType(dto.getDeliveryType())
                 .minimumOrderPrice(dto.getMinimumOrderPrice())
                 .deliveryTip(dto.getDeliveryTip())
-                .user(user)  // 영속 상태의 유저 할당
+                .user(user)
                 .build();
 
         return storeRepository.save(store);

@@ -23,7 +23,6 @@ public class StoreRequestDto {
     private String closedDays;
     private String pictureUrl;
     private StoreType deliveryType;
-    private List<UUID> deliveryAreas;
     private Integer minimumOrderPrice;
     private Integer deliveryTip;
     private StoreStatus status;
