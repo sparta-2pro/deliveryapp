@@ -69,13 +69,13 @@
 ---
 
 ## 4. ERD 및 API 문서
-[ERD]()
+![ERD](https://github.com/sparta-2pro/deliveryapp/blob/dev/erd_0225.png)
 
 
-[API DOCS]()
+![API DOCS](https://github.com/sparta-2pro/deliveryapp/blob/dev/api_docs_0225.png)
 
 ---
 ## 5. 기술 스택
-
+![기술스택](https://github.com/sparta-2pro/deliveryapp/blob/dev/stack_0225.png)
 
 ---
