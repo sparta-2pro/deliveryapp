@@ -47,6 +47,7 @@ public class WebSecurityConfig {
         // 접근 권한 설정
         http.authorizeHttpRequests((authorizeRequests) ->
                 authorizeRequests
+                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**").permitAll()
                         // 인증 없이 접근 가능 경로 (회원가입, 로그인)
                         .requestMatchers("/api/v1/users/**").permitAll()
                         // 권한을 가진 사용자만 접근 가능 경로
