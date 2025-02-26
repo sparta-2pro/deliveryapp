@@ -15,8 +15,12 @@ import com.twopro.deliveryapp.orderItem.Entity.OrderItem;
 import com.twopro.deliveryapp.payment.entity.Payment;
 import com.twopro.deliveryapp.payment.repository.PaymentRepository;
 import com.twopro.deliveryapp.store.entity.Category;
+import com.twopro.deliveryapp.store.entity.DeliveryArea;
 import com.twopro.deliveryapp.store.entity.Store;
+import com.twopro.deliveryapp.store.entity.StoreDeliveryArea;
 import com.twopro.deliveryapp.store.repository.CategoryRepository;
+import com.twopro.deliveryapp.store.repository.DeliveryAreaRepository;
+import com.twopro.deliveryapp.store.repository.StoreDeliveryAreaRepository;
 import com.twopro.deliveryapp.store.repository.StoreRepository;
 import com.twopro.deliveryapp.user.entity.Role;
 import com.twopro.deliveryapp.user.entity.User;
@@ -33,7 +37,7 @@ import java.util.Random;
 
 // @Component
 public class DummyDataGenerator {
-    // @Autowired
+     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Bean
@@ -44,9 +48,20 @@ public class DummyDataGenerator {
                                              CategoryRepository categoryRepository,
                                              PaymentRepository paymentRepository,
                                              CartRepository cartRepository,
-                                             CartMenuRepository cartMenuRepository) {
+                                             CartMenuRepository cartMenuRepository,
+                                             DeliveryAreaRepository deliveryAreaRepository,
+                                             StoreDeliveryAreaRepository storeDeliveryAreaRepository) {
         return args -> {
             Random random = new Random();
+
+            User user12345 = new User();
+            user12345.setNickname("user12345");
+            user12345.setEmail("user12345@example.com");
+            user12345.setPassword(passwordEncoder.encode("1234"));
+            user12345.setRole(Role.OWNER);
+            user12345.setAddress( new Address("Seoul", "Gangnam-gu", "한남동", "123-45", "서울특별시 강남구 삼성동 123-45", "101동 1203호"));
+            userRepository.save(user12345);
+
 
             // 임시 Category 생성
             Category category = new Category();
@@ -67,6 +82,7 @@ public class DummyDataGenerator {
                     .rating(5)          // 1 ~ 5
                     .reviewCount(100)         // 0 ~ 99
                     .status(StoreStatus.OPEN)
+                            .user(user12345)
                     .deliveryType(StoreType.DELIVERY)
                     .minimumOrderPrice(20000)  // 10000 ~ 19999
                     .deliveryTip(3000)           // 1000 ~ 4999
@@ -86,6 +102,7 @@ public class DummyDataGenerator {
                         .rating(random.nextInt(5) + 1)          // 1 ~ 5
                         .reviewCount(random.nextInt(100))         // 0 ~ 99
                         .status(StoreStatus.OPEN)
+                        .user(user12345)
                         .deliveryType(StoreType.DELIVERY)
                         .minimumOrderPrice(10000 + random.nextInt(10000))  // 10000 ~ 19999
                         .deliveryTip(1000 + random.nextInt(4000))           // 1000 ~ 4999
@@ -95,6 +112,12 @@ public class DummyDataGenerator {
                 stores.add(store);
             }
             storeRepository.saveAll(stores);
+
+            DeliveryArea deliveryArea = new DeliveryArea("한남동");
+            deliveryAreaRepository.save(deliveryArea);
+
+            StoreDeliveryArea storeDeliveryArea = new StoreDeliveryArea(stores.get(0), deliveryArea);
+            storeDeliveryAreaRepository.save(storeDeliveryArea);
 
             List<Menu> menus = new ArrayList<>();
             for (int i = 1; i <= 10; i++) {

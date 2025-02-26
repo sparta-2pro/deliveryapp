@@ -19,7 +19,6 @@ import com.twopro.deliveryapp.store.entity.Store;
 import com.twopro.deliveryapp.store.service.StoreDeliveryAreaService;
 import com.twopro.deliveryapp.store.service.StoreService;
 import com.twopro.deliveryapp.user.entity.User;
-import com.twopro.deliveryapp.user.repository.UserRepository;
 import com.twopro.deliveryapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +45,6 @@ public class OrderServiceImpl implements OrderService {
     private final StoreService storeService;
     private final MenuService menuService;
     private final UserService userService;
-    private final UserRepository userRepository;
     private final StoreDeliveryAreaService storeDeliveryAreaService;
 
     /**
@@ -91,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public PaymentResponseDto paymentRequest(PaymentRequestDto requestDto, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("유저Id와 일치하는 유저 정보가 없습니다.", userId));
+        User user = userService.findById(userId);
         Store findStore = storeService.findByID(requestDto.getStoreId()).orElseThrow();
 
         // 영업중인지 확인 로직
@@ -171,8 +169,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<FindOrderResponseDto> findOrders(Long userId, int page, Integer size, String sortBy, Boolean isAsc) {
         Pageable pageable = createPageable(page, size, sortBy, isAsc);
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("유저Id와 일치하는 유저 정보가 없습니다.", userId));
+        User user = userService.findById(userId);
 
         Page<Order> findOrders = orderRepository.findAllByUser(user.getUserId(), pageable);
 
