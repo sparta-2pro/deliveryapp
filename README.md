@@ -96,7 +96,8 @@ user
 <br>
 
 ## 4. 프로젝트 실행 방법
-- 서비스 주소: [링크](ec2-3-25-217-12.ap-southeast-2.compute.amazonaws.com)
+- 서비스 주소: <a href="http://ec2-3-25-217-12.ap-southeast-2.compute.amazonaws.com" target="_blank">링크</a>
+
 
 <br>
 
