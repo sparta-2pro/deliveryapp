@@ -7,31 +7,59 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #f7a8b8, #fad0c4);
+            background: linear-gradient(135deg, #ffecd2, #fcb69f); /* 부드럽고 따뜻한 색상 */
             margin: 0;
             padding: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            text-align: center;
+        }
+        .content {
+            background-color: #ffffff;
+            border-radius: 12px; /* 둥근 모서리 */
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+            width: 80%;
+            max-width: 900px;
         }
         h1 {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 30px;
-            font-size: 2.5em;
-            text-align: center;
-            color: #4A4A4A;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 800px;
+            font-size: 2.8em;
+            font-weight: bold;
+            color: #333; /* 진한 색상으로 읽기 쉬운 텍스트 */
+            margin-bottom: 20px;
         }
         h1 span {
-            color: #FF6347; /* Tomato color for emphasis */
+            display: block;
+            color: #e94e77; /* 부드럽고 세련된 색상 */
+            font-size: 1.6em;
+            margin-top: 10px;
+        }
+        .team-members {
+            font-size: 1.2em;
+            color: #666; /* 부드러운 회색 */
+            margin-top: 20px;
+            font-style: italic; /* 팀원 이름에 이탤릭체 추가 */
+        }
+        .welcome-text {
+            font-size: 1.5em; /* 적당히 작은 크기 */
+            color: #8e44ad; /* 고급스러운 보라색 */
+            font-weight: 600; /* 강조하는 느낌 */
+            margin-top: 15px;
+            letter-spacing: 2px; /* 글자 간격 조정 */
         }
     </style>
 </head>
 <body>
-<h1>팀명: 2PRO <span><br> AI를 활용한 배달플랫폼 <br> RESTFUL API 개발 프로젝트</span> </h1>
+<div class="content">
+    <h1>
+        팀명: 2PRO
+        <span>AI를 활용한 배달플랫폼</span>
+        <span>RESTFUL API 개발 프로젝트</span>
+        <span class="welcome-text">웰컴 페이지</span> <!-- 스타일 개선 -->
+    </h1>
+    <div class="team-members">전인종, 정은선, 정우준, 손민주</div>
+</div>
 </body>
 </html>
