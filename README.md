@@ -96,7 +96,7 @@ user
 <br>
 
 ## 4. 프로젝트 실행 방법
-- 서비스 주소: https://3.25.217.12:8080
+- 서비스 주소: [링크](https://3.25.217.12:8080)
 
 <br>
 
@@ -134,4 +134,4 @@ user
 <br>
 
 ## 8. 프로젝트 결과물 정리본
-- 발표자료 주소: 
+- 발표자료 주소: [링크](https://drive.google.com/file/d/1yYybMAYgwWfkAySlf8aJn610XoZDVXBP/view?usp=sharing)
