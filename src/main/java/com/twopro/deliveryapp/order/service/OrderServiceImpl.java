@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
             orderItems.add(OrderItem.createOrderItem(menu, menu.getPrice(), menuDto.getQuantity()));
             // totalPrice 계산
             totalPrice += menu.getPrice() * menuDto.getQuantity();
-            totalPrice += findStore.getMinimumOrderPrice();
+            totalPrice += findStore.getDeliveryTip();
         }
         // 결제 처리
         Payment payment = paymentService.createPayment(totalPrice, requestDto.getPaymentProvider(), userId);
