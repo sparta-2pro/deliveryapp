@@ -21,7 +21,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "p_payment")
 @Getter
-@Where(clause = "delete_at IS NULL")
+@Where(clause = "deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment extends BaseEntity {
     @Id
