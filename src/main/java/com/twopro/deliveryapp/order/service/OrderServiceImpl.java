@@ -169,9 +169,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<FindOrderResponseDto> findOrders(Long userId, int page, Integer size, String sortBy, Boolean isAsc) {
         Pageable pageable = createPageable(page, size, sortBy, isAsc);
-        User user = userService.findById(userId);
-
-        Page<Order> findOrders = orderRepository.findAllByUser(user.getUserId(), pageable);
+        Page<Order> findOrders = orderRepository.findAllByUser(userId, pageable);
 
         return findOrders.map(order -> new FindOrderResponseDto(
                 order.getId(),

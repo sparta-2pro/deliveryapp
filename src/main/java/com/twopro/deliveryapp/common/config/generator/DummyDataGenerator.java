@@ -35,9 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-// @Component
+//@Component
 public class DummyDataGenerator {
-     @Autowired
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Bean
@@ -59,7 +59,7 @@ public class DummyDataGenerator {
             user12345.setEmail("user12345@example.com");
             user12345.setPassword(passwordEncoder.encode("1234"));
             user12345.setRole(Role.OWNER);
-            user12345.setAddress( new Address("Seoul", "Gangnam-gu", "한남동", "123-45", "서울특별시 강남구 삼성동 123-45", "101동 1203호"));
+            user12345.setAddress(new Address("Seoul", "Gangnam-gu", "한남동", "123-45", "서울특별시 강남구 삼성동 123-45", "101동 1203호"));
             userRepository.save(user12345);
 
 
@@ -82,7 +82,7 @@ public class DummyDataGenerator {
                     .rating(5)          // 1 ~ 5
                     .reviewCount(100)         // 0 ~ 99
                     .status(StoreStatus.OPEN)
-                            .user(user12345)
+                    .user(user12345)
                     .deliveryType(StoreType.DELIVERY)
                     .minimumOrderPrice(20000)  // 10000 ~ 19999
                     .deliveryTip(3000)           // 1000 ~ 4999
@@ -142,7 +142,7 @@ public class DummyDataGenerator {
                 user.setEmail("user" + i + "@example.com");
                 user.setPassword(passwordEncoder.encode("1234"));
                 user.setRole(i % 2 == 0 ? Role.CUSTOMER : Role.OWNER);
-                user.setAddress( new Address("Seoul", "Gangnam-gu", "Yeoksam-dong", "123-45", "서울특별시 강남구 삼성동 123-45", "101동 1203호"));
+                user.setAddress(new Address("Seoul", "Gangnam-gu", "Yeoksam-dong", "123-45", "서울특별시 강남구 삼성동 123-45", "101동 1203호"));
                 users.add(user);
             }
             userRepository.saveAll(users);
